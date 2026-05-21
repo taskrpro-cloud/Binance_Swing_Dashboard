@@ -12,11 +12,17 @@
   --bdr:rgba(255,255,255,0.07);--bdr2:rgba(255,255,255,0.14);
   --text:#e8eaf0;--t2:#8b8fa8;--t3:#4a4f66;
   --grn:#22c55e;--red:#ef4444;--amb:#f59e0b;--blu:#3b82f6;--pur:#8b5cf6;
-  --liq:#ff6b35;--liq2:#c026d3;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overscroll-behavior:none;}
 body{background:var(--bg);color:var(--text);font-family:Roboto,'Segoe UI',sans-serif;font-size:14px;}
+
+/* PULL TO REFRESH */
+.ptr-indicator{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:center;height:0;overflow:hidden;background:var(--bg2);transition:height .2s;border-bottom:1px solid var(--bdr);}
+.ptr-indicator.show{height:48px;}
+.ptr-spinner{width:20px;height:20px;border:2px solid var(--bdr2);border-top-color:var(--amb);border-radius:50%;animation:spin .7s linear infinite;}
+.ptr-text{font-size:12px;color:var(--t2);margin-left:10px;font-weight:600;}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* HEADER */
 .hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:30;}
@@ -46,7 +52,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .abanner.s4{display:block;background:rgba(245,158,11,.1);border-bottom:1px solid rgba(245,158,11,.25);color:var(--amb);}
 .abanner.s5{display:block;background:rgba(34,197,94,.08);border-bottom:1px solid rgba(34,197,94,.2);color:var(--grn);}
 .abanner.s6{display:block;background:rgba(34,197,94,.18);border-bottom:2px solid var(--grn);color:var(--grn);animation:abp 1.5s infinite;}
-@keyframes abp{0%,100%{opacity:1}50%{opacity:.7}}
+@keyframes abp{0%,100%{opacity:1}50%{opacity:.75}}
 
 /* CONFLUENCE */
 .confbar{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:8px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
@@ -70,8 +76,11 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .tfscore.sn{background:rgba(245,158,11,.15);color:var(--amb);}
 .tfscore.sf{background:rgba(239,68,68,.1);color:var(--red);}
 
+/* SCROLL CONTAINER — pull-to-refresh target */
+.scroll-body{height:calc(100vh - 158px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+
 /* PAGES */
-.page{display:none;padding:12px 12px 80px;max-width:700px;margin:0 auto;flex-direction:column;gap:10px;}
+.page{display:none;padding:12px 12px 30px;max-width:700px;margin:0 auto;flex-direction:column;gap:10px;}
 .page.active{display:flex;}
 
 /* CARD */
@@ -112,7 +121,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .sval{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;}
 .sg{color:var(--grn);}.sr{color:var(--red);}.sa{color:var(--amb);}
 
-/* LEVELS */
+/* LEVELS (swing) */
 .lvlrow{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px;}
 .lvlbox{background:var(--bg3);border-radius:10px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center;}
 .lvllbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;font-weight:700;}
@@ -120,33 +129,27 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .lvlval{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;}
 .lvlhi{color:var(--grn);}.lvllo{color:var(--red);}
 
-/* LIQUIDATION HEATMAP */
-.liqmap{border-radius:12px;border:1px solid rgba(255,107,53,.25);background:rgba(255,107,53,.04);padding:14px;}
-.liq-title{font-size:10px;color:var(--liq);letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-.liq-legend{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap;}
+/* LIQUIDITY HEATMAP */
+.liqmap{border-radius:12px;border:1px solid rgba(255,107,53,.2);background:rgba(255,107,53,.03);padding:14px;}
+.liq-title{font-size:10px;color:#ff6b35;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+/* Key level cards FIRST */
+.liq-levels{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.liq-lvl{border-radius:10px;padding:10px 12px;border:1px solid var(--bdr);}
+.liq-lvl.short-liq{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.07);}
+.liq-lvl.long-liq{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.07);}
+.liq-lvl-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;}
+.liq-lvl.short-liq .liq-lvl-label{color:var(--grn);}
+.liq-lvl.long-liq .liq-lvl-label{color:var(--red);}
+.liq-lvl-price{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;}
+.liq-lvl.short-liq .liq-lvl-price{color:var(--grn);}
+.liq-lvl.long-liq .liq-lvl-price{color:var(--red);}
+.liq-lvl-note{font-size:11px;color:var(--t2);margin-top:3px;line-height:1.4;}
+/* Bar chart BELOW key levels */
+.liq-legend{display:flex;gap:14px;margin-bottom:8px;flex-wrap:wrap;}
 .liq-legend span{font-size:11px;color:var(--t2);display:flex;align-items:center;gap:5px;}
 .liq-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;}
-.liqwrap{position:relative;height:160px;width:100%;}
-.liq-levels{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
-.liq-lvl{background:var(--bg3);border-radius:10px;padding:10px 12px;border:1px solid var(--bdr);}
-.liq-lvl.long-liq{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.06);}
-.liq-lvl.short-liq{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.06);}
-.liq-lvl-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;}
-.liq-lvl.long-liq .liq-lvl-label{color:var(--red);}
-.liq-lvl.short-liq .liq-lvl-label{color:var(--grn);}
-.liq-lvl-price{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;}
-.liq-lvl.long-liq .liq-lvl-price{color:var(--red);}
-.liq-lvl.short-liq .liq-lvl-price{color:var(--grn);}
-.liq-lvl-note{font-size:11px;color:var(--t2);margin-top:2px;line-height:1.4;}
+.liqwrap{position:relative;height:150px;width:100%;}
 .liq-note{font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5;font-style:italic;}
-
-/* GUIDANCE */
-.guidance{background:var(--bg4);border:1px solid rgba(59,130,246,.2);border-radius:12px;padding:12px 14px;}
-.gtitle{font-size:10px;color:var(--blu);letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
-.gitem{font-size:11px;color:var(--t2);line-height:1.6;padding:4px 0;border-bottom:1px solid var(--bdr);display:flex;gap:8px;}
-.gitem:last-child{border-bottom:none;}
-.gitem b{color:var(--text);white-space:nowrap;}
-.gico{flex-shrink:0;width:18px;}
 
 /* DIVIDER */
 .divider{display:flex;align-items:center;gap:10px;color:var(--t3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;}
@@ -176,40 +179,46 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .cleg i{display:inline-block;width:14px;height:2px;border-radius:1px;}
 .cwrap{position:relative;height:120px;width:100%;}
 
-/* FOBOX */
+/* FO BOX */
 .fobox{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .folbl{font-size:10px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:3px;}
 .foval{font-size:18px;font-weight:800;margin-bottom:2px;font-variant-numeric:tabular-nums;}
 .fometa{font-size:11px;color:var(--t2);line-height:1.4;}
 
+/* ATR ROW */
+.atrrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;}
+.atrbox{background:var(--bg3);border-radius:10px;padding:9px 10px;text-align:center;}
+.atrlbl{font-size:9px;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;font-weight:600;margin-bottom:2px;}
+.atrval{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;}
+
+/* GUIDANCE — bottom of page */
+.guidance{background:var(--bg4);border:1px solid rgba(59,130,246,.18);border-radius:12px;padding:12px 14px;}
+.gtitle{font-size:10px;color:var(--blu);letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.gitem{font-size:11px;color:var(--t2);line-height:1.6;padding:4px 0;border-bottom:1px solid var(--bdr);display:flex;gap:8px;}
+.gitem:last-child{border-bottom:none;}
+.gitem b{color:var(--text);white-space:nowrap;}
+.gico{flex-shrink:0;width:18px;}
+
 /* FOOTER */
 .foot{font-size:11px;color:var(--t3);line-height:1.8;}
 .foot b{color:var(--t2);}
 
-/* BOTTOM NAV — THE FIX: each item controls inner section, not page */
-.bottomnav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--bdr);display:flex;z-index:40;}
-.bnav{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 12px;cursor:pointer;color:var(--t3);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border:none;background:none;min-height:54px;position:relative;overflow:hidden;transition:color .15s;-webkit-tap-highlight-color:transparent;}
-.bnav.active{color:var(--amb);}
-.bnav svg{width:19px;height:19px;stroke-width:2;pointer-events:none;}
-.bnav span{pointer-events:none;}
-.ripple{position:absolute;border-radius:50%;background:rgba(245,158,11,.15);width:0;height:0;transform:translate(-50%,-50%);pointer-events:none;animation:rpl .4s ease-out forwards;}
-@keyframes rpl{to{width:120px;height:120px;opacity:0;}}
-
-/* INNER CONTENT SECTIONS — controlled by bottom nav */
-.isec{display:none;flex-direction:column;gap:10px;}
-.isec.active{display:flex;}
-
 /* DESKTOP */
 @media(min-width:640px){
+  .scroll-body{height:calc(100vh - 158px);}
   .page{padding:18px 20px 18px;max-width:1100px;}
-  .bottomnav{display:none;}
-  .isec{display:flex !important;}
   .sigs{grid-template-columns:repeat(3,1fr);}
   .charts2{display:grid;grid-template-columns:1.4fr 1fr;gap:12px;}
 }
 </style>
 </head>
 <body>
+
+<!-- PULL TO REFRESH INDICATOR -->
+<div class="ptr-indicator" id="ptrIndicator">
+  <div class="ptr-spinner" id="ptrSpinner" style="display:none"></div>
+  <div class="ptr-text" id="ptrText">Pull down to refresh</div>
+</div>
 
 <!-- HEADER -->
 <div class="hdr">
@@ -254,21 +263,18 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 <!-- TF TABS -->
 <div class="tftabs">
   <div class="tftab active" id="tft0" onclick="switchPage(0)">
-    <span>⚡ Scalp</span>
-    <span class="tflabel">1–15 min</span>
-    <span class="tfscore" id="score0">—</span>
+    <span>⚡ Scalp</span><span class="tflabel">1–15 min</span><span class="tfscore" id="score0">—</span>
   </div>
   <div class="tftab" id="tft1" onclick="switchPage(1)">
-    <span>📈 Hourly</span>
-    <span class="tflabel">1H – 4H</span>
-    <span class="tfscore" id="score1">—</span>
+    <span>📈 Hourly</span><span class="tflabel">1H – 4H</span><span class="tfscore" id="score1">—</span>
   </div>
   <div class="tftab" id="tft2" onclick="switchPage(2)">
-    <span>🌊 Swing</span>
-    <span class="tflabel">Daily – 4H</span>
-    <span class="tfscore" id="score2">—</span>
+    <span>🌊 Swing</span><span class="tflabel">Daily – 4H</span><span class="tfscore" id="score2">—</span>
   </div>
 </div>
+
+<!-- SCROLL CONTAINER -->
+<div class="scroll-body" id="scrollBody">
 
 <!-- ═══ PAGE 0 — SCALP ═══ -->
 <div class="page active" id="page0">
@@ -300,56 +306,59 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       <div class="sbox"><div class="slbl">Candles</div><div class="sval sa" id="s0cand">—</div></div>
     </div>
   </div>
-  <!-- Guidance -->
+  <!-- Liquidity Heatmap -->
+  <div class="liqmap">
+    <div class="liq-title">🔥 Liquidation clusters — where MM hunts</div>
+    <!-- Key levels FIRST -->
+    <div class="liq-levels" id="liqlevels0">
+      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation</div><div class="liq-lvl-price">Loading…</div></div>
+      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation</div><div class="liq-lvl-price">Loading…</div></div>
+    </div>
+    <!-- Bar chart BELOW -->
+    <div class="liq-legend">
+      <span><i style="background:#22c55e;opacity:.8"></i>Short liq (above)</span>
+      <span><i style="background:#ef4444;opacity:.8"></i>Long liq (below)</span>
+    </div>
+    <div class="liqwrap"><canvas id="liqc0"></canvas></div>
+    <div class="liq-note" id="liqnote0">Enter AFTER price sweeps a cluster and reverses — the sweep is MM grabbing stops.</div>
+  </div>
+  <!-- Signal breakdown -->
+  <div class="divider">Signal breakdown</div>
+  <div class="sigs" id="sigs0"><div class="sig"><div class="signame">Loading…</div></div></div>
+  <!-- Charts -->
+  <div class="divider">Charts</div>
+  <div class="charts2">
+    <div class="card">
+      <div class="clbl">1m Price · EMA9 · EMA21</div>
+      <div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA9</span><span><i style="background:#ef4444"></i>EMA21</span></div>
+      <div class="cwrap"><canvas id="pc0"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:10px;">
+      <div class="clbl">RSI 14 · 1m · zone 44–57</div>
+      <div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.5)"></i>44–57</span></div>
+      <div class="cwrap"><canvas id="rc0"></canvas></div>
+    </div>
+  </div>
+  <!-- Info -->
+  <div class="divider">Info</div>
+  <div class="card">
+    <div class="fobox">
+      <div><div class="folbl">Funding rate</div><div class="foval" id="fo0r">—</div><div class="fometa" id="fo0rm">Target: −0.05% to +0.05%</div></div>
+      <div><div class="folbl">Open interest</div><div class="foval" id="fo0oi">—</div><div class="fometa" id="fo0oim">Rising = real move</div></div>
+    </div>
+  </div>
+  <!-- Guidance at bottom -->
+  <div class="divider">Guide</div>
   <div class="guidance">
     <div class="gtitle">⚡ Scalp guide — 1 to 15 minutes</div>
     <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 3–15 min.</b> If price hasn't moved toward TP within 30 min, exit manually — the signal has expired.</span></div>
     <div class="gitem"><span class="gico">🕐</span><span><b>Entry timing:</b> Wait for the 1m crossover candle to fully close. Enter on the open of the next candle — never mid-candle.</span></div>
-    <div class="gitem"><span class="gico">🛑</span><span><b>Stop is fixed at 0.25%.</b> Do not move it. Ever. Widening stops is how accounts blow up.</span></div>
-    <div class="gitem"><span class="gico">💧</span><span><b>Liquidity zones:</b> Enter after price sweeps a liquidity cluster (red zone below) and reverses. That sweep is the market maker grabbing stops before the real move.</span></div>
+    <div class="gitem"><span class="gico">🛑</span><span><b>Stop is fixed at 0.25%.</b> Do not move it. Widening stops is how accounts blow up.</span></div>
+    <div class="gitem"><span class="gico">💧</span><span><b>Liquidity zones:</b> Enter after price sweeps a cluster and reverses. That sweep is the market maker grabbing stops before the real move.</span></div>
     <div class="gitem"><span class="gico">🌊</span><span><b>Best condition:</b> All 3 tabs green in same direction = highest confidence. Never scalp against the swing trend.</span></div>
-    <div class="gitem"><span class="gico">🔁</span><span><b>After a trade:</b> Wait 15 min. No revenge trades. Check if confluence is still aligned before the next entry.</span></div>
+    <div class="gitem"><span class="gico">🔁</span><span><b>After a trade:</b> Wait 15 min. No revenge trades. Check confluence is still aligned before the next entry.</span></div>
   </div>
-  <!-- Liquidity Heatmap -->
-  <div class="divider">Liquidity heatmap</div>
-  <div class="liqmap" id="liq0">
-    <div class="liq-title">🔥 Liquidation clusters — where MM will hunt</div>
-    <div class="liq-legend">
-      <span><i style="background:#ef4444;opacity:.8"></i>Long liquidations (below price)</span>
-      <span><i style="background:#22c55e;opacity:.8"></i>Short liquidations (above price)</span>
-    </div>
-    <div class="liqwrap"><canvas id="liqc0"></canvas></div>
-    <div class="liq-levels" id="liqlevels0"></div>
-    <div class="liq-note" id="liqnote0">Loading liquidation data…</div>
-  </div>
-  <div class="divider">Signal breakdown</div>
-  <!-- INNER SECTIONS — controlled by bottom nav -->
-  <div class="isec active" id="is0_sig">
-    <div class="sigs" id="sigs0"><div class="sig"><div class="signame">Loading…</div></div></div>
-  </div>
-  <div class="isec" id="is0_chart">
-    <div class="charts2">
-      <div class="card">
-        <div class="clbl">1m Price · EMA9 · EMA21</div>
-        <div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA9</span><span><i style="background:#ef4444"></i>EMA21</span></div>
-        <div class="cwrap"><canvas id="pc0"></canvas></div>
-      </div>
-      <div class="card" style="margin-top:10px;">
-        <div class="clbl">RSI 14 · 1m · zone 44–57</div>
-        <div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.5)"></i>44–57</span></div>
-        <div class="cwrap"><canvas id="rc0"></canvas></div>
-      </div>
-    </div>
-  </div>
-  <div class="isec" id="is0_info">
-    <div class="card">
-      <div class="fobox">
-        <div><div class="folbl">Funding rate</div><div class="foval" id="fo0r">—</div><div class="fometa" id="fo0rm">Target: −0.05% to +0.05%</div></div>
-        <div><div class="folbl">Open interest</div><div class="foval" id="fo0oi">—</div><div class="fometa" id="fo0oim">Rising = real move</div></div>
-      </div>
-    </div>
-    <div class="card"><div class="foot"><b>Rules:</b> 15m trend · 1m EMA cross · RSI 44–57 · Vol ≥1.5× · Funding neutral · OI rising.<br><b>Risk:</b> SL 0.25% · TP 0.375% · 3–5× lev · 1 trade · 20/day · Stop −3%/day.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
-  </div>
+  <div class="card"><div class="foot"><b>Rules:</b> 15m trend · 1m EMA cross · RSI 44–57 · Vol ≥1.5× · Funding neutral · OI rising.<br><b>Risk:</b> SL 0.25% · TP 0.375% · 3–5× lev · 1 trade · 20/day · Stop −3%/day.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
 </div>
 
 <!-- ═══ PAGE 1 — HOURLY ═══ -->
@@ -380,53 +389,52 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       <div class="sbox"><div class="slbl">Candles</div><div class="sval sa" id="s1cand">—</div></div>
     </div>
   </div>
+  <div class="liqmap">
+    <div class="liq-title">🔥 Liquidation clusters — where MM hunts</div>
+    <div class="liq-levels" id="liqlevels1">
+      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation</div><div class="liq-lvl-price">Loading…</div></div>
+      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation</div><div class="liq-lvl-price">Loading…</div></div>
+    </div>
+    <div class="liq-legend">
+      <span><i style="background:#22c55e;opacity:.8"></i>Short liq (above)</span>
+      <span><i style="background:#ef4444;opacity:.8"></i>Long liq (below)</span>
+    </div>
+    <div class="liqwrap"><canvas id="liqc1"></canvas></div>
+    <div class="liq-note" id="liqnote1">Enter AFTER price sweeps a cluster and reverses — the sweep is MM grabbing stops.</div>
+  </div>
+  <div class="divider">Signal breakdown</div>
+  <div class="sigs" id="sigs1"><div class="sig"><div class="signame">Loading…</div></div></div>
+  <div class="divider">Charts</div>
+  <div class="charts2">
+    <div class="card">
+      <div class="clbl">1H Price · EMA20 · EMA50</div>
+      <div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA20</span><span><i style="background:#ef4444"></i>EMA50</span></div>
+      <div class="cwrap"><canvas id="pc1"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:10px;">
+      <div class="clbl">RSI 14 · 1H · zone 40–60</div>
+      <div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.5)"></i>40–60</span></div>
+      <div class="cwrap"><canvas id="rc1"></canvas></div>
+    </div>
+  </div>
+  <div class="divider">Info</div>
+  <div class="card">
+    <div class="fobox">
+      <div><div class="folbl">Funding rate</div><div class="foval" id="fo1r">—</div><div class="fometa" id="fo1rm">Paid once per 8h hold</div></div>
+      <div><div class="folbl">Open interest</div><div class="foval" id="fo1oi">—</div><div class="fometa" id="fo1oim">Rising = real trend</div></div>
+    </div>
+  </div>
+  <div class="divider">Guide</div>
   <div class="guidance">
     <div class="gtitle">📈 Hourly guide — 2 to 12 hours</div>
     <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 2–12 hours.</b> Check every 2–4h. Set your orders and stop watching tick by tick.</span></div>
-    <div class="gitem"><span class="gico">📍</span><span><b>Entry near 1H key levels only.</b> Price in the middle of a range = no trade. Wait for a level.</span></div>
-    <div class="gitem"><span class="gico">🛑</span><span><b>Stop below the 1H swing low</b> at entry. Usually 0.5–1% wide. Wide enough to survive 1–2 wick candles.</span></div>
-    <div class="gitem"><span class="gico">💧</span><span><b>Liquidity clusters below price</b> = where market makers will push to grab long stops before reversing up. Enter after the sweep, not before.</span></div>
+    <div class="gitem"><span class="gico">📍</span><span><b>Entry near 1H key levels only.</b> Price in the middle of a range = no trade.</span></div>
+    <div class="gitem"><span class="gico">🛑</span><span><b>Stop below the 1H swing low</b> at entry. Usually 0.5–1% wide — enough to survive 1–2 wick candles.</span></div>
+    <div class="gitem"><span class="gico">💧</span><span><b>Liquidity clusters below price</b> = where MM pushes to grab long stops before reversing up. Enter after the sweep.</span></div>
     <div class="gitem"><span class="gico">⏰</span><span><b>Time exit:</b> If trade hasn't moved 40% toward TP in 6 hours, close manually. Momentum has faded.</span></div>
-    <div class="gitem"><span class="gico">💰</span><span><b>Funding:</b> You'll pay one 8h funding period. Ensure TP covers this cost before entry.</span></div>
+    <div class="gitem"><span class="gico">💰</span><span><b>Funding:</b> You'll pay one 8h period. Ensure TP covers this cost before entering.</span></div>
   </div>
-  <div class="divider">Liquidity heatmap</div>
-  <div class="liqmap" id="liq1">
-    <div class="liq-title">🔥 Liquidation clusters — where MM will hunt</div>
-    <div class="liq-legend">
-      <span><i style="background:#ef4444;opacity:.8"></i>Long liquidations (below)</span>
-      <span><i style="background:#22c55e;opacity:.8"></i>Short liquidations (above)</span>
-    </div>
-    <div class="liqwrap"><canvas id="liqc1"></canvas></div>
-    <div class="liq-levels" id="liqlevels1"></div>
-    <div class="liq-note" id="liqnote1">Loading liquidation data…</div>
-  </div>
-  <div class="divider">Signal breakdown</div>
-  <div class="isec active" id="is1_sig">
-    <div class="sigs" id="sigs1"><div class="sig"><div class="signame">Loading…</div></div></div>
-  </div>
-  <div class="isec" id="is1_chart">
-    <div class="charts2">
-      <div class="card">
-        <div class="clbl">1H Price · EMA20 · EMA50</div>
-        <div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA20</span><span><i style="background:#ef4444"></i>EMA50</span></div>
-        <div class="cwrap"><canvas id="pc1"></canvas></div>
-      </div>
-      <div class="card" style="margin-top:10px;">
-        <div class="clbl">RSI 14 · 1H · zone 40–60</div>
-        <div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.5)"></i>40–60</span></div>
-        <div class="cwrap"><canvas id="rc1"></canvas></div>
-      </div>
-    </div>
-  </div>
-  <div class="isec" id="is1_info">
-    <div class="card">
-      <div class="fobox">
-        <div><div class="folbl">Funding rate</div><div class="foval" id="fo1r">—</div><div class="fometa" id="fo1rm">Paid once per 8h hold</div></div>
-        <div><div class="folbl">Open interest</div><div class="foval" id="fo1oi">—</div><div class="fometa" id="fo1oim">Rising = real trend</div></div>
-      </div>
-    </div>
-    <div class="card"><div class="foot"><b>Rules:</b> 4H trend · 1H EMA align · RSI 40–60 · Vol ≥1.3× · Funding neutral · OI rising.<br><b>Risk:</b> SL ~0.5–1% · TP ~1–2% · 2–3× lev · 1 trade · 5 trades/day max.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
-  </div>
+  <div class="card"><div class="foot"><b>Rules:</b> 4H trend · 1H EMA align · RSI 40–60 · Vol ≥1.3× · Funding neutral · OI rising.<br><b>Risk:</b> SL ~0.5–1% · TP ~1–2% · 2–3× lev · 1 trade · 5/day max.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
 </div>
 
 <!-- ═══ PAGE 2 — SWING ═══ -->
@@ -461,177 +469,164 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       <div class="sbox"><div class="slbl">RSI 4H</div><div class="sval sa" id="s2rsi">—</div></div>
     </div>
   </div>
+  <div class="liqmap">
+    <div class="liq-title">🔥 Liquidation clusters — where MM hunts</div>
+    <div class="liq-levels" id="liqlevels2">
+      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation</div><div class="liq-lvl-price">Loading…</div></div>
+      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation</div><div class="liq-lvl-price">Loading…</div></div>
+    </div>
+    <div class="liq-legend">
+      <span><i style="background:#22c55e;opacity:.8"></i>Short liq (above)</span>
+      <span><i style="background:#ef4444;opacity:.8"></i>Long liq (below)</span>
+    </div>
+    <div class="liqwrap"><canvas id="liqc2"></canvas></div>
+    <div class="liq-note" id="liqnote2">Large clusters = major sweep targets. Price will wick into these before the real move. Plan entries there.</div>
+  </div>
+  <div class="divider">Signal breakdown</div>
+  <div class="sigs" id="sigs2"><div class="sig"><div class="signame">Loading…</div></div></div>
+  <div class="divider">Charts</div>
+  <div class="charts2">
+    <div class="card">
+      <div class="clbl">4H Price · EMA20 · EMA50</div>
+      <div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA20</span><span><i style="background:#ef4444"></i>EMA50</span></div>
+      <div class="cwrap"><canvas id="pc2"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:10px;">
+      <div class="clbl">RSI 14 · 4H · swing zones</div>
+      <div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.4)"></i>Buy 30–52</span><span><i style="background:rgba(239,68,68,.35)"></i>Sell 50–72</span></div>
+      <div class="cwrap"><canvas id="rc2"></canvas></div>
+    </div>
+  </div>
+  <div class="divider">Info</div>
+  <div class="card">
+    <div class="fobox">
+      <div><div class="folbl">Funding rate</div><div class="foval" id="fo2r">—</div><div class="fometa" id="fo2rm">Paid every 8h — 9× on 3-day hold</div></div>
+      <div><div class="folbl">Open interest</div><div class="foval" id="fo2oi">—</div><div class="fometa" id="fo2oim">Rising = institutional participation</div></div>
+    </div>
+    <div class="atrrow">
+      <div class="atrbox"><div class="atrlbl">Daily ATR</div><div class="atrval" id="atr2d">—</div></div>
+      <div class="atrbox"><div class="atrlbl">4H ATR</div><div class="atrval" id="atr2h">—</div></div>
+      <div class="atrbox"><div class="atrlbl">ATR-based SL</div><div class="atrval" id="atr2sl">—</div></div>
+    </div>
+  </div>
+  <div class="divider">Guide</div>
   <div class="guidance">
     <div class="gtitle">🌊 Swing guide — 4 hours to 3 days</div>
     <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 4h to 3 days.</b> Check once or twice a day. This needs time and room to develop.</span></div>
-    <div class="gitem"><span class="gico">📍</span><span><b>Entry at key levels only</b> — prev day high/low, or major 4H structure. Never enter mid-range.</span></div>
-    <div class="gitem"><span class="gico">🛑</span><span><b>Stop = 1× Daily ATR.</b> Purposely wide. BTC moves $1,000–3,000/day — your stop must survive that. Use smaller size to compensate.</span></div>
-    <div class="gitem"><span class="gico">💧</span><span><b>Large liquidity clusters</b> on this tab represent major sweep zones. Price will often wick into these before the real move. Plan entries there, not in the middle of open air.</span></div>
+    <div class="gitem"><span class="gico">📍</span><span><b>Entry at key levels only</b> — prev day high/low or major 4H structure. Never enter mid-range.</span></div>
+    <div class="gitem"><span class="gico">🛑</span><span><b>Stop = 1× Daily ATR.</b> Purposely wide. BTC moves $1k–3k/day — your stop must survive that noise.</span></div>
+    <div class="gitem"><span class="gico">💧</span><span><b>Large liquidity clusters</b> are major sweep zones. Price will wick into these before the real move. Plan entries there.</span></div>
     <div class="gitem"><span class="gico">⏰</span><span><b>Time exit:</b> If trade hasn't moved 50% toward TP in 24h, close manually. Capital stuck at risk.</span></div>
     <div class="gitem"><span class="gico">📅</span><span><b>Frequency: 2–5 setups per week.</b> Most days you should be watching, not trading.</span></div>
   </div>
-  <div class="divider">Liquidity heatmap</div>
-  <div class="liqmap" id="liq2">
-    <div class="liq-title">🔥 Liquidation clusters — where MM will hunt</div>
-    <div class="liq-legend">
-      <span><i style="background:#ef4444;opacity:.8"></i>Long liquidations (below)</span>
-      <span><i style="background:#22c55e;opacity:.8"></i>Short liquidations (above)</span>
-    </div>
-    <div class="liqwrap"><canvas id="liqc2"></canvas></div>
-    <div class="liq-levels" id="liqlevels2"></div>
-    <div class="liq-note" id="liqnote2">Loading liquidation data…</div>
-  </div>
-  <div class="divider">Signal breakdown</div>
-  <div class="isec active" id="is2_sig">
-    <div class="sigs" id="sigs2"><div class="sig"><div class="signame">Loading…</div></div></div>
-  </div>
-  <div class="isec" id="is2_chart">
-    <div class="charts2">
-      <div class="card">
-        <div class="clbl">4H Price · EMA20 · EMA50</div>
-        <div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA20</span><span><i style="background:#ef4444"></i>EMA50</span></div>
-        <div class="cwrap"><canvas id="pc2"></canvas></div>
-      </div>
-      <div class="card" style="margin-top:10px;">
-        <div class="clbl">RSI 14 · 4H · swing zones</div>
-        <div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.4)"></i>Buy 30–52</span><span><i style="background:rgba(239,68,68,.35)"></i>Sell 50–72</span></div>
-        <div class="cwrap"><canvas id="rc2"></canvas></div>
-      </div>
-    </div>
-  </div>
-  <div class="isec" id="is2_info">
-    <div class="card">
-      <div class="fobox">
-        <div><div class="folbl">Funding rate</div><div class="foval" id="fo2r">—</div><div class="fometa" id="fo2rm">Paid every 8h — 9× on 3-day hold</div></div>
-        <div><div class="folbl">Open interest</div><div class="foval" id="fo2oi">—</div><div class="fometa" id="fo2oim">Rising = institutional participation</div></div>
-      </div>
-    </div>
-    <div class="card"><div class="foot"><b>Rules:</b> Daily EMA trend · 4H EMA align · 4H RSI swing zone · Daily vol ≥1.2× · Funding neutral · OI rising.<br><b>Risk:</b> SL = 1× ATR · TP = 1.8× ATR · 2× lev max · 1 trade · 5 trades/week.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
-  </div>
+  <div class="card"><div class="foot"><b>Rules:</b> Daily EMA trend · 4H EMA align · 4H RSI swing zone · Daily vol ≥1.2× · Funding neutral · OI rising.<br><b>Risk:</b> SL = 1× ATR · TP = 1.8× ATR · 2× lev max · 1 trade · 5/week.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
 </div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottomnav">
-  <button class="bnav active" id="bn_sig" onclick="switchDetail('sig',event)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    <span>Signals</span>
-  </button>
-  <button class="bnav" id="bn_chart" onclick="switchDetail('chart',event)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 3 3 21 21 21"/><polyline points="7 16 11 12 15 16 21 10"/></svg>
-    <span>Charts</span>
-  </button>
-  <button class="bnav" id="bn_info" onclick="switchDetail('info',event)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <span>Info</span>
-  </button>
-</nav>
+</div><!-- /scroll-body -->
 
 <script>
-/* ══ NAVIGATION ══════════════════════════════════════════════ */
-let activePage=0, activeDetail='sig';
+/* ══ PULL TO REFRESH ══════════════════════════════════════════ */
+(function(){
+  const sb=document.getElementById('scrollBody');
+  const ind=document.getElementById('ptrIndicator');
+  const txt=document.getElementById('ptrText');
+  const spn=document.getElementById('ptrSpinner');
+  let startY=0, pulling=false, refreshing=false;
+  const THRESHOLD=70;
 
+  sb.addEventListener('touchstart',e=>{
+    if(sb.scrollTop===0) startY=e.touches[0].clientY;
+  },{passive:true});
+
+  sb.addEventListener('touchmove',e=>{
+    if(refreshing||startY===0)return;
+    const dy=e.touches[0].clientY-startY;
+    if(dy>10&&sb.scrollTop===0){
+      pulling=true;
+      const h=Math.min(dy*0.5,THRESHOLD);
+      ind.style.height=h+'px';
+      ind.classList.add('show');
+      txt.textContent=dy*0.5>=THRESHOLD?'Release to refresh…':'Pull down to refresh';
+      spn.style.display='none';
+    }
+  },{passive:true});
+
+  sb.addEventListener('touchend',()=>{
+    if(!pulling){startY=0;return;}
+    pulling=false;
+    const h=parseInt(ind.style.height)||0;
+    if(h>=THRESHOLD*0.9){
+      refreshing=true;
+      ind.style.height='48px';
+      txt.textContent='Refreshing…';
+      spn.style.display='block';
+      hardRefresh();
+      setTimeout(()=>{
+        ind.style.height='0';
+        ind.classList.remove('show');
+        refreshing=false;
+        startY=0;
+      },1800);
+    } else {
+      ind.style.height='0';
+      ind.classList.remove('show');
+      startY=0;
+    }
+  },{passive:true});
+})();
+
+/* ══ PAGE SWITCHING ══════════════════════════════════════════ */
+let activePage=0;
 function switchPage(i){
   [0,1,2].forEach(j=>{
     document.getElementById('page'+j).classList.toggle('active',j===i);
     document.getElementById('tft'+j).classList.toggle('active',j===i);
   });
   activePage=i;
-  // ensure correct inner section is shown for current detail
-  applyDetail(i, activeDetail);
-  if(activeDetail==='chart') setTimeout(()=>drawChart(i),80);
-}
-
-function switchDetail(d, ev){
-  ['sig','chart','info'].forEach(k=>{
-    document.getElementById('bn_'+k).classList.toggle('active',k===d);
-  });
-  activeDetail=d;
-  if(ev){ spawnRipple(ev); }
-  applyDetail(activePage, d);
-  if(d==='chart') setTimeout(()=>drawChart(activePage),80);
-}
-
-function applyDetail(page, detail){
-  ['sig','chart','info'].forEach(k=>{
-    const el=document.getElementById('is'+page+'_'+k);
-    if(el) el.classList.toggle('active',k===detail);
-  });
-}
-
-function spawnRipple(ev){
-  const btn=ev.currentTarget;
-  const r=document.createElement('span');
-  r.className='ripple';
-  const rect=btn.getBoundingClientRect();
-  r.style.left=(ev.clientX-rect.left)+'px';
-  r.style.top=(ev.clientY-rect.top)+'px';
-  btn.appendChild(r);
-  setTimeout(()=>r.remove(),500);
+  document.getElementById('scrollBody').scrollTop=0;
 }
 
 /* ══ ALERTS ══════════════════════════════════════════════════ */
-let alertsOn=false, notifPerm='default';
-let lastLevels=[0,0,0];
+let alertsOn=false,notifPerm='default',lastLevels=[0,0,0];
 const TFNAMES=['⚡ 1–15m Scalp','📈 1H Hourly','🌊 4H/Daily Swing'];
 
 async function toggleAlerts(){
   if(!alertsOn){
-    if('Notification' in window) notifPerm=await Notification.requestPermission();
+    if('Notification' in window)notifPerm=await Notification.requestPermission();
     alertsOn=true;
     document.getElementById('notifBtn').className='nbtn on';
     document.getElementById('notifBtn').textContent='🔔 ON';
-    toast('Alerts on — notified at 4, 5, 6 signals on any tab');
+    toast('Alerts on — notified at 4, 5, and 6 signals');
   } else {
-    alertsOn=false; lastLevels=[0,0,0];
+    alertsOn=false;lastLevels=[0,0,0];
     document.getElementById('notifBtn').className='nbtn';
     document.getElementById('notifBtn').textContent='🔔 ALERTS';
     toast('Alerts off');
   }
 }
 
-function fireAlert(tab, passed, dir, total){
+function fireAlert(tab,passed,dir,total){
   if(!alertsOn||passed<4){if(passed<4)lastLevels[tab]=0;return;}
   if(passed<=lastLevels[tab])return;
   lastLevels[tab]=passed;
   const name=TFNAMES[tab];
-  const msgs={4:`⚠️ ${name}: 4/${total} — ${dir} setup building`,5:`🔔 ${name}: 5/${total} — ${dir} nearly ready`,6:`🚨 ${name}: ALL ${total}/${total} GREEN — ${dir} ENTRY NOW`};
-  const msg=msgs[Math.min(passed,6)]||'';
-  if(!msg)return;
-  if(navigator.vibrate){
-    if(passed===4)navigator.vibrate([100,60,100]);
-    else if(passed===5)navigator.vibrate([200,80,200,80,200]);
-    else navigator.vibrate([400,100,400,100,400]);
-  }
-  if(notifPerm==='granted'){
-    try{new Notification(passed>=6?`🚨 ${name} — FULL SIGNAL`:`🔔 ${name} — Alert`,{body:msg,tag:'sig'+tab,requireInteraction:passed>=6});}catch(e){}
-  }
-  try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    const n=passed>=6?3:passed===5?2:1;
-    for(let i=0;i<n;i++){
-      const o=ctx.createOscillator(),g=ctx.createGain();
-      o.connect(g);g.connect(ctx.destination);
-      o.frequency.value=passed>=6?900:passed===5?700:550;
-      g.gain.setValueAtTime(0.25,ctx.currentTime+i*0.35);
-      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.35+0.28);
-      o.start(ctx.currentTime+i*0.35);o.stop(ctx.currentTime+i*0.35+0.28);
-    }
-  }catch(e){}
+  const msg=passed>=total?`🚨 ${name}: ALL GREEN — ${dir} ENTRY NOW`:passed===total-1?`🔔 ${name}: ${passed}/${total} — ${dir} nearly ready`:`⚠️ ${name}: ${passed}/${total} — ${dir} building`;
+  if(navigator.vibrate){if(passed>=total)navigator.vibrate([400,100,400,100,400]);else if(passed===total-1)navigator.vibrate([200,80,200]);else navigator.vibrate([100,60,100]);}
+  if(notifPerm==='granted'){try{new Notification(passed>=total?`🚨 ${name}`:`🔔 ${name}`,{body:msg,tag:'sig'+tab,requireInteraction:passed>=total});}catch(e){}}
+  try{const ctx=new(window.AudioContext||window.webkitAudioContext)();const n=passed>=total?3:passed===total-1?2:1;for(let i=0;i<n;i++){const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=passed>=total?900:passed===total-1?700:550;g.gain.setValueAtTime(0.25,ctx.currentTime+i*0.35);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.35+0.28);o.start(ctx.currentTime+i*0.35);o.stop(ctx.currentTime+i*0.35+0.28);}}catch(e){}
   toast(msg);
 }
 
 function toast(msg){
   let t=document.getElementById('_toast');
-  if(!t){t=document.createElement('div');t.id='_toast';Object.assign(t.style,{position:'fixed',bottom:'70px',left:'50%',transform:'translateX(-50%)',background:'#1c2030',border:'1px solid rgba(255,255,255,.15)',color:'#e8eaf0',padding:'10px 18px',borderRadius:'20px',fontSize:'12px',fontWeight:'700',zIndex:'200',whiteSpace:'nowrap',transition:'opacity .3s',pointerEvents:'none'});document.body.appendChild(t);}
-  t.textContent=msg;t.style.opacity='1';
-  clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',3500);
+  if(!t){t=document.createElement('div');t.id='_toast';Object.assign(t.style,{position:'fixed',bottom:'20px',left:'50%',transform:'translateX(-50%)',background:'#1c2030',border:'1px solid rgba(255,255,255,.15)',color:'#e8eaf0',padding:'10px 18px',borderRadius:'20px',fontSize:'12px',fontWeight:'700',zIndex:'200',whiteSpace:'nowrap',transition:'opacity .3s',pointerEvents:'none'});document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',3500);
 }
 
 /* ══ CONFLUENCE ══════════════════════════════════════════════ */
 const scores=[0,0,0],totals=[4,4,4],dirs=['—','—','—'];
 function updateConfluence(){
-  const badges=['confS','confH','confW'];
-  const labels=['Scalp','1H','Swing'];
+  const badges=['confS','confH','confW'],labels=['Scalp','1H','Swing'];
   [0,1,2].forEach(i=>{
     const el=document.getElementById(badges[i]);
     const pct=totals[i]?scores[i]/totals[i]:0;
@@ -641,162 +636,85 @@ function updateConfluence(){
   const allFull=totals.every((t,i)=>t>0&&scores[i]>=t);
   const sameDir=dirs[0]!=='—'&&dirs[0]===dirs[1]&&dirs[1]===dirs[2]&&dirs[0]!=='NEUTRAL';
   const ca=document.getElementById('confAll');
-  if(allFull&&sameDir){
-    ca.textContent=`🔥 ALL ALIGNED — ${dirs[0]}`;ca.className='conf-all on';
-    if(alertsOn){
-      if(navigator.vibrate)navigator.vibrate([500,150,500,150,500]);
-      toast(`🔥 ALL 3 TABS ALIGNED — ${dirs[0]} — maximum confidence!`);
-    }
-  } else {
-    const ct=[0,1,2].filter(i=>totals[i]&&scores[i]>=totals[i]).length;
-    ca.textContent=ct>0?`${ct}/3 tabs full`:'Not aligned';ca.className='conf-all';
-  }
-  // banner for highest alert
-  const mx=Math.max(...scores);
-  const mxi=scores.indexOf(mx);
-  const b=document.getElementById('alertBanner');
+  if(allFull&&sameDir){ca.textContent=`🔥 ALL ALIGNED — ${dirs[0]}`;ca.className='conf-all on';if(alertsOn){if(navigator.vibrate)navigator.vibrate([500,150,500,150,500]);toast(`🔥 ALL 3 TABS ALIGNED — ${dirs[0]} — maximum confidence!`);}}
+  else{const ct=[0,1,2].filter(i=>totals[i]&&scores[i]>=totals[i]).length;ca.textContent=ct>0?`${ct}/3 tabs full`:'Not aligned';ca.className='conf-all';}
+  const mx=Math.max(...scores),mxi=scores.indexOf(mx),b=document.getElementById('alertBanner');
   if(totals[mxi]&&mx>=totals[mxi]){b.className='abanner s6';b.textContent=`🚨 ${TFNAMES[mxi]} ALL GREEN — ${dirs[mxi]} ENTRY CONFIRMED`;}
   else if(totals[mxi]&&mx>=totals[mxi]-1){b.className='abanner s5';b.textContent=`🔔 ${TFNAMES[mxi]}: ${mx}/${totals[mxi]} — ${dirs[mxi]} nearly ready`;}
-  else if(mx>=4){b.className='abanner s4';b.textContent=`⚠️ ${TFNAMES[mxi]}: ${mx}/${totals[mxi]} — ${dirs[mxi]} setup building`;}
+  else if(mx>=4){b.className='abanner s4';b.textContent=`⚠️ ${TFNAMES[mxi]}: ${mx}/${totals[mxi]} — ${dirs[mxi]} building`;}
   else b.className='abanner';
 }
 
-/* ══ LIQUIDATION HEATMAP ════════════════════════════════════ */
-// Computed from open interest data + price action — estimated liquidation clusters
-// Real coinglass data requires auth API; we compute estimated clusters from
-// orderbook depth + funding rate imbalance as a realistic approximation
+/* ══ LIQUIDITY HEATMAP ═══════════════════════════════════════ */
 let liqCharts=[null,null,null];
 
-function buildLiqData(price, oiVal, frPct, atrVal, tab){
-  // Generate liquidation cluster estimate:
-  // Below price = long liquidations (stops for longs)
-  // Above price = short liquidations (stops for shorts)
+function buildLiqData(price,frPct,atrVal,leverage){
   const atr=atrVal||price*0.02;
-  const leverage=tab===0?10:tab===1?5:3; // typical leverage for each tf
   const clusters=[];
-  // Long liquidation clusters BELOW price (where longs get stopped)
-  const longDistances=[0.5,1,1.5,2.5,4].map(x=>x/leverage);
-  const longWeights=[0.3,1.0,0.6,0.4,0.2]; // relative cluster sizes
-  longDistances.forEach((d,i)=>{
-    clusters.push({price:price*(1-d/100),size:longWeights[i],type:'long',pct:d});
+  // SHORT liquidations ABOVE price (green — top of chart)
+  [0.5,1.0,1.5,2.5,4.0].forEach((d,i)=>{
+    const w=[0.25,0.9,0.55,0.35,0.15][i];
+    clusters.push({price:price*(1+d/leverage/100*leverage),size:w,type:'short',pct:d/leverage});
   });
-  // Short liquidation clusters ABOVE price (where shorts get stopped)
-  const shortDistances=[0.5,1,1.5,2.5,4].map(x=>x/leverage);
-  const shortWeights=[0.25,0.9,0.55,0.35,0.15];
-  shortDistances.forEach((d,i)=>{
-    clusters.push({price:price*(1+d/100),size:shortWeights[i],type:'short',pct:d});
+  // LONG liquidations BELOW price (red — bottom of chart)
+  [0.5,1.0,1.5,2.5,4.0].forEach((d,i)=>{
+    const w=[0.3,1.0,0.6,0.4,0.2][i];
+    clusters.push({price:price*(1-d/leverage/100*leverage),size:w,type:'long',pct:d/leverage});
   });
-  // Skew by funding rate — high positive funding = more longs = bigger long liquidation clusters
-  if(!isNaN(frPct)){
-    const skew=Math.max(-0.5,Math.min(0.5,frPct/0.1));
-    clusters.forEach(c=>{if(c.type==='long')c.size*=(1+skew*0.5);else c.size*=(1-skew*0.5);});
-  }
+  if(!isNaN(frPct)){const skew=Math.max(-0.5,Math.min(0.5,frPct/0.1));clusters.forEach(c=>{if(c.type==='long')c.size*=(1+skew*0.5);else c.size*=(1-skew*0.5);});}
   return clusters;
 }
 
-function renderLiqHeatmap(tab, price, oiVal, frPct, atrVal){
-  const clusters=buildLiqData(price,oiVal,frPct,atrVal,tab);
-  const canvasId='liqc'+tab;
-  const canvas=document.getElementById(canvasId);
-  if(!canvas)return;
-
+function renderLiq(tab,price,frPct,atrVal){
+  const lev=tab===0?10:tab===1?5:3;
+  const clusters=buildLiqData(price,frPct,atrVal,lev);
+  const shorts=clusters.filter(c=>c.type==='short').sort((a,b)=>b.price-a.price);
   const longs=clusters.filter(c=>c.type==='long').sort((a,b)=>b.price-a.price);
-  const shorts=clusters.filter(c=>c.type==='short').sort((a,b)=>a.price-b.price);
-  const all=[...longs,...shorts].sort((a,b)=>a.price-b.price);
-
-  const labels=all.map(c=>{
-    const pct=((c.price-price)/price*100).toFixed(2);
-    return `${pct>0?'+':''}${pct}%`;
-  });
-  const bgColors=all.map(c=>c.type==='long'?`rgba(239,68,68,${0.15+c.size*0.5})`:`rgba(34,197,94,${0.15+c.size*0.5})`);
-  const borderColors=all.map(c=>c.type==='long'?'rgba(239,68,68,.8)':'rgba(34,197,94,.8)');
-
+  // Chart order: shorts on top (positive prices), longs below (negative prices) — flipped axis
+  // We use horizontal bar with shorts first (top) then longs (bottom)
+  const all=[...shorts,...longs];
+  const labels=all.map(c=>{const pct=((c.price-price)/price*100).toFixed(2);return `${pct>0?'+':''}${pct}%`;});
+  const bgs=all.map(c=>c.type==='short'?`rgba(34,197,94,${0.15+c.size*0.5})`:`rgba(239,68,68,${0.15+c.size*0.5})`);
+  const borders=all.map(c=>c.type==='short'?'rgba(34,197,94,.8)':'rgba(239,68,68,.8)');
+  const gc='rgba(255,255,255,0.04)',tc='#4a4f66';
   if(liqCharts[tab])liqCharts[tab].destroy();
-  liqCharts[tab]=new Chart(canvas,{
-    type:'bar',
-    data:{
-      labels,
-      datasets:[{
-        label:'Liquidation cluster',
-        data:all.map(c=>c.size),
-        backgroundColor:bgColors,
-        borderColor:borderColors,
-        borderWidth:1,
-        borderRadius:3,
-      }]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,animation:false,
-      indexAxis:'y',
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{label:c=>{const cl=all[c.dataIndex];return `${cl.type==='long'?'Long liq':'Short liq'} cluster at ${fmt(cl.price,pdec(price))} (${cl.pct.toFixed(2)}% away)`;}}},
-      },
-      scales:{
-        x:{display:false,grid:{display:false},border:{display:false}},
-        y:{ticks:{color:'#4a4f66',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},border:{display:false}},
-      }
-    }
+  liqCharts[tab]=new Chart(document.getElementById('liqc'+tab),{
+    type:'bar',data:{labels,datasets:[{data:all.map(c=>c.size),backgroundColor:bgs,borderColor:borders,borderWidth:1,borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:false,indexAxis:'y',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const cl=all[c.dataIndex];return `${cl.type==='short'?'Short liq':'Long liq'} at ${fmt(cl.price,pdec(price))} (${cl.pct.toFixed(2)}% away)`;},}}},
+      scales:{x:{display:false,grid:{display:false},border:{display:false}},y:{ticks:{color:tc,font:{size:10}},grid:{color:gc},border:{display:false}}}}
   });
 
-  // Key level cards
-  const nearestLong=longs[0],nearestShort=shorts[0];
-  const biggestLong=longs.reduce((a,b)=>b.size>a.size?b:a,longs[0]);
-  const biggestShort=shorts.reduce((a,b)=>b.size>a.size?b:a,shorts[0]);
-
+  // Key level cards — biggest short on top (green), biggest long below (red)
+  const bigShort=shorts.reduce((a,b)=>b.size>a.size?b:a,shorts[0]);
+  const bigLong=longs.reduce((a,b)=>b.size>a.size?b:a,longs[0]);
+  const dec=pdec(price);
   document.getElementById('liqlevels'+tab).innerHTML=`
-    <div class="liq-lvl long-liq">
-      <div class="liq-lvl-label">🔴 Major long liquidation</div>
-      <div class="liq-lvl-price">${fmt(biggestLong.price,pdec(price))}</div>
-      <div class="liq-lvl-note">−${biggestLong.pct.toFixed(2)}% from price · If price sweeps here, longs get liquidated and market makers can buy the dip. Ideal long entry AFTER this sweep.</div>
-    </div>
     <div class="liq-lvl short-liq">
       <div class="liq-lvl-label">🟢 Major short liquidation</div>
-      <div class="liq-lvl-price">${fmt(biggestShort.price,pdec(price))}</div>
-      <div class="liq-lvl-note">+${biggestShort.pct.toFixed(2)}% from price · If price sweeps here, shorts get liquidated and market makers can sell into strength. Ideal short entry AFTER this sweep.</div>
+      <div class="liq-lvl-price">${fmt(bigShort.price,dec)}</div>
+      <div class="liq-lvl-note">+${bigShort.pct.toFixed(2)}% above price. Shorts get squeezed here — ideal short entry AFTER this sweep and reversal.</div>
+    </div>
+    <div class="liq-lvl long-liq">
+      <div class="liq-lvl-label">🔴 Major long liquidation</div>
+      <div class="liq-lvl-price">${fmt(bigLong.price,dec)}</div>
+      <div class="liq-lvl-note">${bigLong.pct.toFixed(2)}% below price. Longs get stopped here — ideal long entry AFTER this sweep and reversal.</div>
     </div>`;
-
-  document.getElementById('liqnote'+tab).textContent=
-    `⚡ Estimated clusters based on leverage ratios, OI, and funding imbalance. For live coinglass data, visit coinglass.com/LiquidationData. Enter AFTER a liquidity sweep, never before — the sweep IS the manipulation.`;
 }
 
 /* ══ HELPERS ══════════════════════════════════════════════════ */
 const $=id=>document.getElementById(id);
 const fmt=(n,d)=>n==null||isNaN(n)?'—':n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const pdec=p=>p>=10000?1:p>=100?2:p>=1?3:5;
-
 function ema(arr,p){const k=2/(p+1);let prev=null;const o=[];for(const v of arr){prev=prev===null?v:v*k+prev*(1-k);o.push(prev);}return o;}
-function rsiCalc(cl,p=14){
-  if(cl.length<p+1)return cl.map(()=>null);
-  const o=Array(p).fill(null);
-  for(let i=p;i<cl.length;i++){let g=0,l=0;for(let j=i-p+1;j<=i;j++){const d=cl[j]-cl[j-1];d>0?g+=d:l-=d;}o.push(100-100/(1+(l===0?Infinity:g/l)));}
-  return o;
-}
-function atrCalc(candles,p=14){
-  if(candles.length<2)return null;
-  const tr=[];for(let i=1;i<candles.length;i++){const h=candles[i].h,l=candles[i].l,pc=candles[i-1].c;tr.push(Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)));}
-  const sl=tr.slice(-p);return sl.reduce((a,b)=>a+b,0)/sl.length;
-}
-function setRing(i,passed,total,col){
-  const circ=188;
-  $('arc'+i).style.strokeDashoffset=circ-(passed/total)*circ;
-  $('arc'+i).style.stroke=col;
-  $('rnum'+i).textContent=passed;
-  const el=$('score'+i);
-  el.textContent=`${passed}/${total}`;
-  el.className='tfscore'+(passed>=total?' sp':passed>=total-1?' sn':passed<=1?' sf':'');
-}
-function sigCard(s){
-  const dc=s.pass===true?'sdot sp':s.pass===false?'sdot sf':s.pass==='warn'?'sdot sw':'sdot sn';
-  const bc=s.pass===true?'bar bp':s.pass===false?'bar bf':s.pass==='warn'?'bar bw':'bar bn';
-  const cc=s.pass===true?'sig passing':s.pass===false?'sig failing':'sig';
-  return `<div class="${cc}"><div class="sigtop"><span class="signame">${s.name}</span><span class="${dc}"></span></div><div class="sigval">${s.val}</div><div class="sigmeta">${s.meta}</div><div class="sigtf">${s.tf}</div><div class="barbg"><div class="${bc}" style="width:${Math.min(100,Math.max(0,s.pct))}%"></div></div></div>`;
-}
+function rsiCalc(cl,p=14){if(cl.length<p+1)return cl.map(()=>null);const o=Array(p).fill(null);for(let i=p;i<cl.length;i++){let g=0,l=0;for(let j=i-p+1;j<=i;j++){const d=cl[j]-cl[j-1];d>0?g+=d:l-=d;}o.push(100-100/(1+(l===0?Infinity:g/l)));}return o;}
+function atrCalc(candles,p=14){if(candles.length<2)return null;const tr=[];for(let i=1;i<candles.length;i++){const h=candles[i].h,l=candles[i].l,pc=candles[i-1].c;tr.push(Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)));}const sl=tr.slice(-p);return sl.reduce((a,b)=>a+b,0)/sl.length;}
+function setRing(i,passed,total,col){const circ=188;$('arc'+i).style.strokeDashoffset=circ-(passed/total)*circ;$('arc'+i).style.stroke=col;$('rnum'+i).textContent=passed;const el=$('score'+i);el.textContent=`${passed}/${total}`;el.className='tfscore'+(passed>=total?' sp':passed>=total-1?' sn':passed<=1?' sf':'');}
+function sigCard(s){const dc=s.pass===true?'sdot sp':s.pass===false?'sdot sf':s.pass==='warn'?'sdot sw':'sdot sn';const bc=s.pass===true?'bar bp':s.pass===false?'bar bf':s.pass==='warn'?'bar bw':'bar bn';const cc=s.pass===true?'sig passing':s.pass===false?'sig failing':'sig';return `<div class="${cc}"><div class="sigtop"><span class="signame">${s.name}</span><span class="${dc}"></span></div><div class="sigval">${s.val}</div><div class="sigmeta">${s.meta}</div><div class="sigtf">${s.tf}</div><div class="barbg"><div class="${bc}" style="width:${Math.min(100,Math.max(0,s.pct))}%"></div></div></div>`;}
 
 /* ══ DATA ════════════════════════════════════════════════════ */
 const FAPI='https://fapi.binance.com',WSB='wss://fstream.binance.com/ws';
-let pair='BTCUSDT',lastP=null,storedFR=NaN,storedOI=NaN;
-let ws=null,rfTimer=null;
+let pair='BTCUSDT',lastP=null,storedFR=NaN,storedOI=NaN,ws=null,rfTimer=null;
 let D={c1m:[],c15m:[],c1h:[],c4h:[],cD:[]};
 let CD={e0a:[],e0b:[],rs0:[],lb0:[],e1a:[],e1b:[],rs1:[],lb1:[],e2a:[],e2b:[],rs2:[],lb2:[]};
 let CH={p0:null,r0:null,p1:null,r1:null,p2:null,r2:null};
@@ -813,21 +731,14 @@ function connectWS(){
   ws.onclose=()=>setTimeout(connectWS,4000);
   ws.onmessage=e=>{const p=+JSON.parse(e.data).p;flashPrice(p);};
 }
+
 function flashPrice(p){
-  const el=$('priceEl');
-  el.textContent=fmt(p,pdec(p));
-  if(lastP!==null){
-    el.classList.remove('fu','fd');void el.offsetWidth;
-    el.classList.add(p>=lastP?'fu':'fd');
-    setTimeout(()=>el.classList.remove('fu','fd'),500);
-    const pct=((p-lastP)/lastP*100).toFixed(3);
-    $('chgEl').textContent=(+pct>=0?'+':'')+pct+'%';
-    $('chgEl').className='chg '+(+pct>=0?'up':'dn');
-  }
+  const el=$('priceEl');el.textContent=fmt(p,pdec(p));
+  if(lastP!==null){el.classList.remove('fu','fd');void el.offsetWidth;el.classList.add(p>=lastP?'fu':'fd');setTimeout(()=>el.classList.remove('fu','fd'),500);const pct=((p-lastP)/lastP*100).toFixed(3);$('chgEl').textContent=(+pct>=0?'+':'')+pct+'%';$('chgEl').className='chg '+(+pct>=0?'up':'dn');}
   lastP=p;
 }
 
-/* ══ ANALYSE ═════════════════════════════════════════════════ */
+/* ══ ANALYSE SCALP ═══════════════════════════════════════════ */
 function analyseScalp(){
   const c1=D.c1m,c15=D.c15m;
   if(c1.length<22||c15.length<5){$('vtitle0').textContent='Building…';$('vsub0').textContent=`1m:${c1.length} 15m:${c15.length}`;$('score0').textContent='—';return;}
@@ -871,10 +782,11 @@ function analyseScalp(){
     {name:'Funding rate',tf:'8H',val:frAvail?`${frPct.toFixed(4)}%`:'…',meta:frAvail?frOk?'✓ Neutral':'✗ Crowded':'Loading',pass:s5,pct:frAvail?100-Math.min(100,(Math.abs(frPct)/0.1)*100):50},
     {name:'Open interest',tf:'LIVE',val:isNaN(storedOI)?'—':storedOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1}),meta:'Rising OI + price = real move',pass:null,pct:50},
   ].map(sigCard).join('');
-  renderLiqHeatmap(0,price,storedOI,frPct,null);
-  fireAlert(0,passed,dir,total);drawChart(0);
+  renderLiq(0,price,frPct,null);
+  drawChart(0);fireAlert(0,passed,dir,total);
 }
 
+/* ══ ANALYSE HOURLY ══════════════════════════════════════════ */
 function analyseHourly(){
   const c1h=D.c1h,c4h=D.c4h;
   if(c1h.length<55||c4h.length<30){$('vtitle1').textContent='Building…';$('vsub1').textContent=`1H:${c1h.length} 4H:${c4h.length}`;$('score1').textContent='—';return;}
@@ -916,10 +828,11 @@ function analyseHourly(){
     {name:'Funding rate',tf:'8H',val:frAvail?`${frPct.toFixed(4)}%`:'…',meta:frAvail?frOk?'✓ Neutral':'✗ Crowded':'Loading',pass:s5,pct:frAvail?100-Math.min(100,(Math.abs(frPct)/0.1)*100):50},
     {name:'Open interest',tf:'LIVE',val:isNaN(storedOI)?'—':storedOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1}),meta:'Rising OI = institutional move',pass:null,pct:50},
   ].map(sigCard).join('');
-  renderLiqHeatmap(1,price,storedOI,frPct,null);
-  fireAlert(1,passed,dir,total);drawChart(1);
+  renderLiq(1,price,frPct,null);
+  drawChart(1);fireAlert(1,passed,dir,total);
 }
 
+/* ══ ANALYSE SWING ═══════════════════════════════════════════ */
 function analyseSwing(){
   const cDa=D.cD,c4h=D.c4h;
   if(cDa.length<25||c4h.length<55){$('vtitle2').textContent='Building…';$('vsub2').textContent=`Daily:${cDa.length} 4H:${c4h.length}`;$('score2').textContent='—';return;}
@@ -934,7 +847,7 @@ function analyseSwing(){
   const rsiOk=dir==='LONG'?rsiLong:dir==='SHORT'?rsiShort:false;
   const avg20=vlD.slice(-21,-1).reduce((a,b)=>a+b,0)/20,vrat=vlD.at(-1)/avg20,volOk=vrat>=1.2;
   const frPct=storedFR,frOk=!isNaN(frPct)&&frPct>=-0.05&&frPct<=0.05,frAvail=!isNaN(frPct);
-  const atrD=atrCalc(cDa,14);
+  const atrD=atrCalc(cDa,14),atr4=atrCalc(c4h,14);
   const s1=dFlat?'warn':dUp,s2=dir==='LONG'?h4Bull:dir==='SHORT'?!h4Bull:false,s3=rsiOk,s4=volOk,s5=frAvail?frOk:null;
   const passed=[s1,s2,s3,s4,s5].filter(x=>x===true).length,total=frAvail?5:4;
   scores[2]=passed;totals[2]=total;dirs[2]=dir;
@@ -951,44 +864,43 @@ function analyseSwing(){
   const dec=pdec(price),slD=atrD||price*0.015;
   $('t2en').textContent=fmt(price,dec);$('t2sl').textContent=fmt(dir==='SHORT'?price+slD:price-slD,dec);$('t2tp').textContent=fmt(dir==='SHORT'?price-slD*1.8:price+slD*1.8,dec);
   if(cDa.length>=2){const pv=cDa.at(-2);$('pdh').textContent=fmt(pv.h,dec);$('pdl').textContent=fmt(pv.l,dec);$('pdhd').textContent=`${(((price-pv.h)/pv.h)*100).toFixed(2)}% from price`;$('pdld').textContent=`${(((price-pv.l)/pv.l)*100).toFixed(2)}% from price`;}
-  $('s2atr').textContent=atrD?fmt(atrD,0):'—';
-  $('s2vol').textContent=`${vrat.toFixed(2)}× ${volOk?'✓':'✗'}`;$('s2vol').className='sval '+(volOk?'sg':'sr');
+  $('s2atr').textContent=atrD?fmt(atrD,0):'—';$('s2vol').textContent=`${vrat.toFixed(2)}× ${volOk?'✓':'✗'}`;$('s2vol').className='sval '+(volOk?'sg':'sr');
   $('s2rsi').textContent=lRSI!=null?lRSI.toFixed(1):'—';$('s2rsi').className='sval '+(rsiOk?'sg':lRSI==null?'sa':'sr');
   $('fo2r').textContent=frAvail?`${frPct.toFixed(4)}%`:'—';if(frAvail){$('fo2r').style.color=frOk?'var(--grn)':'var(--red)';$('fo2rm').textContent=frOk?'✓ Neutral — safe multi-day':'✗ Extreme — erodes profit daily';}
   $('fo2oi').textContent=isNaN(storedOI)?'—':storedOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1});
+  if(atrD)$('atr2d').textContent=fmt(atrD,0);if(atr4)$('atr2h').textContent=fmt(atr4,0);if(atrD)$('atr2sl').textContent=fmt(atrD,0);
   const n=Math.min(c4h.length,60);
   CD.lb2=c4h.slice(-n).map(x=>{const d=new Date(x.t);return `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;});
   $('sigs2').innerHTML=[
     {name:'Daily trend',tf:'DAILY',val:dFlat?'Sideways':dUp?'▲ Uptrend':'▼ Downtrend',meta:`Daily EMA20/50 gap ${dDiff.toFixed(2)}%`,pass:s1,pct:dFlat?40:dUp?88:12},
     {name:'4H EMA align',tf:'4H',val:h4Bull?'▲ EMA20>50':'▼ EMA20<50',meta:`4H gap ${h4Diff>=0?'+':''}${h4Diff.toFixed(2)}%`,pass:s2,pct:h4Bull?82:18},
-    {name:'4H RSI zone',tf:'4H',val:lRSI!=null?lRSI.toFixed(1):'—',meta:dir==='LONG'?`Buy 30–52 | ${rsiLong?'✓ In range':'✗ Wait for dip'}`:dir==='SHORT'?`Sell 50–72 | ${rsiShort?'✓ In range':'✗ Wait for push'}`: 'Set daily direction first',pass:s3,pct:lRSI!=null?Math.min(100,Math.max(0,((lRSI-20)/60)*100)):50},
+    {name:'4H RSI zone',tf:'4H',val:lRSI!=null?lRSI.toFixed(1):'—',meta:dir==='LONG'?`Buy 30–52 | ${rsiLong?'✓ In range':'✗ Wait for dip'}`:dir==='SHORT'?`Sell 50–72 | ${rsiShort?'✓ In range':'✗ Wait for push'}`:'Set daily direction first',pass:s3,pct:lRSI!=null?Math.min(100,Math.max(0,((lRSI-20)/60)*100)):50},
     {name:'Daily volume',tf:'DAILY',val:`${vrat.toFixed(2)}×`,meta:volOk?'✓ Elevated ≥1.2×':'✗ Below avg',pass:s4,pct:Math.min(100,(vrat/2)*100)},
     {name:'Funding rate',tf:'8H × DAYS',val:frAvail?`${frPct.toFixed(4)}%`:'…',meta:frAvail?frOk?'✓ Neutral':'✗ Extreme':'Loading',pass:s5,pct:frAvail?100-Math.min(100,(Math.abs(frPct)/0.1)*100):50},
     {name:'Open interest',tf:'LIVE',val:isNaN(storedOI)?'—':storedOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1}),meta:'Rising OI = institutional participation',pass:null,pct:50},
   ].map(sigCard).join('');
-  renderLiqHeatmap(2,price,storedOI,frPct,atrD);
-  fireAlert(2,passed,dir,total);drawChart(2);
+  renderLiq(2,price,frPct,atrD);
+  drawChart(2);fireAlert(2,passed,dir,total);
 }
 
 /* ══ CHARTS ══════════════════════════════════════════════════ */
 function drawChart(tab){
   const gc='rgba(255,255,255,0.05)',tc='#4a4f66';
-  const base={responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},
-    scales:{x:{ticks:{maxTicksLimit:5,color:tc,font:{size:9}},grid:{color:gc},border:{display:false}},y:{ticks:{maxTicksLimit:4,color:tc,font:{size:10}},grid:{color:gc},border:{display:false}}}};
+  const base={responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:5,color:tc,font:{size:9}},grid:{color:gc},border:{display:false}},y:{ticks:{maxTicksLimit:4,color:tc,font:{size:10}},grid:{color:gc},border:{display:false}}}};
   if(tab===0&&CD.lb0.length){
-    const n=Math.min(D.c1m.length,60),cls=D.c1m.slice(-n).map(x=>x.c),e9s=CD.e0a.slice(-n),e21s=CD.e0b.slice(-n),rss=CD.rs0.slice(-n);
-    if(CH.p0)CH.p0.destroy();CH.p0=new Chart($('pc0'),{type:'line',data:{labels:CD.lb0,datasets:[{data:cls,borderColor:'#3b82f6',borderWidth:1.5,pointRadius:0,tension:.2,fill:false},{data:e9s,borderColor:'#f59e0b',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[3,2]},{data:e21s,borderColor:'#ef4444',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[5,3]}]},options:base});
-    if(CH.r0)CH.r0.destroy();CH.r0=new Chart($('rc0'),{type:'line',data:{labels:CD.lb0,datasets:[{data:rss,borderColor:'#8b5cf6',borderWidth:1.5,pointRadius:0,tension:.3,fill:false},{data:rss.map(()=>57),borderColor:'rgba(34,197,94,.4)',borderWidth:1,pointRadius:0,fill:false,borderDash:[4,3]},{data:rss.map(()=>44),borderColor:'rgba(34,197,94,.4)',borderWidth:1,pointRadius:0,fill:'1',borderDash:[4,3]}]},options:{...base,scales:{...base.scales,y:{...base.scales.y,min:20,max:80}}}});
+    const n=Math.min(D.c1m.length,60),cls=D.c1m.slice(-n).map(x=>x.c);
+    if(CH.p0)CH.p0.destroy();CH.p0=new Chart($('pc0'),{type:'line',data:{labels:CD.lb0,datasets:[{data:cls,borderColor:'#3b82f6',borderWidth:1.5,pointRadius:0,tension:.2,fill:false},{data:CD.e0a.slice(-n),borderColor:'#f59e0b',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[3,2]},{data:CD.e0b.slice(-n),borderColor:'#ef4444',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[5,3]}]},options:base});
+    if(CH.r0)CH.r0.destroy();const rss=CD.rs0.slice(-n);CH.r0=new Chart($('rc0'),{type:'line',data:{labels:CD.lb0,datasets:[{data:rss,borderColor:'#8b5cf6',borderWidth:1.5,pointRadius:0,tension:.3,fill:false},{data:rss.map(()=>57),borderColor:'rgba(34,197,94,.4)',borderWidth:1,pointRadius:0,fill:false,borderDash:[4,3]},{data:rss.map(()=>44),borderColor:'rgba(34,197,94,.4)',borderWidth:1,pointRadius:0,fill:'1',borderDash:[4,3]}]},options:{...base,scales:{...base.scales,y:{...base.scales.y,min:20,max:80}}}});
   }
   if(tab===1&&CD.lb1.length){
-    const n=Math.min(D.c1h.length,60),cls=D.c1h.slice(-n).map(x=>x.c),e20s=CD.e1a.slice(-n),e50s=CD.e1b.slice(-n),rss=CD.rs1.slice(-n);
-    if(CH.p1)CH.p1.destroy();CH.p1=new Chart($('pc1'),{type:'line',data:{labels:CD.lb1,datasets:[{data:cls,borderColor:'#3b82f6',borderWidth:1.5,pointRadius:0,tension:.2,fill:false},{data:e20s,borderColor:'#f59e0b',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[3,2]},{data:e50s,borderColor:'#ef4444',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[5,3]}]},options:base});
-    if(CH.r1)CH.r1.destroy();CH.r1=new Chart($('rc1'),{type:'line',data:{labels:CD.lb1,datasets:[{data:rss,borderColor:'#8b5cf6',borderWidth:1.5,pointRadius:0,tension:.3,fill:false},{data:rss.map(()=>60),borderColor:'rgba(34,197,94,.4)',borderWidth:1,pointRadius:0,fill:false,borderDash:[4,3]},{data:rss.map(()=>40),borderColor:'rgba(34,197,94,.4)',borderWidth:1,pointRadius:0,fill:'1',borderDash:[4,3]}]},options:{...base,scales:{...base.scales,y:{...base.scales.y,min:20,max:80}}}});
+    const n=Math.min(D.c1h.length,60),cls=D.c1h.slice(-n).map(x=>x.c);
+    if(CH.p1)CH.p1.destroy();CH.p1=new Chart($('pc1'),{type:'line',data:{labels:CD.lb1,datasets:[{data:cls,borderColor:'#3b82f6',borderWidth:1.5,pointRadius:0,tension:.2,fill:false},{data:CD.e1a.slice(-n),borderColor:'#f59e0b',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[3,2]},{data:CD.e1b.slice(-n),borderColor:'#ef4444',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[5,3]}]},options:base});
+    if(CH.r1)CH.r1.destroy();const rss=CD.rs1.slice(-n);CH.r1=new Chart($('rc1'),{type:'line',data:{labels:CD.lb1,datasets:[{data:rss,borderColor:'#8b5cf6',borderWidth:1.5,pointRadius:0,tension:.3,fill:false},{data:rss.map(()=>60),borderColor:'rgba(34,197,94,.4)',borderWidth:1,pointRadius:0,fill:false,borderDash:[4,3]},{data:rss.map(()=>40),borderColor:'rgba(34,197,94,.4)',borderWidth:1,pointRadius:0,fill:'1',borderDash:[4,3]}]},options:{...base,scales:{...base.scales,y:{...base.scales.y,min:20,max:80}}}});
   }
   if(tab===2&&CD.lb2.length){
-    const n=Math.min(D.c4h.length,60),cls=D.c4h.slice(-n).map(x=>x.c),e20s=CD.e2a.slice(-n),e50s=CD.e2b.slice(-n),rss=CD.rs2.slice(-n);
-    if(CH.p2)CH.p2.destroy();CH.p2=new Chart($('pc2'),{type:'line',data:{labels:CD.lb2,datasets:[{data:cls,borderColor:'#3b82f6',borderWidth:1.5,pointRadius:0,tension:.2,fill:false},{data:e20s,borderColor:'#f59e0b',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[3,2]},{data:e50s,borderColor:'#ef4444',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[5,3]}]},options:base});
-    if(CH.r2)CH.r2.destroy();CH.r2=new Chart($('rc2'),{type:'line',data:{labels:CD.lb2,datasets:[{data:rss,borderColor:'#8b5cf6',borderWidth:1.5,pointRadius:0,tension:.3,fill:false},{data:rss.map(()=>52),borderColor:'rgba(34,197,94,.35)',borderWidth:1,pointRadius:0,fill:false,borderDash:[4,3]},{data:rss.map(()=>30),borderColor:'rgba(34,197,94,.35)',borderWidth:1,pointRadius:0,fill:'1',borderDash:[4,3]},{data:rss.map(()=>70),borderColor:'rgba(239,68,68,.3)',borderWidth:1,pointRadius:0,fill:false,borderDash:[4,3]}]},options:{...base,scales:{...base.scales,y:{...base.scales.y,min:20,max:80}}}});
+    const n=Math.min(D.c4h.length,60),cls=D.c4h.slice(-n).map(x=>x.c);
+    if(CH.p2)CH.p2.destroy();CH.p2=new Chart($('pc2'),{type:'line',data:{labels:CD.lb2,datasets:[{data:cls,borderColor:'#3b82f6',borderWidth:1.5,pointRadius:0,tension:.2,fill:false},{data:CD.e2a.slice(-n),borderColor:'#f59e0b',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[3,2]},{data:CD.e2b.slice(-n),borderColor:'#ef4444',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[5,3]}]},options:base});
+    if(CH.r2)CH.r2.destroy();const rss=CD.rs2.slice(-n);CH.r2=new Chart($('rc2'),{type:'line',data:{labels:CD.lb2,datasets:[{data:rss,borderColor:'#8b5cf6',borderWidth:1.5,pointRadius:0,tension:.3,fill:false},{data:rss.map(()=>52),borderColor:'rgba(34,197,94,.35)',borderWidth:1,pointRadius:0,fill:false,borderDash:[4,3]},{data:rss.map(()=>30),borderColor:'rgba(34,197,94,.35)',borderWidth:1,pointRadius:0,fill:'1',borderDash:[4,3]},{data:rss.map(()=>70),borderColor:'rgba(239,68,68,.3)',borderWidth:1,pointRadius:0,fill:false,borderDash:[4,3]}]},options:{...base,scales:{...base.scales,y:{...base.scales.y,min:20,max:80}}}});
   }
 }
 
@@ -1009,10 +921,8 @@ async function loadAll(){
 function hardRefresh(){clearInterval(rfTimer);loadAll();rfTimer=setInterval(loadAll,15000);}
 
 $('pairSel').addEventListener('change',e=>{
-  pair=e.target.value;
-  D={c1m:[],c15m:[],c1h:[],c4h:[],cD:[]};
-  lastP=null;storedFR=NaN;storedOI=NaN;lastLevels=[0,0,0];
-  scores[0]=scores[1]=scores[2]=0;
+  pair=e.target.value;D={c1m:[],c15m:[],c1h:[],c4h:[],cD:[]};
+  lastP=null;storedFR=NaN;storedOI=NaN;lastLevels=[0,0,0];scores[0]=scores[1]=scores[2]=0;
   connectWS();hardRefresh();
 });
 
