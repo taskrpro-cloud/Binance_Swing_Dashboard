@@ -18,10 +18,10 @@ html,body{height:100%;overscroll-behavior:none;}
 body{background:var(--bg);color:var(--text);font-family:Roboto,'Segoe UI',sans-serif;font-size:14px;}
 
 /* PULL TO REFRESH */
-.ptr-indicator{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:center;height:0;overflow:hidden;background:var(--bg2);transition:height .2s;border-bottom:1px solid var(--bdr);}
-.ptr-indicator.show{height:48px;}
-.ptr-spinner{width:20px;height:20px;border:2px solid var(--bdr2);border-top-color:var(--amb);border-radius:50%;animation:spin .7s linear infinite;}
-.ptr-text{font-size:12px;color:var(--t2);margin-left:10px;font-weight:600;}
+.ptr{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:center;height:0;overflow:hidden;background:var(--bg2);border-bottom:1px solid var(--bdr);transition:height .15s;}
+.ptr.show{height:48px;}
+.ptr-spin{width:20px;height:20px;border:2px solid var(--bdr2);border-top-color:var(--amb);border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.ptr-txt{font-size:12px;color:var(--t2);margin-left:10px;font-weight:600;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* HEADER */
@@ -76,7 +76,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .tfscore.sn{background:rgba(245,158,11,.15);color:var(--amb);}
 .tfscore.sf{background:rgba(239,68,68,.1);color:var(--red);}
 
-/* SCROLL CONTAINER — pull-to-refresh target */
+/* SCROLL BODY */
 .scroll-body{height:calc(100vh - 158px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
 /* PAGES */
@@ -116,7 +116,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 
 /* STAT ROW */
 .statrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:7px;}
-.sbox{background:var(--bg3);border-radius:10px;padding:8px 8px;text-align:center;}
+.sbox{background:var(--bg3);border-radius:10px;padding:8px;text-align:center;}
 .slbl{font-size:9px;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;font-weight:600;margin-bottom:2px;}
 .sval{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;}
 .sg{color:var(--grn);}.sr{color:var(--red);}.sa{color:var(--amb);}
@@ -129,11 +129,25 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .lvlval{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;}
 .lvlhi{color:var(--grn);}.lvllo{color:var(--red);}
 
-/* LIQUIDITY HEATMAP */
+/* OI TREND CARD */
+.oi-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:14px;}
+.oi-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+.oi-title{font-size:10px;color:var(--t3);letter-spacing:.09em;text-transform:uppercase;font-weight:700;}
+.oi-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.oi-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;background:var(--bg3);color:var(--t3);}
+.oi-badge.rising{background:rgba(34,197,94,.12);color:var(--grn);}
+.oi-badge.falling{background:rgba(239,68,68,.12);color:var(--red);}
+.oi-badge.flat{background:rgba(245,158,11,.1);color:var(--amb);}
+.oi-wrap{position:relative;height:90px;width:100%;}
+.oi-insight{font-size:11px;color:var(--t2);margin-top:8px;line-height:1.5;padding:8px 10px;background:var(--bg3);border-radius:8px;}
+.oi-insight b{color:var(--text);}
+
+/* LIQUIDATION HEATMAP */
 .liqmap{border-radius:12px;border:1px solid rgba(255,107,53,.2);background:rgba(255,107,53,.03);padding:14px;}
-.liq-title{font-size:10px;color:#ff6b35;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-/* Key level cards FIRST */
-.liq-levels{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.liq-title{font-size:10px;color:#ff6b35;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;}
+.liq-live-dot{width:7px;height:7px;border-radius:50%;background:#ff6b35;animation:blink 1s infinite;display:inline-block;margin-right:5px;}
+.liq-count{font-size:11px;color:var(--t3);font-weight:600;}
+.liq-levels{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
 .liq-lvl{border-radius:10px;padding:10px 12px;border:1px solid var(--bdr);}
 .liq-lvl.short-liq{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.07);}
 .liq-lvl.long-liq{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.07);}
@@ -144,8 +158,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .liq-lvl.short-liq .liq-lvl-price{color:var(--grn);}
 .liq-lvl.long-liq .liq-lvl-price{color:var(--red);}
 .liq-lvl-note{font-size:11px;color:var(--t2);margin-top:3px;line-height:1.4;}
-/* Bar chart BELOW key levels */
-.liq-legend{display:flex;gap:14px;margin-bottom:8px;flex-wrap:wrap;}
+.liq-legend{display:flex;gap:14px;margin-bottom:6px;flex-wrap:wrap;}
 .liq-legend span{font-size:11px;color:var(--t2);display:flex;align-items:center;gap:5px;}
 .liq-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;}
 .liqwrap{position:relative;height:150px;width:100%;}
@@ -191,7 +204,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .atrlbl{font-size:9px;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;font-weight:600;margin-bottom:2px;}
 .atrval{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;}
 
-/* GUIDANCE — bottom of page */
+/* GUIDANCE */
 .guidance{background:var(--bg4);border:1px solid rgba(59,130,246,.18);border-radius:12px;padding:12px 14px;}
 .gtitle{font-size:10px;color:var(--blu);letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
 .gitem{font-size:11px;color:var(--t2);line-height:1.6;padding:4px 0;border-bottom:1px solid var(--bdr);display:flex;gap:8px;}
@@ -214,13 +227,11 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 </head>
 <body>
 
-<!-- PULL TO REFRESH INDICATOR -->
-<div class="ptr-indicator" id="ptrIndicator">
-  <div class="ptr-spinner" id="ptrSpinner" style="display:none"></div>
-  <div class="ptr-text" id="ptrText">Pull down to refresh</div>
+<div class="ptr" id="ptrEl">
+  <div class="ptr-spin" id="ptrSpin"></div>
+  <div class="ptr-txt" id="ptrTxt">Pull down to refresh</div>
 </div>
 
-<!-- HEADER -->
 <div class="hdr">
   <div class="logo">FUTURES <span>SIGNAL</span></div>
   <select id="pairSel">
@@ -246,10 +257,8 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
   </div>
 </div>
 
-<!-- ALERT BANNER -->
 <div class="abanner" id="alertBanner"></div>
 
-<!-- CONFLUENCE BAR -->
 <div class="confbar">
   <div class="cbtitle">Confluence</div>
   <div class="cbadges">
@@ -260,7 +269,6 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
   <div class="conf-all" id="confAll">Not aligned</div>
 </div>
 
-<!-- TF TABS -->
 <div class="tftabs">
   <div class="tftab active" id="tft0" onclick="switchPage(0)">
     <span>⚡ Scalp</span><span class="tflabel">1–15 min</span><span class="tfscore" id="score0">—</span>
@@ -273,12 +281,10 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
   </div>
 </div>
 
-<!-- SCROLL CONTAINER -->
 <div class="scroll-body" id="scrollBody">
 
 <!-- ═══ PAGE 0 — SCALP ═══ -->
 <div class="page active" id="page0">
-  <!-- Verdict -->
   <div class="card">
     <div class="verdict">
       <div class="rw"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="30" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="7"/>
@@ -293,7 +299,6 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       </div>
     </div>
   </div>
-  <!-- Targets -->
   <div class="card" style="padding:12px;">
     <div class="targets">
       <div class="tbox en"><div class="tlbl">Entry</div><div class="tval" id="t0en">—</div><div class="tsub">Market price</div></div>
@@ -306,26 +311,37 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       <div class="sbox"><div class="slbl">Candles</div><div class="sval sa" id="s0cand">—</div></div>
     </div>
   </div>
+  <!-- OI Trend -->
+  <div class="oi-card" id="oiCard0">
+    <div class="oi-header">
+      <span class="oi-title">📊 Open interest trend</span>
+      <div class="oi-badges">
+        <span class="oi-badge" id="oiBadge0">Loading…</span>
+        <span class="oi-badge" id="oiVal0">—</span>
+      </div>
+    </div>
+    <div class="oi-wrap"><canvas id="oiChart0"></canvas></div>
+    <div class="oi-insight" id="oiInsight0">Building OI history…</div>
+  </div>
   <!-- Liquidity Heatmap -->
   <div class="liqmap">
-    <div class="liq-title">🔥 Liquidation clusters — where MM hunts</div>
-    <!-- Key levels FIRST -->
-    <div class="liq-levels" id="liqlevels0">
-      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation</div><div class="liq-lvl-price">Loading…</div></div>
-      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation</div><div class="liq-lvl-price">Loading…</div></div>
+    <div class="liq-title">
+      <span><span class="liq-live-dot"></span>Live liquidation clusters</span>
+      <span class="liq-count" id="liqCount0">0 events</span>
     </div>
-    <!-- Bar chart BELOW -->
+    <div class="liq-levels" id="liqlevels0">
+      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Shorts squeezed above price</div></div>
+      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Longs stopped below price</div></div>
+    </div>
     <div class="liq-legend">
-      <span><i style="background:#22c55e;opacity:.8"></i>Short liq (above)</span>
-      <span><i style="background:#ef4444;opacity:.8"></i>Long liq (below)</span>
+      <span><i style="background:#22c55e;opacity:.8"></i>Short liq (above price)</span>
+      <span><i style="background:#ef4444;opacity:.8"></i>Long liq (below price)</span>
     </div>
     <div class="liqwrap"><canvas id="liqc0"></canvas></div>
-    <div class="liq-note" id="liqnote0">Enter AFTER price sweeps a cluster and reverses — the sweep is MM grabbing stops.</div>
+    <div class="liq-note">Real liquidation orders from Binance. Enter AFTER price sweeps a cluster and reverses — the sweep is MM grabbing stops before the real move.</div>
   </div>
-  <!-- Signal breakdown -->
   <div class="divider">Signal breakdown</div>
   <div class="sigs" id="sigs0"><div class="sig"><div class="signame">Loading…</div></div></div>
-  <!-- Charts -->
   <div class="divider">Charts</div>
   <div class="charts2">
     <div class="card">
@@ -339,24 +355,22 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       <div class="cwrap"><canvas id="rc0"></canvas></div>
     </div>
   </div>
-  <!-- Info -->
   <div class="divider">Info</div>
   <div class="card">
     <div class="fobox">
       <div><div class="folbl">Funding rate</div><div class="foval" id="fo0r">—</div><div class="fometa" id="fo0rm">Target: −0.05% to +0.05%</div></div>
-      <div><div class="folbl">Open interest</div><div class="foval" id="fo0oi">—</div><div class="fometa" id="fo0oim">Rising = real move</div></div>
+      <div><div class="folbl">Open interest</div><div class="foval" id="fo0oi">—</div><div class="fometa" id="fo0oim">See OI trend chart above</div></div>
     </div>
   </div>
-  <!-- Guidance at bottom -->
   <div class="divider">Guide</div>
   <div class="guidance">
     <div class="gtitle">⚡ Scalp guide — 1 to 15 minutes</div>
-    <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 3–15 min.</b> If price hasn't moved toward TP within 30 min, exit manually — the signal has expired.</span></div>
+    <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 3–15 min.</b> If price hasn't moved toward TP within 30 min, exit manually — signal expired.</span></div>
     <div class="gitem"><span class="gico">🕐</span><span><b>Entry timing:</b> Wait for the 1m crossover candle to fully close. Enter on the open of the next candle — never mid-candle.</span></div>
     <div class="gitem"><span class="gico">🛑</span><span><b>Stop is fixed at 0.25%.</b> Do not move it. Widening stops is how accounts blow up.</span></div>
-    <div class="gitem"><span class="gico">💧</span><span><b>Liquidity zones:</b> Enter after price sweeps a cluster and reverses. That sweep is the market maker grabbing stops before the real move.</span></div>
+    <div class="gitem"><span class="gico">📊</span><span><b>OI rising + price rising</b> = real buyers entering. OI falling + price rising = shorts covering only — weaker signal.</span></div>
+    <div class="gitem"><span class="gico">💧</span><span><b>Liquidity zones:</b> Enter after price sweeps a real cluster and reverses. The sweep is MM grabbing stops before the move.</span></div>
     <div class="gitem"><span class="gico">🌊</span><span><b>Best condition:</b> All 3 tabs green in same direction = highest confidence. Never scalp against the swing trend.</span></div>
-    <div class="gitem"><span class="gico">🔁</span><span><b>After a trade:</b> Wait 15 min. No revenge trades. Check confluence is still aligned before the next entry.</span></div>
   </div>
   <div class="card"><div class="foot"><b>Rules:</b> 15m trend · 1m EMA cross · RSI 44–57 · Vol ≥1.5× · Funding neutral · OI rising.<br><b>Risk:</b> SL 0.25% · TP 0.375% · 3–5× lev · 1 trade · 20/day · Stop −3%/day.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
 </div>
@@ -389,18 +403,32 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       <div class="sbox"><div class="slbl">Candles</div><div class="sval sa" id="s1cand">—</div></div>
     </div>
   </div>
+  <div class="oi-card">
+    <div class="oi-header">
+      <span class="oi-title">📊 Open interest trend</span>
+      <div class="oi-badges">
+        <span class="oi-badge" id="oiBadge1">Loading…</span>
+        <span class="oi-badge" id="oiVal1">—</span>
+      </div>
+    </div>
+    <div class="oi-wrap"><canvas id="oiChart1"></canvas></div>
+    <div class="oi-insight" id="oiInsight1">Building OI history…</div>
+  </div>
   <div class="liqmap">
-    <div class="liq-title">🔥 Liquidation clusters — where MM hunts</div>
+    <div class="liq-title">
+      <span><span class="liq-live-dot"></span>Live liquidation clusters</span>
+      <span class="liq-count" id="liqCount1">0 events</span>
+    </div>
     <div class="liq-levels" id="liqlevels1">
-      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation</div><div class="liq-lvl-price">Loading…</div></div>
-      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation</div><div class="liq-lvl-price">Loading…</div></div>
+      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Shorts squeezed above price</div></div>
+      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Longs stopped below price</div></div>
     </div>
     <div class="liq-legend">
-      <span><i style="background:#22c55e;opacity:.8"></i>Short liq (above)</span>
-      <span><i style="background:#ef4444;opacity:.8"></i>Long liq (below)</span>
+      <span><i style="background:#22c55e;opacity:.8"></i>Short liq (above price)</span>
+      <span><i style="background:#ef4444;opacity:.8"></i>Long liq (below price)</span>
     </div>
     <div class="liqwrap"><canvas id="liqc1"></canvas></div>
-    <div class="liq-note" id="liqnote1">Enter AFTER price sweeps a cluster and reverses — the sweep is MM grabbing stops.</div>
+    <div class="liq-note">Real liquidation orders from Binance. Clusters grow as more liquidations accumulate at each price level.</div>
   </div>
   <div class="divider">Signal breakdown</div>
   <div class="sigs" id="sigs1"><div class="sig"><div class="signame">Loading…</div></div></div>
@@ -421,7 +449,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
   <div class="card">
     <div class="fobox">
       <div><div class="folbl">Funding rate</div><div class="foval" id="fo1r">—</div><div class="fometa" id="fo1rm">Paid once per 8h hold</div></div>
-      <div><div class="folbl">Open interest</div><div class="foval" id="fo1oi">—</div><div class="fometa" id="fo1oim">Rising = real trend</div></div>
+      <div><div class="folbl">Open interest</div><div class="foval" id="fo1oi">—</div><div class="fometa" id="fo1oim">See OI trend chart above</div></div>
     </div>
   </div>
   <div class="divider">Guide</div>
@@ -429,10 +457,10 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
     <div class="gtitle">📈 Hourly guide — 2 to 12 hours</div>
     <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 2–12 hours.</b> Check every 2–4h. Set your orders and stop watching tick by tick.</span></div>
     <div class="gitem"><span class="gico">📍</span><span><b>Entry near 1H key levels only.</b> Price in the middle of a range = no trade.</span></div>
-    <div class="gitem"><span class="gico">🛑</span><span><b>Stop below the 1H swing low</b> at entry. Usually 0.5–1% wide — enough to survive 1–2 wick candles.</span></div>
-    <div class="gitem"><span class="gico">💧</span><span><b>Liquidity clusters below price</b> = where MM pushes to grab long stops before reversing up. Enter after the sweep.</span></div>
-    <div class="gitem"><span class="gico">⏰</span><span><b>Time exit:</b> If trade hasn't moved 40% toward TP in 6 hours, close manually. Momentum has faded.</span></div>
-    <div class="gitem"><span class="gico">💰</span><span><b>Funding:</b> You'll pay one 8h period. Ensure TP covers this cost before entering.</span></div>
+    <div class="gitem"><span class="gico">🛑</span><span><b>Stop below the 1H swing low</b> — usually 0.5–1% wide. Enough to survive 1–2 wick candles.</span></div>
+    <div class="gitem"><span class="gico">📊</span><span><b>OI trend matters here.</b> If OI is falling while price rises, it's a short squeeze — exits will be fast. Only trade rising OI setups.</span></div>
+    <div class="gitem"><span class="gico">💧</span><span><b>Liquidity clusters below price</b> = where MM pushes to grab long stops before reversing. Enter after the sweep.</span></div>
+    <div class="gitem"><span class="gico">⏰</span><span><b>Time exit:</b> If trade hasn't moved 40% toward TP in 6 hours, close manually. Momentum faded.</span></div>
   </div>
   <div class="card"><div class="foot"><b>Rules:</b> 4H trend · 1H EMA align · RSI 40–60 · Vol ≥1.3× · Funding neutral · OI rising.<br><b>Risk:</b> SL ~0.5–1% · TP ~1–2% · 2–3× lev · 1 trade · 5/day max.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
 </div>
@@ -469,18 +497,32 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       <div class="sbox"><div class="slbl">RSI 4H</div><div class="sval sa" id="s2rsi">—</div></div>
     </div>
   </div>
+  <div class="oi-card">
+    <div class="oi-header">
+      <span class="oi-title">📊 Open interest trend</span>
+      <div class="oi-badges">
+        <span class="oi-badge" id="oiBadge2">Loading…</span>
+        <span class="oi-badge" id="oiVal2">—</span>
+      </div>
+    </div>
+    <div class="oi-wrap"><canvas id="oiChart2"></canvas></div>
+    <div class="oi-insight" id="oiInsight2">Building OI history…</div>
+  </div>
   <div class="liqmap">
-    <div class="liq-title">🔥 Liquidation clusters — where MM hunts</div>
+    <div class="liq-title">
+      <span><span class="liq-live-dot"></span>Live liquidation clusters</span>
+      <span class="liq-count" id="liqCount2">0 events</span>
+    </div>
     <div class="liq-levels" id="liqlevels2">
-      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation</div><div class="liq-lvl-price">Loading…</div></div>
-      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation</div><div class="liq-lvl-price">Loading…</div></div>
+      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Shorts squeezed above price</div></div>
+      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Longs stopped below price</div></div>
     </div>
     <div class="liq-legend">
-      <span><i style="background:#22c55e;opacity:.8"></i>Short liq (above)</span>
-      <span><i style="background:#ef4444;opacity:.8"></i>Long liq (below)</span>
+      <span><i style="background:#22c55e;opacity:.8"></i>Short liq (above price)</span>
+      <span><i style="background:#ef4444;opacity:.8"></i>Long liq (below price)</span>
     </div>
     <div class="liqwrap"><canvas id="liqc2"></canvas></div>
-    <div class="liq-note" id="liqnote2">Large clusters = major sweep targets. Price will wick into these before the real move. Plan entries there.</div>
+    <div class="liq-note">Large clusters = major sweep targets. Price wicks into these before the real move. Plan entries at these levels.</div>
   </div>
   <div class="divider">Signal breakdown</div>
   <div class="sigs" id="sigs2"><div class="sig"><div class="signame">Loading…</div></div></div>
@@ -501,22 +543,22 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
   <div class="card">
     <div class="fobox">
       <div><div class="folbl">Funding rate</div><div class="foval" id="fo2r">—</div><div class="fometa" id="fo2rm">Paid every 8h — 9× on 3-day hold</div></div>
-      <div><div class="folbl">Open interest</div><div class="foval" id="fo2oi">—</div><div class="fometa" id="fo2oim">Rising = institutional participation</div></div>
+      <div><div class="folbl">Open interest</div><div class="foval" id="fo2oi">—</div><div class="fometa" id="fo2oim">See OI trend chart above</div></div>
     </div>
     <div class="atrrow">
       <div class="atrbox"><div class="atrlbl">Daily ATR</div><div class="atrval" id="atr2d">—</div></div>
       <div class="atrbox"><div class="atrlbl">4H ATR</div><div class="atrval" id="atr2h">—</div></div>
-      <div class="atrbox"><div class="atrlbl">ATR-based SL</div><div class="atrval" id="atr2sl">—</div></div>
+      <div class="atrbox"><div class="atrlbl">ATR SL dist</div><div class="atrval" id="atr2sl">—</div></div>
     </div>
   </div>
   <div class="divider">Guide</div>
   <div class="guidance">
     <div class="gtitle">🌊 Swing guide — 4 hours to 3 days</div>
-    <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 4h to 3 days.</b> Check once or twice a day. This needs time and room to develop.</span></div>
+    <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 4h to 3 days.</b> Check once or twice a day. Needs time and room to develop.</span></div>
     <div class="gitem"><span class="gico">📍</span><span><b>Entry at key levels only</b> — prev day high/low or major 4H structure. Never enter mid-range.</span></div>
-    <div class="gitem"><span class="gico">🛑</span><span><b>Stop = 1× Daily ATR.</b> Purposely wide. BTC moves $1k–3k/day — your stop must survive that noise.</span></div>
-    <div class="gitem"><span class="gico">💧</span><span><b>Large liquidity clusters</b> are major sweep zones. Price will wick into these before the real move. Plan entries there.</span></div>
-    <div class="gitem"><span class="gico">⏰</span><span><b>Time exit:</b> If trade hasn't moved 50% toward TP in 24h, close manually. Capital stuck at risk.</span></div>
+    <div class="gitem"><span class="gico">🛑</span><span><b>Stop = 1× Daily ATR.</b> BTC moves $1k–3k/day — stop must survive that noise. Use smaller size.</span></div>
+    <div class="gitem"><span class="gico">📊</span><span><b>OI is critical on swing.</b> Sustained rising OI over days = real institutional positioning. Flat or falling OI = no conviction, skip.</span></div>
+    <div class="gitem"><span class="gico">💧</span><span><b>Large liquidity clusters</b> are major sweep zones. Price wicks into these before the real move. Plan entries there.</span></div>
     <div class="gitem"><span class="gico">📅</span><span><b>Frequency: 2–5 setups per week.</b> Most days you should be watching, not trading.</span></div>
   </div>
   <div class="card"><div class="foot"><b>Rules:</b> Daily EMA trend · 4H EMA align · 4H RSI swing zone · Daily vol ≥1.2× · Funding neutral · OI rising.<br><b>Risk:</b> SL = 1× ATR · TP = 1.8× ATR · 2× lev max · 1 trade · 5/week.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
@@ -525,184 +567,286 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 </div><!-- /scroll-body -->
 
 <script>
-/* ══ PULL TO REFRESH ══════════════════════════════════════════ */
+/* ══ PULL TO REFRESH ══════════════════════════════════════════════ */
 (function(){
   const sb=document.getElementById('scrollBody');
-  const ind=document.getElementById('ptrIndicator');
-  const txt=document.getElementById('ptrText');
-  const spn=document.getElementById('ptrSpinner');
-  let startY=0, pulling=false, refreshing=false;
-  const THRESHOLD=70;
-
-  sb.addEventListener('touchstart',e=>{
-    if(sb.scrollTop===0) startY=e.touches[0].clientY;
-  },{passive:true});
-
+  const ind=document.getElementById('ptrEl');
+  const txt=document.getElementById('ptrTxt');
+  const spn=document.getElementById('ptrSpin');
+  let startY=0,pulling=false,refreshing=false;
+  const THRESH=65;
+  sb.addEventListener('touchstart',e=>{if(sb.scrollTop===0)startY=e.touches[0].clientY;},{passive:true});
   sb.addEventListener('touchmove',e=>{
     if(refreshing||startY===0)return;
     const dy=e.touches[0].clientY-startY;
-    if(dy>10&&sb.scrollTop===0){
+    if(dy>8&&sb.scrollTop===0){
       pulling=true;
-      const h=Math.min(dy*0.5,THRESHOLD);
-      ind.style.height=h+'px';
-      ind.classList.add('show');
-      txt.textContent=dy*0.5>=THRESHOLD?'Release to refresh…':'Pull down to refresh';
+      const h=Math.min(dy*0.5,THRESH);
+      ind.style.height=h+'px';ind.classList.add('show');
+      txt.textContent=h>=THRESH*0.9?'Release to refresh…':'Pull down to refresh';
       spn.style.display='none';
     }
   },{passive:true});
-
   sb.addEventListener('touchend',()=>{
     if(!pulling){startY=0;return;}
     pulling=false;
     const h=parseInt(ind.style.height)||0;
-    if(h>=THRESHOLD*0.9){
-      refreshing=true;
-      ind.style.height='48px';
-      txt.textContent='Refreshing…';
-      spn.style.display='block';
+    if(h>=THRESH*0.85){
+      refreshing=true;ind.style.height='48px';
+      txt.textContent='Refreshing…';spn.style.display='block';
       hardRefresh();
-      setTimeout(()=>{
-        ind.style.height='0';
-        ind.classList.remove('show');
-        refreshing=false;
-        startY=0;
-      },1800);
-    } else {
-      ind.style.height='0';
-      ind.classList.remove('show');
-      startY=0;
-    }
+      setTimeout(()=>{ind.style.height='0';ind.classList.remove('show');refreshing=false;startY=0;},1800);
+    } else {ind.style.height='0';ind.classList.remove('show');startY=0;}
   },{passive:true});
 })();
 
-/* ══ PAGE SWITCHING ══════════════════════════════════════════ */
+/* ══ PAGE NAV ═════════════════════════════════════════════════════ */
 let activePage=0;
 function switchPage(i){
-  [0,1,2].forEach(j=>{
-    document.getElementById('page'+j).classList.toggle('active',j===i);
-    document.getElementById('tft'+j).classList.toggle('active',j===i);
-  });
+  [0,1,2].forEach(j=>{document.getElementById('page'+j).classList.toggle('active',j===i);document.getElementById('tft'+j).classList.toggle('active',j===i);});
   activePage=i;
   document.getElementById('scrollBody').scrollTop=0;
+  renderOIChart(i);
+  drawChart(i);
 }
 
-/* ══ ALERTS ══════════════════════════════════════════════════ */
+/* ══ ALERTS ═══════════════════════════════════════════════════════ */
 let alertsOn=false,notifPerm='default',lastLevels=[0,0,0];
 const TFNAMES=['⚡ 1–15m Scalp','📈 1H Hourly','🌊 4H/Daily Swing'];
-
 async function toggleAlerts(){
   if(!alertsOn){
     if('Notification' in window)notifPerm=await Notification.requestPermission();
-    alertsOn=true;
-    document.getElementById('notifBtn').className='nbtn on';
-    document.getElementById('notifBtn').textContent='🔔 ON';
-    toast('Alerts on — notified at 4, 5, and 6 signals');
+    alertsOn=true;document.getElementById('notifBtn').className='nbtn on';document.getElementById('notifBtn').textContent='🔔 ON';
+    toast('Alerts on — notified at 4, 5, and 6 signals per pair');
   } else {
-    alertsOn=false;lastLevels=[0,0,0];
-    document.getElementById('notifBtn').className='nbtn';
-    document.getElementById('notifBtn').textContent='🔔 ALERTS';
-    toast('Alerts off');
+    alertsOn=false;lastLevels=[0,0,0];document.getElementById('notifBtn').className='nbtn';document.getElementById('notifBtn').textContent='🔔 ALERTS';toast('Alerts off');
   }
 }
-
 function fireAlert(tab,passed,dir,total){
   if(!alertsOn||passed<4){if(passed<4)lastLevels[tab]=0;return;}
   if(passed<=lastLevels[tab])return;
   lastLevels[tab]=passed;
   const name=TFNAMES[tab];
-  const msg=passed>=total?`🚨 ${name}: ALL GREEN — ${dir} ENTRY NOW`:passed===total-1?`🔔 ${name}: ${passed}/${total} — ${dir} nearly ready`:`⚠️ ${name}: ${passed}/${total} — ${dir} building`;
+  const msg=passed>=total?`🚨 ${name} [${pair}]: ALL GREEN — ${dir} ENTRY NOW`:passed===total-1?`🔔 ${name} [${pair}]: ${passed}/${total} — ${dir} nearly ready`:`⚠️ ${name} [${pair}]: ${passed}/${total} — ${dir} building`;
   if(navigator.vibrate){if(passed>=total)navigator.vibrate([400,100,400,100,400]);else if(passed===total-1)navigator.vibrate([200,80,200]);else navigator.vibrate([100,60,100]);}
-  if(notifPerm==='granted'){try{new Notification(passed>=total?`🚨 ${name}`:`🔔 ${name}`,{body:msg,tag:'sig'+tab,requireInteraction:passed>=total});}catch(e){}}
+  if(notifPerm==='granted'){try{new Notification(passed>=total?`🚨 ${name} — ${pair}`:`🔔 ${name} — ${pair}`,{body:msg,tag:'sig'+tab+pair,requireInteraction:passed>=total});}catch(e){}}
   try{const ctx=new(window.AudioContext||window.webkitAudioContext)();const n=passed>=total?3:passed===total-1?2:1;for(let i=0;i<n;i++){const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=passed>=total?900:passed===total-1?700:550;g.gain.setValueAtTime(0.25,ctx.currentTime+i*0.35);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.35+0.28);o.start(ctx.currentTime+i*0.35);o.stop(ctx.currentTime+i*0.35+0.28);}}catch(e){}
   toast(msg);
 }
-
 function toast(msg){
   let t=document.getElementById('_toast');
   if(!t){t=document.createElement('div');t.id='_toast';Object.assign(t.style,{position:'fixed',bottom:'20px',left:'50%',transform:'translateX(-50%)',background:'#1c2030',border:'1px solid rgba(255,255,255,.15)',color:'#e8eaf0',padding:'10px 18px',borderRadius:'20px',fontSize:'12px',fontWeight:'700',zIndex:'200',whiteSpace:'nowrap',transition:'opacity .3s',pointerEvents:'none'});document.body.appendChild(t);}
   t.textContent=msg;t.style.opacity='1';clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',3500);
 }
 
-/* ══ CONFLUENCE ══════════════════════════════════════════════ */
+/* ══ CONFLUENCE ═══════════════════════════════════════════════════ */
 const scores=[0,0,0],totals=[4,4,4],dirs=['—','—','—'];
 function updateConfluence(){
   const badges=['confS','confH','confW'],labels=['Scalp','1H','Swing'];
-  [0,1,2].forEach(i=>{
-    const el=document.getElementById(badges[i]);
-    const pct=totals[i]?scores[i]/totals[i]:0;
-    el.textContent=`${labels[i]} ${scores[i]}/${totals[i]}`;
-    el.className='cbadge'+(pct>=1?' full':pct>=0.8?' pass':pct>=0.6?' near':'');
-  });
-  const allFull=totals.every((t,i)=>t>0&&scores[i]>=t);
-  const sameDir=dirs[0]!=='—'&&dirs[0]===dirs[1]&&dirs[1]===dirs[2]&&dirs[0]!=='NEUTRAL';
+  [0,1,2].forEach(i=>{const el=document.getElementById(badges[i]);const pct=totals[i]?scores[i]/totals[i]:0;el.textContent=`${labels[i]} ${scores[i]}/${totals[i]}`;el.className='cbadge'+(pct>=1?' full':pct>=0.8?' pass':pct>=0.6?' near':'');});
+  const allFull=totals.every((t,i)=>t>0&&scores[i]>=t),sameDir=dirs[0]!=='—'&&dirs[0]===dirs[1]&&dirs[1]===dirs[2]&&dirs[0]!=='NEUTRAL';
   const ca=document.getElementById('confAll');
-  if(allFull&&sameDir){ca.textContent=`🔥 ALL ALIGNED — ${dirs[0]}`;ca.className='conf-all on';if(alertsOn){if(navigator.vibrate)navigator.vibrate([500,150,500,150,500]);toast(`🔥 ALL 3 TABS ALIGNED — ${dirs[0]} — maximum confidence!`);}}
+  if(allFull&&sameDir){ca.textContent=`🔥 ALL ALIGNED — ${dirs[0]}`;ca.className='conf-all on';if(alertsOn){if(navigator.vibrate)navigator.vibrate([500,150,500,150,500]);toast(`🔥 ALL 3 TABS ALIGNED [${pair}] — ${dirs[0]} — maximum confidence!`);}}
   else{const ct=[0,1,2].filter(i=>totals[i]&&scores[i]>=totals[i]).length;ca.textContent=ct>0?`${ct}/3 tabs full`:'Not aligned';ca.className='conf-all';}
   const mx=Math.max(...scores),mxi=scores.indexOf(mx),b=document.getElementById('alertBanner');
-  if(totals[mxi]&&mx>=totals[mxi]){b.className='abanner s6';b.textContent=`🚨 ${TFNAMES[mxi]} ALL GREEN — ${dirs[mxi]} ENTRY CONFIRMED`;}
-  else if(totals[mxi]&&mx>=totals[mxi]-1){b.className='abanner s5';b.textContent=`🔔 ${TFNAMES[mxi]}: ${mx}/${totals[mxi]} — ${dirs[mxi]} nearly ready`;}
-  else if(mx>=4){b.className='abanner s4';b.textContent=`⚠️ ${TFNAMES[mxi]}: ${mx}/${totals[mxi]} — ${dirs[mxi]} building`;}
+  if(totals[mxi]&&mx>=totals[mxi]){b.className='abanner s6';b.textContent=`🚨 ${TFNAMES[mxi]} [${pair}] ALL GREEN — ${dirs[mxi]} ENTRY CONFIRMED`;}
+  else if(totals[mxi]&&mx>=totals[mxi]-1){b.className='abanner s5';b.textContent=`🔔 ${TFNAMES[mxi]} [${pair}]: ${mx}/${totals[mxi]} — ${dirs[mxi]} nearly ready`;}
+  else if(mx>=4){b.className='abanner s4';b.textContent=`⚠️ ${TFNAMES[mxi]} [${pair}]: ${mx}/${totals[mxi]} — ${dirs[mxi]} building`;}
   else b.className='abanner';
 }
 
-/* ══ LIQUIDITY HEATMAP ═══════════════════════════════════════ */
-let liqCharts=[null,null,null];
+/* ══ OI HISTORY — localStorage ════════════════════════════════════
+   Key format: oi_{pair}  → [{t,v}]  (last 200 readings, ~50min @ 15s)
+   We store per-pair so switching pairs shows correct history.
+════════════════════════════════════════════════════════════════════ */
+const OI_KEY=()=>`oi_${pair}`;
+const OI_MAX=200; // ~50 minutes at 15s interval
 
-function buildLiqData(price,frPct,atrVal,leverage){
-  const atr=atrVal||price*0.02;
-  const clusters=[];
-  // SHORT liquidations ABOVE price (green — top of chart)
-  [0.5,1.0,1.5,2.5,4.0].forEach((d,i)=>{
-    const w=[0.25,0.9,0.55,0.35,0.15][i];
-    clusters.push({price:price*(1+d/leverage/100*leverage),size:w,type:'short',pct:d/leverage});
-  });
-  // LONG liquidations BELOW price (red — bottom of chart)
-  [0.5,1.0,1.5,2.5,4.0].forEach((d,i)=>{
-    const w=[0.3,1.0,0.6,0.4,0.2][i];
-    clusters.push({price:price*(1-d/leverage/100*leverage),size:w,type:'long',pct:d/leverage});
-  });
-  if(!isNaN(frPct)){const skew=Math.max(-0.5,Math.min(0.5,frPct/0.1));clusters.forEach(c=>{if(c.type==='long')c.size*=(1+skew*0.5);else c.size*=(1-skew*0.5);});}
-  return clusters;
+function oiLoad(){
+  try{const raw=localStorage.getItem(OI_KEY());return raw?JSON.parse(raw):[];}catch(e){return [];}
+}
+function oiSave(hist){
+  try{localStorage.setItem(OI_KEY(),JSON.stringify(hist.slice(-OI_MAX)));}catch(e){}
+}
+function oiPush(val){
+  if(isNaN(val)||val<=0)return;
+  const hist=oiLoad();
+  hist.push({t:Date.now(),v:val});
+  oiSave(hist);
 }
 
-function renderLiq(tab,price,frPct,atrVal){
-  const lev=tab===0?10:tab===1?5:3;
-  const clusters=buildLiqData(price,frPct,atrVal,lev);
-  const shorts=clusters.filter(c=>c.type==='short').sort((a,b)=>b.price-a.price);
-  const longs=clusters.filter(c=>c.type==='long').sort((a,b)=>b.price-a.price);
-  // Chart order: shorts on top (positive prices), longs below (negative prices) — flipped axis
-  // We use horizontal bar with shorts first (top) then longs (bottom)
-  const all=[...shorts,...longs];
-  const labels=all.map(c=>{const pct=((c.price-price)/price*100).toFixed(2);return `${pct>0?'+':''}${pct}%`;});
-  const bgs=all.map(c=>c.type==='short'?`rgba(34,197,94,${0.15+c.size*0.5})`:`rgba(239,68,68,${0.15+c.size*0.5})`);
-  const borders=all.map(c=>c.type==='short'?'rgba(34,197,94,.8)':'rgba(239,68,68,.8)');
-  const gc='rgba(255,255,255,0.04)',tc='#4a4f66';
+function oiTrend(hist){
+  if(hist.length<3)return 'flat';
+  const half=Math.floor(hist.length/2);
+  const early=hist.slice(0,half).reduce((a,b)=>a+b.v,0)/half;
+  const late=hist.slice(-half).reduce((a,b)=>a+b.v,0)/half;
+  const chg=(late-early)/early*100;
+  if(chg>0.15)return 'rising';
+  if(chg<-0.15)return 'falling';
+  return 'flat';
+}
+
+let oiCharts=[null,null,null];
+
+function renderOIChart(tab){
+  const hist=oiLoad();
+  const trend=oiTrend(hist);
+  const curOI=hist.length?hist.at(-1).v:null;
+  const badgeEl=document.getElementById('oiBadge'+tab);
+  const valEl=document.getElementById('oiVal'+tab);
+  const insightEl=document.getElementById('oiInsight'+tab);
+
+  if(badgeEl){
+    badgeEl.textContent=trend==='rising'?'▲ Rising':trend==='falling'?'▼ Falling':'→ Flat';
+    badgeEl.className='oi-badge '+(trend==='rising'?'rising':trend==='falling'?'falling':'flat');
+  }
+  if(valEl&&curOI)valEl.textContent=curOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:2});
+
+  // Insight text
+  const price=storedPrice;
+  if(insightEl){
+    if(hist.length<5){insightEl.innerHTML='<b>Building OI history…</b> Data accumulates every 15s. Check back in a few minutes.';}
+    else if(trend==='rising'&&price>0){insightEl.innerHTML=`<b>OI rising ↑ + price ${dirs[tab]==='LONG'?'rising':'check direction'}</b> — Real buyers entering the market. Strong confirmation for ${dirs[tab]} trade.`;}
+    else if(trend==='falling'&&dirs[tab]==='LONG'){insightEl.innerHTML='<b>⚠️ OI falling while price rises</b> — This is a short squeeze, NOT real buying. Longs are covering. Higher risk — consider skipping or reducing size.';}
+    else if(trend==='falling'&&dirs[tab]==='SHORT'){insightEl.innerHTML='<b>OI falling ↓</b> — Longs are exiting. Can confirm a short but watch for reversal if OI stabilises.';}
+    else{insightEl.innerHTML='<b>OI flat →</b> — No new positioning. Market is in wait mode. Wait for OI to expand before entering.';}
+  }
+
+  // Chart
+  if(!hist.length)return;
+  const n=Math.min(hist.length,60);
+  const sl=hist.slice(-n);
+  const labels=sl.map(x=>{const d=new Date(x.t);return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;});
+  const vals=sl.map(x=>x.v);
+  const lineColor=trend==='rising'?'#22c55e':trend==='falling'?'#ef4444':'#f59e0b';
+  const gc='rgba(255,255,255,0.05)',tc='#4a4f66';
+
+  if(oiCharts[tab])oiCharts[tab].destroy();
+  oiCharts[tab]=new Chart(document.getElementById('oiChart'+tab),{
+    type:'line',
+    data:{labels,datasets:[{data:vals,borderColor:lineColor,borderWidth:1.5,pointRadius:0,tension:.3,fill:true,backgroundColor:lineColor.replace(')',', 0.08)').replace('rgb','rgba').replace('#22c55e','rgba(34,197,94,0.08)').replace('#ef4444','rgba(239,68,68,0.08)').replace('#f59e0b','rgba(245,158,11,0.08)')}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:5,color:tc,font:{size:9}},grid:{color:gc},border:{display:false}},y:{ticks:{maxTicksLimit:3,color:tc,font:{size:9},callback:v=>v.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1})},grid:{color:gc},border:{display:false}}}}
+  });
+}
+
+/* ══ LIQUIDATION WEBSOCKET ════════════════════════════════════════
+   Stream: wss://fstream.binance.com/ws/!forceOrder@arr
+   Each event: {o:{s:symbol, S:side(BUY=short liq, SELL=long liq), p:price, q:qty, T:time}}
+   BUY  = market buy to close a short position = SHORT LIQUIDATION (green, above price)
+   SELL = market sell to close a long position = LONG LIQUIDATION  (red, below price)
+   We bucket into price clusters and render a horizontal bar chart.
+════════════════════════════════════════════════════════════════════ */
+let liqWS=null;
+// liqBuckets[pair] = {shortBuckets:{price:qty}, longBuckets:{price:qty}, count}
+const liqData={};
+let liqCharts=[null,null,null];
+
+function liqKey(price,bucketSize){return Math.round(price/bucketSize)*bucketSize;}
+
+function liqBucketSize(price){
+  if(price>10000)return 100;
+  if(price>1000)return 10;
+  if(price>100)return 1;
+  if(price>10)return 0.1;
+  return 0.01;
+}
+
+function initLiq(sym){if(!liqData[sym])liqData[sym]={short:{},long:{},count:0,lastUpdate:0};}
+
+function connectLiqWS(){
+  if(liqWS){try{liqWS.close();}catch(e){}}
+  liqWS=new WebSocket('wss://fstream.binance.com/ws/!forceOrder@arr');
+  liqWS.onopen=()=>console.log('Liq WS open');
+  liqWS.onerror=()=>console.log('Liq WS error');
+  liqWS.onclose=()=>setTimeout(connectLiqWS,5000);
+  liqWS.onmessage=e=>{
+    try{
+      const msg=JSON.parse(e.data);
+      const o=msg.o||msg;
+      const sym=o.s;
+      if(!sym)return;
+      initLiq(sym);
+      const price=parseFloat(o.p);
+      const qty=parseFloat(o.q)*price; // value in USDT
+      const bs=liqBucketSize(price);
+      const bk=liqKey(price,bs);
+      const side=o.S; // BUY = short liq, SELL = long liq
+      if(side==='BUY'){liqData[sym].short[bk]=(liqData[sym].short[bk]||0)+qty;}
+      else{liqData[sym].long[bk]=(liqData[sym].long[bk]||0)+qty;}
+      liqData[sym].count++;
+      liqData[sym].lastUpdate=Date.now();
+      // throttle render
+      if(Date.now()-liqData[sym].lastUpdate<2000)return;
+    }catch(e2){}
+  };
+  // Periodic render every 3s
+  setInterval(()=>{[0,1,2].forEach(t=>renderLiq(t));},3000);
+}
+
+function renderLiq(tab){
+  const sym=pair;
+  initLiq(sym);
+  const ld=liqData[sym];
+  const cnt=ld.count;
+  const countEls=document.querySelectorAll('.liq-count');
+  if(countEls[tab])countEls[tab].textContent=`${cnt} events`;
+  document.getElementById('liqCount'+tab).textContent=`${cnt} events`;
+
+  const curPrice=storedPrice||0;
+  if(!curPrice)return;
+
+  // Separate short (above) and long (below) buckets relative to current price
+  const shortBuckets=Object.entries(ld.short).map(([p,v])=>({price:+p,val:v,type:'short'})).filter(x=>x.price>=curPrice*0.95);
+  const longBuckets=Object.entries(ld.long).map(([p,v])=>({price:+p,val:v,type:'long'})).filter(x=>x.price<=curPrice*1.05);
+
+  // Sort: shorts descending (highest above price first), longs descending
+  shortBuckets.sort((a,b)=>b.price-a.price);
+  longBuckets.sort((a,b)=>b.price-a.price);
+
+  // Chart: shorts on top, longs on bottom
+  const all=[...shortBuckets.slice(0,6),...longBuckets.slice(0,6)];
+  if(!all.length){
+    // Show placeholder if no data yet
+    document.getElementById('liqlevels'+tab).innerHTML=`
+      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation zone</div><div class="liq-lvl-price">Collecting live data…</div><div class="liq-lvl-note">Events stream in real time from Binance</div></div>
+      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation zone</div><div class="liq-lvl-price">Collecting live data…</div><div class="liq-lvl-note">More events appear during volatile moves</div></div>`;
+    return;
+  }
+
+  const dec=pdec(curPrice);
+  const labels=all.map(c=>{const pct=((c.price-curPrice)/curPrice*100).toFixed(2);return `${pct>0?'+':''}${pct}%`;});
+  const bgs=all.map(c=>c.type==='short'?'rgba(34,197,94,0.6)':'rgba(239,68,68,0.6)');
+  const borders=all.map(c=>c.type==='short'?'#22c55e':'#ef4444');
+  const vals=all.map(c=>c.val/1000); // in $K
+
   if(liqCharts[tab])liqCharts[tab].destroy();
-  liqCharts[tab]=new Chart(document.getElementById('liqc'+tab),{
-    type:'bar',data:{labels,datasets:[{data:all.map(c=>c.size),backgroundColor:bgs,borderColor:borders,borderWidth:1,borderRadius:3}]},
+  const canvas=document.getElementById('liqc'+tab);
+  if(!canvas)return;
+  liqCharts[tab]=new Chart(canvas,{
+    type:'bar',
+    data:{labels,datasets:[{data:vals,backgroundColor:bgs,borderColor:borders,borderWidth:1,borderRadius:3}]},
     options:{responsive:true,maintainAspectRatio:false,animation:false,indexAxis:'y',
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const cl=all[c.dataIndex];return `${cl.type==='short'?'Short liq':'Long liq'} at ${fmt(cl.price,pdec(price))} (${cl.pct.toFixed(2)}% away)`;},}}},
-      scales:{x:{display:false,grid:{display:false},border:{display:false}},y:{ticks:{color:tc,font:{size:10}},grid:{color:gc},border:{display:false}}}}
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`$${(vals[c.dataIndex]).toFixed(0)}K liquidated`}}},
+      scales:{x:{display:false,border:{display:false}},y:{ticks:{color:'#4a4f66',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},border:{display:false}}}}
   });
 
-  // Key level cards — biggest short on top (green), biggest long below (red)
-  const bigShort=shorts.reduce((a,b)=>b.size>a.size?b:a,shorts[0]);
-  const bigLong=longs.reduce((a,b)=>b.size>a.size?b:a,longs[0]);
-  const dec=pdec(price);
+  // Key level cards
+  const bigShort=shortBuckets.length?shortBuckets.reduce((a,b)=>b.val>a.val?b:a):null;
+  const bigLong=longBuckets.length?longBuckets.reduce((a,b)=>b.val>a.val?b:a):null;
   document.getElementById('liqlevels'+tab).innerHTML=`
     <div class="liq-lvl short-liq">
-      <div class="liq-lvl-label">🟢 Major short liquidation</div>
-      <div class="liq-lvl-price">${fmt(bigShort.price,dec)}</div>
-      <div class="liq-lvl-note">+${bigShort.pct.toFixed(2)}% above price. Shorts get squeezed here — ideal short entry AFTER this sweep and reversal.</div>
+      <div class="liq-lvl-label">🟢 Biggest short cluster</div>
+      <div class="liq-lvl-price">${bigShort?fmt(bigShort.price,dec):'Building…'}</div>
+      <div class="liq-lvl-note">${bigShort?`$${(bigShort.val/1000).toFixed(0)}K liquidated here — shorts get squeezed above, enter short AFTER sweep reversal`:'Accumulating data…'}</div>
     </div>
     <div class="liq-lvl long-liq">
-      <div class="liq-lvl-label">🔴 Major long liquidation</div>
-      <div class="liq-lvl-price">${fmt(bigLong.price,dec)}</div>
-      <div class="liq-lvl-note">${bigLong.pct.toFixed(2)}% below price. Longs get stopped here — ideal long entry AFTER this sweep and reversal.</div>
+      <div class="liq-lvl-label">🔴 Biggest long cluster</div>
+      <div class="liq-lvl-price">${bigLong?fmt(bigLong.price,dec):'Building…'}</div>
+      <div class="liq-lvl-note">${bigLong?`$${(bigLong.val/1000).toFixed(0)}K liquidated here — longs get stopped, enter long AFTER sweep reversal`:'Accumulating data…'}</div>
     </div>`;
 }
 
-/* ══ HELPERS ══════════════════════════════════════════════════ */
+/* ══ HELPERS ══════════════════════════════════════════════════════ */
 const $=id=>document.getElementById(id);
 const fmt=(n,d)=>n==null||isNaN(n)?'—':n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const pdec=p=>p>=10000?1:p>=100?2:p>=1?3:5;
@@ -712,9 +856,10 @@ function atrCalc(candles,p=14){if(candles.length<2)return null;const tr=[];for(l
 function setRing(i,passed,total,col){const circ=188;$('arc'+i).style.strokeDashoffset=circ-(passed/total)*circ;$('arc'+i).style.stroke=col;$('rnum'+i).textContent=passed;const el=$('score'+i);el.textContent=`${passed}/${total}`;el.className='tfscore'+(passed>=total?' sp':passed>=total-1?' sn':passed<=1?' sf':'');}
 function sigCard(s){const dc=s.pass===true?'sdot sp':s.pass===false?'sdot sf':s.pass==='warn'?'sdot sw':'sdot sn';const bc=s.pass===true?'bar bp':s.pass===false?'bar bf':s.pass==='warn'?'bar bw':'bar bn';const cc=s.pass===true?'sig passing':s.pass===false?'sig failing':'sig';return `<div class="${cc}"><div class="sigtop"><span class="signame">${s.name}</span><span class="${dc}"></span></div><div class="sigval">${s.val}</div><div class="sigmeta">${s.meta}</div><div class="sigtf">${s.tf}</div><div class="barbg"><div class="${bc}" style="width:${Math.min(100,Math.max(0,s.pct))}%"></div></div></div>`;}
 
-/* ══ DATA ════════════════════════════════════════════════════ */
+/* ══ DATA ═════════════════════════════════════════════════════════ */
 const FAPI='https://fapi.binance.com',WSB='wss://fstream.binance.com/ws';
-let pair='BTCUSDT',lastP=null,storedFR=NaN,storedOI=NaN,ws=null,rfTimer=null;
+let pair='BTCUSDT',lastP=null,storedFR=NaN,storedOI=NaN,storedPrice=0;
+let ws=null,rfTimer=null;
 let D={c1m:[],c15m:[],c1h:[],c4h:[],cD:[]};
 let CD={e0a:[],e0b:[],rs0:[],lb0:[],e1a:[],e1b:[],rs1:[],lb1:[],e2a:[],e2b:[],rs2:[],lb2:[]};
 let CH={p0:null,r0:null,p1:null,r1:null,p2:null,r2:null};
@@ -723,26 +868,27 @@ async function fetchK(iv,lim){const r=await fetch(`${FAPI}/fapi/v1/klines?symbol
 async function fetchFR(){const r=await fetch(`${FAPI}/fapi/v1/fundingRate?symbol=${pair}&limit=1`);const d=await r.json();return d.length?+d[0].fundingRate:null;}
 async function fetchOI(){const r=await fetch(`${FAPI}/fapi/v1/openInterest?symbol=${pair}`);const d=await r.json();return d.openInterest?+d.openInterest:null;}
 
-function connectWS(){
+function connectPriceWS(){
   if(ws){try{ws.close();}catch(e){}}
   ws=new WebSocket(`${WSB}/${pair.toLowerCase()}@aggTrade`);
   ws.onopen=()=>{$('sDot').className='dot live';$('sTxt').textContent='Live';};
   ws.onerror=()=>{$('sDot').className='dot err';$('sTxt').textContent='WS err';};
-  ws.onclose=()=>setTimeout(connectWS,4000);
+  ws.onclose=()=>setTimeout(connectPriceWS,4000);
   ws.onmessage=e=>{const p=+JSON.parse(e.data).p;flashPrice(p);};
 }
-
 function flashPrice(p){
+  storedPrice=p;
   const el=$('priceEl');el.textContent=fmt(p,pdec(p));
   if(lastP!==null){el.classList.remove('fu','fd');void el.offsetWidth;el.classList.add(p>=lastP?'fu':'fd');setTimeout(()=>el.classList.remove('fu','fd'),500);const pct=((p-lastP)/lastP*100).toFixed(3);$('chgEl').textContent=(+pct>=0?'+':'')+pct+'%';$('chgEl').className='chg '+(+pct>=0?'up':'dn');}
   lastP=p;
 }
 
-/* ══ ANALYSE SCALP ═══════════════════════════════════════════ */
+/* ══ ANALYSE SCALP ════════════════════════════════════════════════ */
 function analyseScalp(){
   const c1=D.c1m,c15=D.c15m;
   if(c1.length<22||c15.length<5){$('vtitle0').textContent='Building…';$('vsub0').textContent=`1m:${c1.length} 15m:${c15.length}`;$('score0').textContent='—';return;}
   const cl1=c1.map(x=>x.c),vl1=c1.map(x=>x.v),cl15=c15.map(x=>x.c),price=cl1.at(-1);
+  storedPrice=price;
   const e9_15=ema(cl15,9),e21_15=ema(cl15,21);
   const d15=(e9_15.at(-1)-e21_15.at(-1))/e21_15.at(-1),flat=Math.abs(d15)<0.0006,tUp=e9_15.at(-1)>e21_15.at(-1);
   const dir=flat?'NEUTRAL':tUp?'LONG':'SHORT';
@@ -752,8 +898,11 @@ function analyseScalp(){
   const rs=rsiCalc(cl1,14);CD.rs0=rs;const lRSI=rs.at(-1),rsiOk=lRSI!=null&&lRSI>=44&&lRSI<=57;
   const avg20=vl1.slice(-21,-1).reduce((a,b)=>a+b,0)/20,vrat=vl1.at(-1)/avg20,volOk=vrat>=1.5;
   const frPct=storedFR,frOk=!isNaN(frPct)&&frPct>=-0.05&&frPct<=0.05,frAvail=!isNaN(frPct);
-  const s1=flat?'warn':tUp,s2=dir==='LONG'?bull:dir==='SHORT'?!bull:false,s3=rsiOk,s4=volOk,s5=frAvail?frOk:null;
-  const passed=[s1,s2,s3,s4,s5].filter(x=>x===true).length,total=frAvail?5:4;
+  // OI trend as signal
+  const oiHist=oiLoad();const oiTr=oiTrend(oiHist);
+  const oiOk=oiTr==='rising';const oiAvail=oiHist.length>=5;
+  const s1=flat?'warn':tUp,s2=dir==='LONG'?bull:dir==='SHORT'?!bull:false,s3=rsiOk,s4=volOk,s5=frAvail?frOk:null,s6=oiAvail?oiOk:null;
+  const passed=[s1,s2,s3,s4,s5,s6].filter(x=>x===true).length,total=[s1,s2,s3,s4,s5,s6].filter(x=>x!==null).length||4;
   scores[0]=passed;totals[0]=total;dirs[0]=dir;
   let col,vt,vs;
   if(passed>=total&&dir==='LONG'){col='var(--grn)';vt='🟢 LONG SETUP';vs='All signals green — wait for 1m candle close then enter';}
@@ -780,13 +929,12 @@ function analyseScalp(){
     {name:'RSI (14)',tf:'1M',val:lRSI!=null?lRSI.toFixed(1):'—',meta:lRSI==null?'Calculating…':lRSI<44?'↓ Oversold':lRSI>57?'↑ Overbought':'✓ In zone 44–57',pass:s3,pct:lRSI!=null?Math.min(100,Math.max(0,((lRSI-20)/60)*100)):50},
     {name:'Volume spike',tf:'1M',val:`${vrat.toFixed(2)}×`,meta:volOk?'✓ ≥1.5× confirmed':'✗ Weak — skip',pass:s4,pct:Math.min(100,(vrat/2.5)*100)},
     {name:'Funding rate',tf:'8H',val:frAvail?`${frPct.toFixed(4)}%`:'…',meta:frAvail?frOk?'✓ Neutral':'✗ Crowded':'Loading',pass:s5,pct:frAvail?100-Math.min(100,(Math.abs(frPct)/0.1)*100):50},
-    {name:'Open interest',tf:'LIVE',val:isNaN(storedOI)?'—':storedOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1}),meta:'Rising OI + price = real move',pass:null,pct:50},
+    {name:'OI direction',tf:'TREND',val:oiAvail?(oiTr==='rising'?'▲ Rising':oiTr==='falling'?'▼ Falling':'→ Flat'):'Building…',meta:oiAvail?oiTr==='rising'?'✓ New money entering — real move':oiTr==='falling'?'✗ Squeeze only — exit risk':'→ Flat — wait for expansion':'Need 5+ readings',pass:s6,pct:oiAvail?oiTr==='rising'?85:oiTr==='falling'?15:45:50},
   ].map(sigCard).join('');
-  renderLiq(0,price,frPct,null);
-  drawChart(0);fireAlert(0,passed,dir,total);
+  renderOIChart(0);renderLiq(0);drawChart(0);fireAlert(0,passed,dir,total);
 }
 
-/* ══ ANALYSE HOURLY ══════════════════════════════════════════ */
+/* ══ ANALYSE HOURLY ═══════════════════════════════════════════════ */
 function analyseHourly(){
   const c1h=D.c1h,c4h=D.c4h;
   if(c1h.length<55||c4h.length<30){$('vtitle1').textContent='Building…';$('vsub1').textContent=`1H:${c1h.length} 4H:${c4h.length}`;$('score1').textContent='—';return;}
@@ -799,8 +947,10 @@ function analyseHourly(){
   const rs=rsiCalc(cl1h,14);CD.rs1=rs;const lRSI=rs.at(-1),rsiOk=lRSI!=null&&lRSI>=40&&lRSI<=60;
   const avg20=vl1h.slice(-21,-1).reduce((a,b)=>a+b,0)/20,vrat=vl1h.at(-1)/avg20,volOk=vrat>=1.3;
   const frPct=storedFR,frOk=!isNaN(frPct)&&frPct>=-0.05&&frPct<=0.05,frAvail=!isNaN(frPct);
-  const s1=flat4?'warn':bull4,s2=dir==='LONG'?bull1h:dir==='SHORT'?!bull1h:false,s3=rsiOk,s4=volOk,s5=frAvail?frOk:null;
-  const passed=[s1,s2,s3,s4,s5].filter(x=>x===true).length,total=frAvail?5:4;
+  const oiHist=oiLoad();const oiTr=oiTrend(oiHist);
+  const oiOk=oiTr==='rising';const oiAvail=oiHist.length>=5;
+  const s1=flat4?'warn':bull4,s2=dir==='LONG'?bull1h:dir==='SHORT'?!bull1h:false,s3=rsiOk,s4=volOk,s5=frAvail?frOk:null,s6=oiAvail?oiOk:null;
+  const passed=[s1,s2,s3,s4,s5,s6].filter(x=>x===true).length,total=[s1,s2,s3,s4,s5,s6].filter(x=>x!==null).length||4;
   scores[1]=passed;totals[1]=total;dirs[1]=dir;
   let col,vt,vs;
   if(passed>=total&&dir==='LONG'){col='var(--grn)';vt='🟢 LONG SETUP';vs='Enter near 1H support on next candle close';}
@@ -826,13 +976,12 @@ function analyseHourly(){
     {name:'1H RSI',tf:'1H',val:lRSI!=null?lRSI.toFixed(1):'—',meta:lRSI==null?'Calculating…':lRSI<40?'↓ Oversold':lRSI>60?'↑ Overbought':'✓ In zone 40–60',pass:s3,pct:lRSI!=null?Math.min(100,Math.max(0,((lRSI-20)/60)*100)):50},
     {name:'1H volume',tf:'1H',val:`${vrat.toFixed(2)}×`,meta:volOk?'✓ Elevated ≥1.3×':'✗ Weak',pass:s4,pct:Math.min(100,(vrat/2)*100)},
     {name:'Funding rate',tf:'8H',val:frAvail?`${frPct.toFixed(4)}%`:'…',meta:frAvail?frOk?'✓ Neutral':'✗ Crowded':'Loading',pass:s5,pct:frAvail?100-Math.min(100,(Math.abs(frPct)/0.1)*100):50},
-    {name:'Open interest',tf:'LIVE',val:isNaN(storedOI)?'—':storedOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1}),meta:'Rising OI = institutional move',pass:null,pct:50},
+    {name:'OI direction',tf:'TREND',val:oiAvail?(oiTr==='rising'?'▲ Rising':oiTr==='falling'?'▼ Falling':'→ Flat'):'Building…',meta:oiAvail?oiTr==='rising'?'✓ Expanding — real positioning':oiTr==='falling'?'✗ Contracting — exit risk':'→ No new positioning':'Need 5+ readings',pass:s6,pct:oiAvail?oiTr==='rising'?85:oiTr==='falling'?15:45:50},
   ].map(sigCard).join('');
-  renderLiq(1,price,frPct,null);
-  drawChart(1);fireAlert(1,passed,dir,total);
+  renderOIChart(1);renderLiq(1);drawChart(1);fireAlert(1,passed,dir,total);
 }
 
-/* ══ ANALYSE SWING ═══════════════════════════════════════════ */
+/* ══ ANALYSE SWING ════════════════════════════════════════════════ */
 function analyseSwing(){
   const cDa=D.cD,c4h=D.c4h;
   if(cDa.length<25||c4h.length<55){$('vtitle2').textContent='Building…';$('vsub2').textContent=`Daily:${cDa.length} 4H:${c4h.length}`;$('score2').textContent='—';return;}
@@ -848,8 +997,10 @@ function analyseSwing(){
   const avg20=vlD.slice(-21,-1).reduce((a,b)=>a+b,0)/20,vrat=vlD.at(-1)/avg20,volOk=vrat>=1.2;
   const frPct=storedFR,frOk=!isNaN(frPct)&&frPct>=-0.05&&frPct<=0.05,frAvail=!isNaN(frPct);
   const atrD=atrCalc(cDa,14),atr4=atrCalc(c4h,14);
-  const s1=dFlat?'warn':dUp,s2=dir==='LONG'?h4Bull:dir==='SHORT'?!h4Bull:false,s3=rsiOk,s4=volOk,s5=frAvail?frOk:null;
-  const passed=[s1,s2,s3,s4,s5].filter(x=>x===true).length,total=frAvail?5:4;
+  const oiHist=oiLoad();const oiTr=oiTrend(oiHist);
+  const oiOk=oiTr==='rising';const oiAvail=oiHist.length>=5;
+  const s1=dFlat?'warn':dUp,s2=dir==='LONG'?h4Bull:dir==='SHORT'?!h4Bull:false,s3=rsiOk,s4=volOk,s5=frAvail?frOk:null,s6=oiAvail?oiOk:null;
+  const passed=[s1,s2,s3,s4,s5,s6].filter(x=>x===true).length,total=[s1,s2,s3,s4,s5,s6].filter(x=>x!==null).length||4;
   scores[2]=passed;totals[2]=total;dirs[2]=dir;
   let col,vt,vs;
   if(passed>=total&&dir==='LONG'){col='var(--grn)';vt='🟢 LONG SETUP';vs='Enter near prev day level on 1H trigger candle';}
@@ -868,7 +1019,7 @@ function analyseSwing(){
   $('s2rsi').textContent=lRSI!=null?lRSI.toFixed(1):'—';$('s2rsi').className='sval '+(rsiOk?'sg':lRSI==null?'sa':'sr');
   $('fo2r').textContent=frAvail?`${frPct.toFixed(4)}%`:'—';if(frAvail){$('fo2r').style.color=frOk?'var(--grn)':'var(--red)';$('fo2rm').textContent=frOk?'✓ Neutral — safe multi-day':'✗ Extreme — erodes profit daily';}
   $('fo2oi').textContent=isNaN(storedOI)?'—':storedOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1});
-  if(atrD)$('atr2d').textContent=fmt(atrD,0);if(atr4)$('atr2h').textContent=fmt(atr4,0);if(atrD)$('atr2sl').textContent=fmt(atrD,0);
+  if(atrD){$('atr2d').textContent=fmt(atrD,0);$('atr2sl').textContent=fmt(atrD,0);}if(atr4)$('atr2h').textContent=fmt(atr4,0);
   const n=Math.min(c4h.length,60);
   CD.lb2=c4h.slice(-n).map(x=>{const d=new Date(x.t);return `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;});
   $('sigs2').innerHTML=[
@@ -877,13 +1028,12 @@ function analyseSwing(){
     {name:'4H RSI zone',tf:'4H',val:lRSI!=null?lRSI.toFixed(1):'—',meta:dir==='LONG'?`Buy 30–52 | ${rsiLong?'✓ In range':'✗ Wait for dip'}`:dir==='SHORT'?`Sell 50–72 | ${rsiShort?'✓ In range':'✗ Wait for push'}`:'Set daily direction first',pass:s3,pct:lRSI!=null?Math.min(100,Math.max(0,((lRSI-20)/60)*100)):50},
     {name:'Daily volume',tf:'DAILY',val:`${vrat.toFixed(2)}×`,meta:volOk?'✓ Elevated ≥1.2×':'✗ Below avg',pass:s4,pct:Math.min(100,(vrat/2)*100)},
     {name:'Funding rate',tf:'8H × DAYS',val:frAvail?`${frPct.toFixed(4)}%`:'…',meta:frAvail?frOk?'✓ Neutral':'✗ Extreme':'Loading',pass:s5,pct:frAvail?100-Math.min(100,(Math.abs(frPct)/0.1)*100):50},
-    {name:'Open interest',tf:'LIVE',val:isNaN(storedOI)?'—':storedOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1}),meta:'Rising OI = institutional participation',pass:null,pct:50},
+    {name:'OI direction',tf:'TREND',val:oiAvail?(oiTr==='rising'?'▲ Rising':oiTr==='falling'?'▼ Falling':'→ Flat'):'Building…',meta:oiAvail?oiTr==='rising'?'✓ Institutional positioning confirmed':oiTr==='falling'?'✗ No new money — avoid':'→ Wait for OI expansion':'Need 5+ readings',pass:s6,pct:oiAvail?oiTr==='rising'?85:oiTr==='falling'?15:45:50},
   ].map(sigCard).join('');
-  renderLiq(2,price,frPct,atrD);
-  drawChart(2);fireAlert(2,passed,dir,total);
+  renderOIChart(2);renderLiq(2);drawChart(2);fireAlert(2,passed,dir,total);
 }
 
-/* ══ CHARTS ══════════════════════════════════════════════════ */
+/* ══ CHARTS ═══════════════════════════════════════════════════════ */
 function drawChart(tab){
   const gc='rgba(255,255,255,0.05)',tc='#4a4f66';
   const base={responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:5,color:tc,font:{size:9}},grid:{color:gc},border:{display:false}},y:{ticks:{maxTicksLimit:4,color:tc,font:{size:10}},grid:{color:gc},border:{display:false}}}};
@@ -904,17 +1054,18 @@ function drawChart(tab){
   }
 }
 
-/* ══ LOAD ════════════════════════════════════════════════════ */
+/* ══ LOAD ═════════════════════════════════════════════════════════ */
 async function loadAll(){
   $('sDot').className='dot';$('sTxt').textContent='Fetching…';
   try{
     const[c1m,c15m,c1h,c4h,cD,fr,oi]=await Promise.all([fetchK('1m',100),fetchK('15m',50),fetchK('1h',100),fetchK('4h',120),fetchK('1d',60),fetchFR(),fetchOI()]);
     D.c1m=c1m;D.c15m=c15m;D.c1h=c1h;D.c4h=c4h;D.cD=cD;
-    if(c1m.length)flashPrice(c1m.at(-1).c);
+    if(c1m.length){storedPrice=c1m.at(-1).c;flashPrice(storedPrice);}
     if(fr!==null)storedFR=fr*100;
-    if(oi!==null)storedOI=oi;
+    if(oi!==null){storedOI=oi;oiPush(oi);} // Save to localStorage on every fetch
     analyseScalp();analyseHourly();analyseSwing();
     updateConfluence();
+    $('sDot').className='dot live';$('sTxt').textContent='Live';
   }catch(e){$('sDot').className='dot err';$('sTxt').textContent='Error: '+e.message;}
 }
 
@@ -922,11 +1073,16 @@ function hardRefresh(){clearInterval(rfTimer);loadAll();rfTimer=setInterval(load
 
 $('pairSel').addEventListener('change',e=>{
   pair=e.target.value;D={c1m:[],c15m:[],c1h:[],c4h:[],cD:[]};
-  lastP=null;storedFR=NaN;storedOI=NaN;lastLevels=[0,0,0];scores[0]=scores[1]=scores[2]=0;
-  connectWS();hardRefresh();
+  lastP=null;storedFR=NaN;storedOI=NaN;storedPrice=0;
+  lastLevels=[0,0,0];scores[0]=scores[1]=scores[2]=0;
+  // Clear liq data for new pair display (keep history, just reset view)
+  [0,1,2].forEach(t=>{const c=document.getElementById('liqCount'+t);if(c)c.textContent='0 events';});
+  connectPriceWS();hardRefresh();
 });
 
-connectWS();
+/* ══ INIT ══════════════════════════════════════════════════════════ */
+connectPriceWS();
+connectLiqWS();   // Single global WS for all symbols — filters by pair in handler
 hardRefresh();
 </script>
 </body>
