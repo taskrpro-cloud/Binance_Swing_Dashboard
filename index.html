@@ -223,6 +223,18 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .gitem:last-child{border-bottom:none;}
 .gitem b{color:var(--text);white-space:nowrap;}
 .gico{flex-shrink:0;width:18px;}
+
+/* COINBASE PREMIUM BAR */
+.premium-bar{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:5px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:28px;}
+.prem-label{font-size:10px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;font-weight:700;white-space:nowrap;}
+.prem-prices{display:flex;align-items:center;gap:12px;flex:1;flex-wrap:wrap;}
+.prem-item{font-size:11px;font-weight:600;color:var(--t2);white-space:nowrap;display:flex;align-items:center;gap:4px;}
+.prem-item span{font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;}
+.prem-badge{font-size:11px;font-weight:800;padding:2px 8px;border-radius:12px;white-space:nowrap;}
+.prem-badge.pos{background:rgba(34,197,94,.15);color:var(--grn);}
+.prem-badge.neg{background:rgba(239,68,68,.15);color:var(--red);}
+.prem-badge.neu{background:var(--bg3);color:var(--t3);}
+.prem-insight{font-size:10px;color:var(--t3);margin-left:auto;white-space:nowrap;}
 .foot{font-size:11px;color:var(--t3);line-height:1.8;}
 .foot b{color:var(--t2);}
 
@@ -264,6 +276,15 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
     </div>
   </div>
   <div class="abanner" id="alertBanner"></div>
+  <div class="premium-bar" id="premiumBar" style="display:none;">
+    <div class="prem-label">CB Premium</div>
+    <div class="prem-prices">
+      <div class="prem-item">Coinbase <span id="cbPrice">—</span></div>
+      <div class="prem-item">Binance <span id="bnPrice">—</span></div>
+      <div class="prem-badge neu" id="premBadge">—</div>
+    </div>
+    <div class="prem-insight" id="premInsight">—</div>
+  </div>
   <!-- TABS — Weekly→Swing→Hourly→Scalp, color-coded by bias -->
   <div class="tftabs">
     <div class="tftab active bias-neutral" id="tft3" onclick="switchPage(3)">
@@ -773,6 +794,63 @@ function renderLiq(tab){
   liqCharts[tab]=new Chart(cvs,{type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:bgs,borderColor:borders,borderWidth:1,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,animation:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`$${vals[c.dataIndex].toFixed(0)}K liquidated`}}},scales:{x:{display:false,border:{display:false}},y:{ticks:{color:'#4a4f66',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},border:{display:false}}}}});
 }
 
+
+/* ══ COINBASE PREMIUM ════════════════════════════════════════════
+   Uses Coinbase Exchange public REST API (no auth, CORS-open).
+   Only active for BTC/USDT — shows CB vs Binance price gap.
+   Coinbase premium = (CB_BTC_USD - BN_BTC_USDT) / BN * 100
+   Positive = US buyers paying premium (bullish signal)
+   Negative = Binance premium (Asian demand dominant)
+════════════════════════════════════════════════════════════════ */
+let cbPrice=0, cbTimer=null;
+
+async function fetchCBPrice(){
+  try{
+    const r=await fetch('https://api.exchange.coinbase.com/products/BTC-USD/ticker',{signal:AbortSignal.timeout(5000)});
+    const d=await r.json();
+    cbPrice=parseFloat(d.price)||0;
+    updatePremium();
+  }catch(e){cbPrice=0;updatePremium();}
+}
+
+function updatePremium(){
+  const isBTC=pair==='BTCUSDT';
+  const bar=document.getElementById('premiumBar');
+  if(!isBTC||!cbPrice||!storedPrice){bar.style.display='none';return;}
+  bar.style.display='flex';
+  const diff=cbPrice-storedPrice;
+  const pct=(diff/storedPrice*100);
+  const dec=pdec(storedPrice);
+  document.getElementById('cbPrice').textContent=fmt(cbPrice,dec);
+  document.getElementById('bnPrice').textContent=fmt(storedPrice,dec);
+  const badge=document.getElementById('premBadge');
+  const insight=document.getElementById('premInsight');
+  const sign=pct>=0?'+':'';
+  badge.textContent=`${sign}$${Math.abs(diff).toFixed(1)} (${sign}${pct.toFixed(3)}%)`;
+  if(pct>0.1){
+    badge.className='prem-badge pos';
+    insight.textContent=pct>0.5?'Strong US premium — bullish signal':'CB premium — US buying';
+  } else if(pct<-0.1){
+    badge.className='prem-badge neg';
+    insight.textContent=pct<-0.5?'Binance premium — bearish lean':'BN premium — Asian demand';
+  } else {
+    badge.className='prem-badge neu';
+    insight.textContent='Parity — no clear premium';
+  }
+  fixLayout(); // recompute scroll top since bar now visible
+}
+
+function startCBFetch(){
+  clearInterval(cbTimer);
+  if(pair==='BTCUSDT'){
+    fetchCBPrice();
+    cbTimer=setInterval(fetchCBPrice,15000);
+  } else {
+    cbPrice=0;updatePremium();
+    document.getElementById('premiumBar').style.display='none';
+  }
+}
+
 /* ══ HELPERS ════════════════════════════════════════════════════ */
 const $=id=>document.getElementById(id);
 const fmt=(n,d)=>n==null||isNaN(n)?'—':n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -804,7 +882,7 @@ function connectPriceWS(){
   ws.onmessage=e=>{const p=+JSON.parse(e.data).p;flashPrice(p);};
 }
 function flashPrice(p){
-  storedPrice=p;const el=$('priceEl');el.textContent=fmt(p,pdec(p));
+  storedPrice=p;updatePremium();const el=$('priceEl');el.textContent=fmt(p,pdec(p));
   if(lastP!==null){el.classList.remove('fu','fd');void el.offsetWidth;el.classList.add(p>=lastP?'fu':'fd');setTimeout(()=>el.classList.remove('fu','fd'),500);const pct=((p-lastP)/lastP*100).toFixed(3);$('chgEl').textContent=(+pct>=0?'+':'')+pct+'%';$('chgEl').className='chg '+(+pct>=0?'up':'dn');}
   lastP=p;
 }
@@ -1062,12 +1140,13 @@ $('pairSel').addEventListener('change',e=>{
   lastP=null;storedFR=NaN;storedOI=NaN;storedPrice=0;weeklyDir='NEUTRAL';
   lastLevels=[0,0,0,0];scores[0]=scores[1]=scores[2]=scores[3]=0;
   [0,1,2,3].forEach(i=>updateTabBias(i));
-  connectPriceWS();hardRefresh();
+  connectPriceWS();hardRefresh();startCBFetch();
 });
 
 connectPriceWS();
 connectLiqWS();
 hardRefresh();
+startCBFetch();
 </script>
 </body>
 </html>
