@@ -17,76 +17,71 @@
 html,body{height:100%;overscroll-behavior:none;}
 body{background:var(--bg);color:var(--text);font-family:Roboto,'Segoe UI',sans-serif;font-size:14px;}
 
-/* ── PTR indicator (absolutely positioned, doesn't affect layout) ── */
-.ptr{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  display:flex;align-items:center;justify-content:center;
-  height:0;overflow:hidden;background:var(--bg2);
-  border-bottom:1px solid var(--bdr);
-  transition:height .15s ease;
-  pointer-events:none;
-}
+/* PTR */
+.ptr{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:center;height:0;overflow:hidden;background:var(--bg2);border-bottom:1px solid var(--bdr);pointer-events:none;}
 .ptr-spin{width:20px;height:20px;border:2px solid var(--bdr2);border-top-color:var(--amb);border-radius:50%;animation:spin .7s linear infinite;display:none;}
 .ptr-txt{font-size:12px;color:var(--t2);margin-left:10px;font-weight:600;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── STICKY HEADER STACK ── */
-/* All sticky elements stack inside .sticky-stack which is position:sticky top:0 */
-.sticky-stack{position:sticky;top:0;z-index:50;background:var(--bg);}
-
-.hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+/* HEADER — fixed height, no wrapping */
+.hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:0 14px;height:52px;display:flex;align-items:center;gap:8px;}
 .logo{font-size:13px;font-weight:800;letter-spacing:.1em;white-space:nowrap;}
 .logo span{color:var(--amb);}
-select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);border-radius:8px;padding:7px 10px;font-size:14px;font-weight:700;cursor:pointer;min-height:40px;flex:1;max-width:170px;}
-.price-row{display:flex;align-items:baseline;gap:7px;flex:1;}
-.price{font-size:21px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;transition:color .15s;}
+select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);border-radius:8px;padding:6px 10px;font-size:13px;font-weight:700;cursor:pointer;height:36px;max-width:160px;flex:1;}
+.price-row{display:flex;align-items:baseline;gap:6px;flex:1;min-width:0;}
+.price{font-size:20px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;transition:color .15s;white-space:nowrap;}
 .price.fu{color:var(--grn);}.price.fd{color:var(--red);}
-.chg{font-size:12px;padding:3px 6px;border-radius:5px;font-weight:700;}
+.chg{font-size:11px;padding:2px 6px;border-radius:5px;font-weight:700;white-space:nowrap;}
 .up{background:rgba(34,197,94,.15);color:var(--grn);}
 .dn{background:rgba(239,68,68,.15);color:var(--red);}
 .neu{background:var(--bg3);color:var(--t2);}
-.hdr-right{margin-left:auto;display:flex;align-items:center;gap:6px;}
-.nbtn{background:var(--bg3);border:1px solid var(--bdr2);color:var(--t3);border-radius:8px;padding:0 10px;font-size:11px;cursor:pointer;min-height:40px;min-width:44px;display:flex;align-items:center;justify-content:center;gap:4px;font-weight:700;}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.nbtn{background:var(--bg3);border:1px solid var(--bdr2);color:var(--t3);border-radius:8px;padding:0 8px;font-size:11px;cursor:pointer;height:36px;display:flex;align-items:center;gap:4px;font-weight:700;white-space:nowrap;}
 .nbtn.on{border-color:var(--grn);color:var(--grn);}
-.rbtn{background:var(--bg3);border:1px solid var(--bdr2);color:var(--t2);border-radius:8px;padding:0 12px;font-size:16px;cursor:pointer;min-height:40px;min-width:44px;display:flex;align-items:center;justify-content:center;}
-.rbtn:active{opacity:.7;}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--t3);}
+.rbtn{background:var(--bg3);border:1px solid var(--bdr2);color:var(--t2);border-radius:8px;width:36px;height:36px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--t3);flex-shrink:0;}
 .dot.live{background:var(--grn);animation:blink 2s infinite;}
 .dot.err{background:var(--red);}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.stxt{font-size:11px;color:var(--t2);}
+.stxt{font-size:10px;color:var(--t2);white-space:nowrap;}
 
-/* Alert banner inside sticky stack */
-.abanner{display:none;padding:8px 14px;font-size:12px;font-weight:700;text-align:center;line-height:1.3;}
+/* ALERT BANNER — fixed height when shown */
+.abanner{display:none;padding:7px 14px;font-size:12px;font-weight:700;text-align:center;line-height:1.3;}
 .abanner.s4{display:block;background:rgba(245,158,11,.1);border-bottom:1px solid rgba(245,158,11,.25);color:var(--amb);}
 .abanner.s5{display:block;background:rgba(34,197,94,.08);border-bottom:1px solid rgba(34,197,94,.2);color:var(--grn);}
 .abanner.s6{display:block;background:rgba(34,197,94,.18);border-bottom:2px solid var(--grn);color:var(--grn);animation:abp 1.5s infinite;}
 @keyframes abp{0%,100%{opacity:1}50%{opacity:.75}}
 
-/* Confluence inside sticky stack */
-.confbar{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:7px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.cbtitle{font-size:10px;color:var(--t3);letter-spacing:.09em;text-transform:uppercase;font-weight:700;white-space:nowrap;}
-.cbadges{display:flex;gap:5px;flex:1;flex-wrap:wrap;}
-.cbadge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;border:1px solid var(--bdr2);background:var(--bg3);color:var(--t3);white-space:nowrap;transition:all .4s;}
-.cbadge.near{border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.1);color:var(--amb);}
-.cbadge.pass{border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.08);color:var(--grn);}
-.cbadge.full{border-color:var(--grn);background:rgba(34,197,94,.18);color:var(--grn);box-shadow:0 0 6px rgba(34,197,94,.2);}
-.conf-all{font-size:11px;font-weight:800;color:var(--t3);white-space:nowrap;}
-.conf-all.on{color:var(--grn);}
+/* TABS — color coded by bias */
+.tftabs{background:var(--bg2);border-bottom:1px solid var(--bdr);display:flex;height:56px;}
+.tftab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border-bottom:2px solid transparent;transition:all .25s;user-select:none;padding:4px 2px;}
+.tftab .tf-icon{font-size:11px;font-weight:700;letter-spacing:.04em;}
+.tftab .tf-label{font-size:8px;font-weight:600;letter-spacing:.05em;color:var(--t3);}
+/* score badge with bias color */
+.tfscore{font-size:10px;padding:2px 7px;border-radius:12px;font-weight:800;background:var(--bg3);color:var(--t3);min-width:28px;text-align:center;transition:all .4s;}
+/* neutral = default grey */
+/* long bias = green */
+.tftab.bias-long .tfscore{background:rgba(34,197,94,.2);color:var(--grn);}
+.tftab.bias-long{border-bottom-color:var(--grn);}
+.tftab.bias-long .tf-icon{color:var(--grn);}
+/* short bias = red */
+.tftab.bias-short .tfscore{background:rgba(239,68,68,.2);color:var(--red);}
+.tftab.bias-short{border-bottom-color:var(--red);}
+.tftab.bias-short .tf-icon{color:var(--red);}
+/* active tab gets amber underline override */
+.tftab.active{border-bottom-color:var(--amb) !important;}
+.tftab.active .tf-icon{color:var(--text) !important;}
+/* neutral active */
+.tftab.bias-neutral .tfscore{background:var(--bg3);color:var(--t3);}
 
-/* TF tabs inside sticky stack — order: Weekly, Swing, Hourly, Scalp */
-.tftabs{background:var(--bg2);border-bottom:1px solid var(--bdr);display:flex;}
-.tftab{flex:1;padding:8px 2px;text-align:center;cursor:pointer;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--t3);border-bottom:2px solid transparent;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:48px;justify-content:center;user-select:none;}
-.tftab.active{color:var(--text);border-bottom-color:var(--amb);}
-.tflabel{font-size:8px;font-weight:600;letter-spacing:.05em;}
-.tftab.active .tflabel{color:var(--t2);}
-.tfscore{font-size:9px;padding:2px 5px;border-radius:10px;font-weight:800;background:var(--bg3);color:var(--t3);min-width:24px;}
-.tfscore.sp{background:rgba(34,197,94,.15);color:var(--grn);}
-.tfscore.sn{background:rgba(245,158,11,.15);color:var(--amb);}
-.tfscore.sf{background:rgba(239,68,68,.1);color:var(--red);}
-
-/* ── SCROLL BODY — sits below sticky stack ── */
-.scroll-body{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+/* SCROLL BODY — fixed positioning so no layout shift */
+.scroll-body{
+  position:fixed;
+  left:0;right:0;bottom:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  /* top set by JS once after load */
+}
 
 /* PAGES */
 .page{display:none;padding:12px 12px 40px;max-width:700px;margin:0 auto;flex-direction:column;gap:10px;}
@@ -104,7 +99,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .macro-banner.bull .macro-tag{color:var(--grn);}
 .macro-banner.bear .macro-tag{color:var(--red);}
 .macro-banner.flat .macro-tag{color:var(--amb);}
-.macro-title{font-size:20px;font-weight:800;margin-bottom:4px;}
+.macro-title{font-size:19px;font-weight:800;margin-bottom:4px;}
 .macro-sub{font-size:12px;color:var(--t2);line-height:1.5;}
 .macro-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
 .macro-stat{background:var(--bg3);border-radius:8px;padding:8px 10px;text-align:center;}
@@ -134,8 +129,6 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .tval{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2;}
 .tbox.en .tval{color:var(--text);}.tbox.sl .tval{color:var(--red);}.tbox.tp .tval{color:var(--grn);}
 .tsub{font-size:10px;color:var(--t2);margin-top:2px;line-height:1.3;}
-
-/* STAT / LEVEL ROWS */
 .statrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:7px;}
 .sbox{background:var(--bg3);border-radius:10px;padding:8px;text-align:center;}
 .slbl{font-size:9px;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;font-weight:600;margin-bottom:2px;}
@@ -148,11 +141,14 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .lvlval{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;}
 .lvlhi{color:var(--grn);}.lvllo{color:var(--red);}
 
-/* OI TREND */
+/* WEEKLY WARN */
+.weekly-warn{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:10px 13px;font-size:11px;color:#f87171;line-height:1.5;}
+
+/* OI */
 .oi-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:14px;}
 .oi-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
 .oi-title{font-size:10px;color:var(--t3);letter-spacing:.09em;text-transform:uppercase;font-weight:700;}
-.oi-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.oi-badges{display:flex;gap:8px;}
 .oi-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;background:var(--bg3);color:var(--t3);}
 .oi-badge.rising{background:rgba(34,197,94,.12);color:var(--grn);}
 .oi-badge.falling{background:rgba(239,68,68,.12);color:var(--red);}
@@ -183,9 +179,6 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .liqwrap{position:relative;height:140px;width:100%;}
 .liq-note{font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5;font-style:italic;}
 
-/* WEEKLY WARN */
-.weekly-warn{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:10px 13px;font-size:11px;color:#f87171;line-height:1.5;}
-
 /* DIVIDER */
 .divider{display:flex;align-items:center;gap:10px;color:var(--t3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--bdr);}
@@ -198,8 +191,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .sigtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
 .signame{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);font-weight:700;}
 .sdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.sp{background:var(--grn);box-shadow:0 0 5px rgba(34,197,94,.5);}
-.sf{background:var(--red);}.sw{background:var(--amb);}.sn{background:var(--t3);}
+.sp{background:var(--grn);box-shadow:0 0 5px rgba(34,197,94,.5);}.sf{background:var(--red);}.sw{background:var(--amb);}.sn{background:var(--t3);}
 .sigval{font-size:14px;font-weight:800;margin-bottom:2px;line-height:1.2;}
 .sigmeta{font-size:11px;color:var(--t2);line-height:1.4;}
 .sigtf{font-size:9px;color:var(--t3);margin-top:4px;font-weight:700;letter-spacing:.06em;}
@@ -231,14 +223,11 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .gitem:last-child{border-bottom:none;}
 .gitem b{color:var(--text);white-space:nowrap;}
 .gico{flex-shrink:0;width:18px;}
-
-/* FOOTER */
 .foot{font-size:11px;color:var(--t3);line-height:1.8;}
 .foot b{color:var(--t2);}
 
-/* DESKTOP */
 @media(min-width:640px){
-  .page{padding:18px 20px 18px;max-width:1100px;}
+  .page{padding:18px 20px;max-width:1100px;}
   .sigs{grid-template-columns:repeat(3,1fr);}
   .charts2{display:grid;grid-template-columns:1.4fr 1fr;gap:12px;}
 }
@@ -246,14 +235,10 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 </head>
 <body>
 
-<!-- PTR — outside layout flow -->
-<div class="ptr" id="ptrEl">
-  <div class="ptr-spin" id="ptrSpin"></div>
-  <div class="ptr-txt" id="ptrTxt">Pull down to refresh</div>
-</div>
+<div class="ptr" id="ptrEl"><div class="ptr-spin" id="ptrSpin"></div><div class="ptr-txt" id="ptrTxt">Pull down to refresh</div></div>
 
-<!-- STICKY HEADER STACK — all sticky elements together, no layout gaps -->
-<div class="sticky-stack" id="stickyStack">
+<!-- FIXED HEADER STACK -->
+<div id="hdrStack" style="position:fixed;top:0;left:0;right:0;z-index:50;">
   <div class="hdr">
     <div class="logo">FUTURES <span>SIGNAL</span></div>
     <select id="pairSel">
@@ -278,45 +263,40 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       <span class="stxt" id="sTxt">…</span>
     </div>
   </div>
-
   <div class="abanner" id="alertBanner"></div>
-
-  <div class="confbar">
-    <div class="cbtitle">Confluence</div>
-    <div class="cbadges">
-      <div class="cbadge" id="confW">Weekly —</div>
-      <div class="cbadge" id="confD">Swing —</div>
-      <div class="cbadge" id="confH">1H —</div>
-      <div class="cbadge" id="confS">Scalp —</div>
-    </div>
-    <div class="conf-all" id="confAll">Not aligned</div>
-  </div>
-
-  <!-- Tab order: Weekly → Swing → Hourly → Scalp (big picture to small) -->
+  <!-- TABS — Weekly→Swing→Hourly→Scalp, color-coded by bias -->
   <div class="tftabs">
-    <div class="tftab active" id="tft3" onclick="switchPage(3)">
-      <span>🌐 Weekly</span><span class="tflabel">Macro</span><span class="tfscore" id="score3">—</span>
+    <div class="tftab active bias-neutral" id="tft3" onclick="switchPage(3)">
+      <span class="tf-icon">🌐 Weekly</span>
+      <span class="tf-label">MACRO</span>
+      <span class="tfscore" id="score3">—</span>
     </div>
-    <div class="tftab" id="tft2" onclick="switchPage(2)">
-      <span>🌊 Swing</span><span class="tflabel">Daily–4H</span><span class="tfscore" id="score2">—</span>
+    <div class="tftab bias-neutral" id="tft2" onclick="switchPage(2)">
+      <span class="tf-icon">🌊 Swing</span>
+      <span class="tf-label">DAILY–4H</span>
+      <span class="tfscore" id="score2">—</span>
     </div>
-    <div class="tftab" id="tft1" onclick="switchPage(1)">
-      <span>📈 Hourly</span><span class="tflabel">1H–4H</span><span class="tfscore" id="score1">—</span>
+    <div class="tftab bias-neutral" id="tft1" onclick="switchPage(1)">
+      <span class="tf-icon">📈 Hourly</span>
+      <span class="tf-label">1H–4H</span>
+      <span class="tfscore" id="score1">—</span>
     </div>
-    <div class="tftab" id="tft0" onclick="switchPage(0)">
-      <span>⚡ Scalp</span><span class="tflabel">1–15m</span><span class="tfscore" id="score0">—</span>
+    <div class="tftab bias-neutral" id="tft0" onclick="switchPage(0)">
+      <span class="tf-icon">⚡ Scalp</span>
+      <span class="tf-label">1–15M</span>
+      <span class="tfscore" id="score0">—</span>
     </div>
   </div>
 </div>
 
-<!-- SCROLL BODY — height calculated in JS after sticky stack renders -->
+<!-- SCROLL BODY -->
 <div class="scroll-body" id="scrollBody">
 
-<!-- ═══ PAGE 3 — WEEKLY (default) ═══ -->
+<!-- PAGE 3 — WEEKLY -->
 <div class="page active" id="page3">
   <div class="macro-banner flat" id="macroBanner">
     <div class="macro-tag">Weekly macro view</div>
-    <div class="macro-title" id="macroTitle">Loading weekly data…</div>
+    <div class="macro-title" id="macroTitle">Loading…</div>
     <div class="macro-sub" id="macroSub">Fetching weekly + monthly candles</div>
     <div class="macro-stats">
       <div class="macro-stat"><div class="macro-stat-lbl">Weekly trend</div><div class="macro-stat-val" id="mWeekTrend">—</div></div>
@@ -329,13 +309,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       <div class="rw"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="30" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="7"/>
         <circle cx="38" cy="38" r="30" fill="none" id="arc3" stroke="var(--t3)" stroke-width="7" stroke-dasharray="188" stroke-dashoffset="188" stroke-linecap="round" transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .9s,stroke .5s;"/></svg>
         <div class="rnum" id="rnum3">—</div></div>
-      <div class="vbody">
-        <div class="vtag">Weekly macro · big picture</div>
-        <div class="vtitle" id="vtitle3">Loading…</div>
-        <div class="vsub" id="vsub3">Sets allowed direction for all lower tabs</div>
-        <div class="vdir" id="vdir3"></div>
-        <div class="vtime" id="vtime3"></div>
-      </div>
+      <div class="vbody"><div class="vtag">Weekly macro · big picture</div><div class="vtitle" id="vtitle3">Loading…</div><div class="vsub" id="vsub3">Sets direction for all lower tabs</div><div class="vdir" id="vdir3"></div><div class="vtime" id="vtime3"></div></div>
     </div>
   </div>
   <div class="card" style="padding:12px;">
@@ -363,65 +337,45 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
   <div class="liqmap">
     <div class="liq-title"><span><span class="liq-live-dot"></span>Live liquidation clusters</span><span class="liq-count" id="liqCount3">0 events</span></div>
     <div class="liq-levels" id="liqlevels3">
-      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liq zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Shorts squeezed above</div></div>
-      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liq zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Longs stopped below</div></div>
+      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liq zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Shorts squeezed above price</div></div>
+      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liq zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Longs stopped below price</div></div>
     </div>
     <div class="liq-legend"><span><i style="background:#22c55e;opacity:.8"></i>Short liq (above)</span><span><i style="background:#ef4444;opacity:.8"></i>Long liq (below)</span></div>
     <div class="liqwrap"><canvas id="liqc3"></canvas></div>
-    <div class="liq-note">Weekly macro clusters = largest stop-hunt targets. Major sweeps to these happen over days/weeks.</div>
+    <div class="liq-note">Weekly macro clusters = largest stop-hunt targets. Major sweeps here happen over days/weeks.</div>
   </div>
   <div class="divider">Weekly signals</div>
   <div class="sigs" id="sigs3"><div class="sig"><div class="signame">Loading…</div></div></div>
   <div class="divider">Weekly + Monthly charts</div>
   <div class="charts2">
-    <div class="card">
-      <div class="clbl">Weekly Price · EMA10 · EMA20 · 200W MA</div>
-      <div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA10</span><span><i style="background:#ef4444"></i>EMA20</span><span><i style="background:#8b5cf6"></i>200W</span></div>
-      <div class="cwrap" style="height:140px;"><canvas id="pc3"></canvas></div>
-    </div>
-    <div class="card" style="margin-top:10px;">
-      <div class="clbl">Weekly RSI · cycle zones</div>
-      <div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.5)"></i>&lt;35 oversold</span><span><i style="background:rgba(239,68,68,.4)"></i>&gt;65 overbought</span></div>
-      <div class="cwrap" style="height:140px;"><canvas id="rc3"></canvas></div>
-    </div>
+    <div class="card"><div class="clbl">Weekly Price · EMA10 · EMA20 · 200W MA</div><div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA10</span><span><i style="background:#ef4444"></i>EMA20</span><span><i style="background:#8b5cf6"></i>200W</span></div><div class="cwrap" style="height:140px;"><canvas id="pc3"></canvas></div></div>
+    <div class="card" style="margin-top:10px;"><div class="clbl">Weekly RSI · cycle zones</div><div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.5)"></i>&lt;35</span><span><i style="background:rgba(239,68,68,.4)"></i>&gt;65</span></div><div class="cwrap" style="height:140px;"><canvas id="rc3"></canvas></div></div>
   </div>
   <div class="divider">Info</div>
-  <div class="card">
-    <div class="fobox">
-      <div><div class="folbl">Funding rate</div><div class="foval" id="fo3r">—</div><div class="fometa" id="fo3rm">Multi-week holds = many funding periods</div></div>
-      <div><div class="folbl">Open interest</div><div class="foval" id="fo3oi">—</div><div class="fometa">Weekly OI expansion = cycle continuation</div></div>
-    </div>
-  </div>
+  <div class="card"><div class="fobox"><div><div class="folbl">Funding rate</div><div class="foval" id="fo3r">—</div><div class="fometa" id="fo3rm">Multi-week holds = many funding periods</div></div><div><div class="folbl">Open interest</div><div class="foval" id="fo3oi">—</div><div class="fometa">Weekly OI expansion = cycle continuation</div></div></div></div>
   <div class="divider">Guide</div>
   <div class="guidance">
     <div class="gtitle">🌐 Weekly macro — start here every session</div>
-    <div class="gitem"><span class="gico">🏔</span><span><b>This tab sets the allowed direction for all other tabs.</b> Weekly bearish = only take short signals below. Trading longs in a weekly downtrend is fighting the macro.</span></div>
-    <div class="gitem"><span class="gico">⏱</span><span><b>These are not scalp entries.</b> Use weekly to determine position bias, then execute on Swing → Hourly → Scalp tabs in that direction.</span></div>
-    <div class="gitem"><span class="gico">📐</span><span><b>200-week MA is the macro floor.</b> BTC has never closed a weekly candle below it without recovering. Price above = bull structure, below = bear.</span></div>
-    <div class="gitem"><span class="gico">📊</span><span><b>Weekly RSI below 35</b> = historically significant buy zone. Above 65 = major distribution. These appear rarely and are high-conviction signals.</span></div>
-    <div class="gitem"><span class="gico">🔗</span><span><b>All 4 tabs green in same direction</b> = the highest confidence trade setup that exists on this dashboard. Rare. Act on it.</span></div>
-    <div class="gitem"><span class="gico">💡</span><span><b>Why lower-timeframe trades fail:</b> Scalping longs in a weekly downtrend means buying into macro distribution. The highest timeframe trend always wins eventually.</span></div>
+    <div class="gitem"><span class="gico">🏔</span><span><b>This tab sets the allowed direction.</b> Weekly bearish = only take short signals on all lower tabs. Fighting the weekly trend is the #1 reason entries fail.</span></div>
+    <div class="gitem"><span class="gico">📐</span><span><b>200-week MA is the macro floor.</b> Price above = bull structure. Price below = bear market. BTC has never closed a weekly candle below it without recovering.</span></div>
+    <div class="gitem"><span class="gico">📊</span><span><b>Weekly RSI below 35</b> = historically significant buy zone. Above 65 = major distribution. These are rare, high-conviction signals.</span></div>
+    <div class="gitem"><span class="gico">🔗</span><span><b>All 4 tabs green + same direction</b> = the highest confidence setup on this dashboard. Act on it.</span></div>
+    <div class="gitem"><span class="gico">🎨</span><span><b>Tab colors:</b> Green background = LONG bias. Red = SHORT bias. Grey = neutral. Check this before switching to any lower tab.</span></div>
   </div>
-  <div class="card"><div class="foot"><b>Weekly signals:</b> EMA10/20 cross · Price vs 200W MA · Weekly RSI · Monthly trend · Weekly volume · OI direction.<br><b>Use this for direction bias only. Execute entries on lower tabs.</b><br><b>⚠ Learning only. Not financial advice.</b></div></div>
+  <div class="card"><div class="foot"><b>Weekly signals:</b> EMA10/20 cross · Price vs 200W MA · Weekly RSI · Monthly trend · Weekly volume · OI direction.<br><b>Use for direction bias only. Execute entries on lower tabs.</b><br><b>⚠ Learning only. Not financial advice.</b></div></div>
 </div>
 
-<!-- ═══ PAGE 2 — SWING ═══ -->
+<!-- PAGE 2 — SWING -->
 <div class="page" id="page2">
   <div class="card">
     <div class="verdict">
       <div class="rw"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="30" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="7"/>
         <circle cx="38" cy="38" r="30" fill="none" id="arc2" stroke="var(--t3)" stroke-width="7" stroke-dasharray="188" stroke-dashoffset="188" stroke-linecap="round" transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .9s,stroke .5s;"/></svg>
         <div class="rnum" id="rnum2">—</div></div>
-      <div class="vbody">
-        <div class="vtag">Swing · Daily – 4H</div>
-        <div class="vtitle" id="vtitle2">Loading…</div>
-        <div class="vsub" id="vsub2">Fetching Daily + 4H candles</div>
-        <div class="vdir" id="vdir2"></div>
-        <div class="vtime" id="vtime2"></div>
-      </div>
+      <div class="vbody"><div class="vtag">Swing · Daily – 4H</div><div class="vtitle" id="vtitle2">Loading…</div><div class="vsub" id="vsub2">Fetching Daily + 4H candles</div><div class="vdir" id="vdir2"></div><div class="vtime" id="vtime2"></div></div>
     </div>
   </div>
-  <div class="weekly-warn" id="weeklyWarn2" style="display:none;">⚠️ <b>Weekly macro is bearish.</b> Swing longs conflict with macro trend. Only short swings are macro-aligned.</div>
+  <div class="weekly-warn" id="weeklyWarn2" style="display:none;">⚠️ <b>Weekly macro is bearish.</b> Swing longs conflict with macro. Only short swings are macro-aligned.</div>
   <div class="card" style="padding:12px;">
     <div class="targets">
       <div class="tbox en"><div class="tlbl">Entry zone</div><div class="tval" id="t2en">—</div><div class="tsub">Near prev day level</div></div>
@@ -461,10 +415,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
     <div class="card" style="margin-top:10px;"><div class="clbl">RSI 14 · 4H · swing zones</div><div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.4)"></i>Buy 30–52</span><span><i style="background:rgba(239,68,68,.35)"></i>Sell 50–72</span></div><div class="cwrap"><canvas id="rc2"></canvas></div></div>
   </div>
   <div class="divider">Info</div>
-  <div class="card">
-    <div class="fobox"><div><div class="folbl">Funding rate</div><div class="foval" id="fo2r">—</div><div class="fometa" id="fo2rm">Paid every 8h — 9× on 3-day hold</div></div><div><div class="folbl">Open interest</div><div class="foval" id="fo2oi">—</div><div class="fometa">See OI trend chart above</div></div></div>
-    <div class="atrrow"><div class="atrbox"><div class="atrlbl">Daily ATR</div><div class="atrval" id="atr2d">—</div></div><div class="atrbox"><div class="atrlbl">4H ATR</div><div class="atrval" id="atr2h">—</div></div><div class="atrbox"><div class="atrlbl">ATR SL dist</div><div class="atrval" id="atr2sl">—</div></div></div>
-  </div>
+  <div class="card"><div class="fobox"><div><div class="folbl">Funding rate</div><div class="foval" id="fo2r">—</div><div class="fometa" id="fo2rm">Paid every 8h — 9× on 3-day hold</div></div><div><div class="folbl">Open interest</div><div class="foval" id="fo2oi">—</div><div class="fometa">See OI trend chart above</div></div></div><div class="atrrow"><div class="atrbox"><div class="atrlbl">Daily ATR</div><div class="atrval" id="atr2d">—</div></div><div class="atrbox"><div class="atrlbl">4H ATR</div><div class="atrval" id="atr2h">—</div></div><div class="atrbox"><div class="atrlbl">ATR SL dist</div><div class="atrval" id="atr2sl">—</div></div></div></div>
   <div class="divider">Guide</div>
   <div class="guidance">
     <div class="gtitle">🌊 Swing guide — 4 hours to 3 days</div>
@@ -473,25 +424,18 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
     <div class="gitem"><span class="gico">📍</span><span><b>Entry at key levels only</b> — prev day high/low or major 4H structure. Never enter mid-range.</span></div>
     <div class="gitem"><span class="gico">🛑</span><span><b>Stop = 1× Daily ATR.</b> Purposely wide. BTC moves $1k–3k/day — stop must survive noise.</span></div>
     <div class="gitem"><span class="gico">⏰</span><span><b>Time exit:</b> If trade hasn't moved 50% toward TP in 24h, close manually.</span></div>
-    <div class="gitem"><span class="gico">📅</span><span><b>Frequency: 2–5 setups per week.</b> Most days you should be watching, not trading.</span></div>
   </div>
   <div class="card"><div class="foot"><b>Rules:</b> Daily EMA trend · 4H EMA align · 4H RSI swing zone · Daily vol ≥1.2× · Funding neutral · OI rising.<br><b>Risk:</b> SL = 1× ATR · TP = 1.8× ATR · 2× lev max · 1 trade · 5/week.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
 </div>
 
-<!-- ═══ PAGE 1 — HOURLY ═══ -->
+<!-- PAGE 1 — HOURLY -->
 <div class="page" id="page1">
   <div class="card">
     <div class="verdict">
       <div class="rw"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="30" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="7"/>
         <circle cx="38" cy="38" r="30" fill="none" id="arc1" stroke="var(--t3)" stroke-width="7" stroke-dasharray="188" stroke-dashoffset="188" stroke-linecap="round" transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .9s,stroke .5s;"/></svg>
         <div class="rnum" id="rnum1">—</div></div>
-      <div class="vbody">
-        <div class="vtag">Hourly · 1H – 4H</div>
-        <div class="vtitle" id="vtitle1">Loading…</div>
-        <div class="vsub" id="vsub1">Fetching 1H + 4H candles</div>
-        <div class="vdir" id="vdir1"></div>
-        <div class="vtime" id="vtime1"></div>
-      </div>
+      <div class="vbody"><div class="vtag">Hourly · 1H – 4H</div><div class="vtitle" id="vtitle1">Loading…</div><div class="vsub" id="vsub1">Fetching 1H + 4H candles</div><div class="vdir" id="vdir1"></div><div class="vtime" id="vtime1"></div></div>
     </div>
   </div>
   <div class="weekly-warn" id="weeklyWarn1" style="display:none;">⚠️ <b>Weekly macro is bearish.</b> Hourly longs conflict with macro trend. Prioritise short setups.</div>
@@ -535,32 +479,25 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
   <div class="guidance">
     <div class="gtitle">📈 Hourly guide — 2 to 12 hours</div>
     <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 2–12 hours.</b> Check every 2–4h. Set orders then walk away.</span></div>
-    <div class="gitem"><span class="gico">🏔</span><span><b>Weekly must agree.</b> Hourly trades in the direction of the weekly trend win significantly more often.</span></div>
+    <div class="gitem"><span class="gico">🏔</span><span><b>Weekly must agree.</b> Hourly trades in weekly trend direction win significantly more.</span></div>
     <div class="gitem"><span class="gico">📍</span><span><b>Entry near 1H key levels only.</b> Mid-range = no trade.</span></div>
     <div class="gitem"><span class="gico">🛑</span><span><b>Stop below the 1H swing low</b> — 0.5–1% wide. Enough for wick noise.</span></div>
     <div class="gitem"><span class="gico">⏰</span><span><b>Time exit:</b> If trade hasn't moved 40% toward TP in 6 hours, close manually.</span></div>
-    <div class="gitem"><span class="gico">💰</span><span><b>Funding:</b> You'll pay one 8h period. Ensure TP covers this before entering.</span></div>
   </div>
   <div class="card"><div class="foot"><b>Rules:</b> 4H trend · 1H EMA align · RSI 40–60 · Vol ≥1.3× · Funding neutral · OI rising.<br><b>Risk:</b> SL ~0.5–1% · TP ~1–2% · 2–3× lev · 1 trade · 5/day max.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
 </div>
 
-<!-- ═══ PAGE 0 — SCALP ═══ -->
+<!-- PAGE 0 — SCALP -->
 <div class="page" id="page0">
   <div class="card">
     <div class="verdict">
       <div class="rw"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="30" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="7"/>
         <circle cx="38" cy="38" r="30" fill="none" id="arc0" stroke="var(--t3)" stroke-width="7" stroke-dasharray="188" stroke-dashoffset="188" stroke-linecap="round" transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .9s,stroke .5s;"/></svg>
         <div class="rnum" id="rnum0">—</div></div>
-      <div class="vbody">
-        <div class="vtag">Scalp · 1–15 min</div>
-        <div class="vtitle" id="vtitle0">Loading…</div>
-        <div class="vsub" id="vsub0">Fetching 1m + 15m candles</div>
-        <div class="vdir" id="vdir0"></div>
-        <div class="vtime" id="vtime0"></div>
-      </div>
+      <div class="vbody"><div class="vtag">Scalp · 1–15 min</div><div class="vtitle" id="vtitle0">Loading…</div><div class="vsub" id="vsub0">Fetching 1m + 15m candles</div><div class="vdir" id="vdir0"></div><div class="vtime" id="vtime0"></div></div>
     </div>
   </div>
-  <div class="weekly-warn" id="weeklyWarn0" style="display:none;">⚠️ <b>Weekly macro is bearish.</b> Scalp longs go against the macro trend — lower win rate. Only short setups align with higher timeframes.</div>
+  <div class="weekly-warn" id="weeklyWarn0" style="display:none;">⚠️ <b>Weekly macro is bearish.</b> Scalp longs go against the macro trend. Only short setups are macro-aligned.</div>
   <div class="card" style="padding:12px;">
     <div class="targets">
       <div class="tbox en"><div class="tlbl">Entry</div><div class="tval" id="t0en">—</div><div class="tsub">Market price</div></div>
@@ -605,7 +542,6 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
     <div class="gitem"><span class="gico">🕐</span><span><b>Entry timing:</b> Wait for the 1m candle to fully close. Enter on open of the next — never mid-candle.</span></div>
     <div class="gitem"><span class="gico">🛑</span><span><b>Stop is fixed at 0.25%.</b> Do not move it. This rule keeps you alive.</span></div>
     <div class="gitem"><span class="gico">💧</span><span><b>Enter after a liquidity sweep reversal,</b> not before the sweep. The sweep is the manipulation.</span></div>
-    <div class="gitem"><span class="gico">🔁</span><span><b>After a trade:</b> Wait 15 min. No revenge trading. No immediate re-entry.</span></div>
   </div>
   <div class="card"><div class="foot"><b>Rules:</b> 15m trend · 1m EMA cross · RSI 44–57 · Vol ≥1.5× · Funding neutral · OI rising.<br><b>Risk:</b> SL 0.25% · TP 0.375% · 3–5× lev · 1 trade · 20/day · Stop −3%/day.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
 </div>
@@ -613,26 +549,21 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 </div><!-- /scroll-body -->
 
 <script>
-/* ══ LAYOUT — calculate scroll-body height after sticky stack renders ══ */
+/* ══ LAYOUT — set scroll body top once after DOM ready ══════════ */
 function fixLayout(){
-  const stack=document.getElementById('stickyStack');
+  const stack=document.getElementById('hdrStack');
   const sb=document.getElementById('scrollBody');
-  const h=stack.getBoundingClientRect().height;
-  sb.style.height=`calc(100vh - ${h}px)`;
-  sb.style.marginTop=`${h}px`; // push it below sticky stack
+  const h=stack.offsetHeight;
+  sb.style.top=h+'px';
 }
-// Run after every frame to catch banner height changes
-let layoutRaf=0;
-function scheduleLayout(){
-  cancelAnimationFrame(layoutRaf);
-  layoutRaf=requestAnimationFrame(()=>{fixLayout();});
-}
-window.addEventListener('resize',scheduleLayout);
-// Observe sticky stack for size changes (banner appearing/disappearing)
-new ResizeObserver(scheduleLayout).observe(document.getElementById('stickyStack'));
-scheduleLayout();
+// Run once immediately, then again after a short delay to catch any render delay
+fixLayout();
+requestAnimationFrame(fixLayout);
+setTimeout(fixLayout,300);
+// Watch for banner height changes (banner appearing makes stack taller)
+new ResizeObserver(fixLayout).observe(document.getElementById('hdrStack'));
 
-/* ══ PULL TO REFRESH ══ */
+/* ══ PTR ═══════════════════════════════════════════════════════ */
 (function(){
   const sb=document.getElementById('scrollBody');
   const ind=document.getElementById('ptrEl');
@@ -640,44 +571,30 @@ scheduleLayout();
   const spn=document.getElementById('ptrSpin');
   let startY=0,pulling=false,refreshing=false;
   const THRESH=70;
-
-  document.addEventListener('touchstart',e=>{
-    if(sb.scrollTop<=0) startY=e.touches[0].clientY;
-    else startY=0;
-  },{passive:true});
-
+  document.addEventListener('touchstart',e=>{startY=sb.scrollTop<=0?e.touches[0].clientY:0;},{passive:true});
   document.addEventListener('touchmove',e=>{
-    if(refreshing||startY===0) return;
+    if(refreshing||!startY)return;
     const dy=e.touches[0].clientY-startY;
     if(dy>6&&sb.scrollTop<=0){
       pulling=true;
-      const h=Math.min(dy*0.45,THRESH);
+      const h=Math.min(dy*.45,THRESH);
       ind.style.height=h+'px';
-      txt.textContent=h>=THRESH*0.88?'Release to refresh ↑':'Pull down to refresh ↓';
+      txt.textContent=h>=THRESH*.88?'Release to refresh ↑':'Pull down to refresh ↓';
       spn.style.display='none';
-    } else if(pulling&&dy<=0){
-      ind.style.height='0';pulling=false;
-    }
+    } else if(pulling&&dy<=0){ind.style.height='0';pulling=false;}
   },{passive:true});
-
   document.addEventListener('touchend',()=>{
-    if(!pulling){startY=0;return;}
-    pulling=false;
+    if(!pulling){startY=0;return;}pulling=false;
     const h=parseInt(ind.style.height)||0;
-    if(h>=THRESH*0.8){
-      refreshing=true;
-      ind.style.height='48px';
-      txt.textContent='Refreshing…';
-      spn.style.display='block';
+    if(h>=THRESH*.8){
+      refreshing=true;ind.style.height='48px';txt.textContent='Refreshing…';spn.style.display='block';
       hardRefresh();
       setTimeout(()=>{ind.style.height='0';refreshing=false;startY=0;},2000);
-    } else {
-      ind.style.height='0';startY=0;
-    }
+    } else {ind.style.height='0';startY=0;}
   },{passive:true});
 })();
 
-/* ══ PAGE NAV ══ */
+/* ══ PAGE NAV ═══════════════════════════════════════════════════ */
 let activePage=3;
 function switchPage(i){
   [0,1,2,3].forEach(j=>{
@@ -690,14 +607,26 @@ function switchPage(i){
   drawChart(i);
 }
 
-/* ══ ALERTS ══ */
+/* ══ TAB BIAS COLORS ════════════════════════════════════════════ */
+// dirs[i] and scores[i]/totals[i] → set tab class
+function updateTabBias(i){
+  const tab=document.getElementById('tft'+i);
+  const d=dirs[i];
+  const pct=totals[i]?scores[i]/totals[i]:0;
+  tab.classList.remove('bias-long','bias-short','bias-neutral');
+  if(d==='LONG')tab.classList.add('bias-long');
+  else if(d==='SHORT')tab.classList.add('bias-short');
+  else tab.classList.add('bias-neutral');
+}
+
+/* ══ ALERTS ═════════════════════════════════════════════════════ */
 let alertsOn=false,notifPerm='default',lastLevels=[0,0,0,0];
-const TFNAMES=['⚡ 1–15m Scalp','📈 1H Hourly','🌊 Swing','🌐 Weekly'];
+const TFNAMES=['⚡ Scalp','📈 Hourly','🌊 Swing','🌐 Weekly'];
 async function toggleAlerts(){
   if(!alertsOn){
     if('Notification' in window)notifPerm=await Notification.requestPermission();
     alertsOn=true;document.getElementById('notifBtn').className='nbtn on';document.getElementById('notifBtn').textContent='🔔 ON';
-    toast('Alerts on — fires at 4, 5, 6 signals · includes pair + tab');
+    toast('Alerts on — fires at 4, 5, 6 signals per tab · includes pair + tab name');
   } else {
     alertsOn=false;lastLevels=[0,0,0,0];document.getElementById('notifBtn').className='nbtn';document.getElementById('notifBtn').textContent='🔔 ALERTS';toast('Alerts off');
   }
@@ -719,37 +648,24 @@ function toast(msg){
   t.textContent=msg;t.style.opacity='1';clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',3500);
 }
 
-/* ══ CONFLUENCE ══ */
+/* ══ ALERT BANNER ═══════════════════════════════════════════════ */
 const scores=[0,0,0,0],totals=[4,4,4,4],dirs=['—','—','—','—'];
 let weeklyDir='NEUTRAL';
-function updateConfluence(){
-  // Order: Weekly=3, Swing=2, Hourly=1, Scalp=0 → badges: confW, confD, confH, confS
-  const map=[['confS',0],['confH',1],['confD',2],['confW',3]];
-  const labels=['Scalp','1H','Swing','Wkly'];
-  map.forEach(([id,i])=>{
-    const el=document.getElementById(id);
-    const pct=totals[i]?scores[i]/totals[i]:0;
-    el.textContent=`${labels[i]==='Wkly'?'Wkly':labels[i]} ${scores[i]}/${totals[i]}`;
-    el.className='cbadge'+(pct>=1?' full':pct>=0.8?' pass':pct>=0.6?' near':'');
-  });
-  const allFull=[0,1,2,3].every(i=>totals[i]>0&&scores[i]>=totals[i]);
-  const sameDir=dirs.every(d=>d===dirs[0]&&d!=='—'&&d!=='NEUTRAL');
-  const ca=document.getElementById('confAll');
-  if(allFull&&sameDir){ca.textContent=`🔥 ALL 4 — ${dirs[0]}`;ca.className='conf-all on';if(alertsOn){if(navigator.vibrate)navigator.vibrate([500,150,500,150,500,150,500]);toast(`🔥 ALL 4 TABS ALIGNED [${pair}] — ${dirs[0]} — elite confidence!`);}}
-  else{const ct=[0,1,2,3].filter(i=>totals[i]&&scores[i]>=totals[i]).length;ca.textContent=ct>0?`${ct}/4 full`:'Not aligned';ca.className='conf-all';}
-  // Weekly warn banners on lower tabs
+function updateBanner(){
+  // Update tab bias colors
+  [0,1,2,3].forEach(updateTabBias);
+  // weekly warn banners
   const wBear=weeklyDir==='SHORT';
   [0,1,2].forEach(i=>{const w=document.getElementById('weeklyWarn'+i);if(w)w.style.display=wBear?'block':'none';});
-  // Alert banner
+  // alert banner — highest signal count
   const mx=Math.max(...scores),mxi=scores.indexOf(mx),b=document.getElementById('alertBanner');
   if(totals[mxi]&&mx>=totals[mxi]){b.className='abanner s6';b.textContent=`🚨 ${TFNAMES[mxi]} [${pair}] ALL GREEN — ${dirs[mxi]} CONFIRMED`;}
   else if(totals[mxi]&&mx>=totals[mxi]-1){b.className='abanner s5';b.textContent=`🔔 ${TFNAMES[mxi]} [${pair}]: ${mx}/${totals[mxi]} — ${dirs[mxi]} nearly ready`;}
   else if(mx>=4){b.className='abanner s4';b.textContent=`⚠️ ${TFNAMES[mxi]} [${pair}]: ${mx}/${totals[mxi]} — ${dirs[mxi]} building`;}
   else b.className='abanner';
-  scheduleLayout(); // re-measure after banner change
 }
 
-/* ══ OI — localStorage ══ */
+/* ══ OI — localStorage ══════════════════════════════════════════ */
 const OI_KEY=()=>`oi_${pair}`;
 const OI_MAX=200;
 function oiLoad(){try{const r=localStorage.getItem(OI_KEY());return r?JSON.parse(r):[]}catch(e){return [];}}
@@ -773,7 +689,7 @@ function renderOIChart(tab){
   if(insightEl){
     if(hist.length<5)insightEl.innerHTML='<b>Building OI history…</b> Accumulates every 15s. ~2 min to warm up.';
     else if(trend==='rising')insightEl.innerHTML=`<b>OI rising ↑</b> — New money entering. Real positioning, not a squeeze. Strong confirmation for ${d==='NEUTRAL'?'directional':d} trades.`;
-    else if(trend==='falling'&&d==='LONG')insightEl.innerHTML='<b>⚠️ OI falling + price rising</b> — Short squeeze only, not real buying. Higher failure risk — reduce size or skip.';
+    else if(trend==='falling'&&d==='LONG')insightEl.innerHTML='<b>⚠️ OI falling + price rising</b> — Short squeeze only. Not real buying. Higher failure risk — reduce size or skip.';
     else if(trend==='falling')insightEl.innerHTML='<b>OI falling ↓</b> — Positions unwinding. Can confirm shorts but watch for stabilisation.';
     else insightEl.innerHTML='<b>OI flat →</b> — No new positioning. Wait for OI to expand before entering.';
   }
@@ -789,31 +705,65 @@ function renderOIChart(tab){
   oiCharts[tab]=new Chart(cvs,{type:'line',data:{labels,datasets:[{data:vals,borderColor:lc,borderWidth:1.5,pointRadius:0,tension:.3,fill:true,backgroundColor:fills[lc]||'rgba(255,255,255,.04)'}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:5,color:tc,font:{size:9}},grid:{color:gc},border:{display:false}},y:{ticks:{maxTicksLimit:3,color:tc,font:{size:9},callback:v=>v.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1})},grid:{color:gc},border:{display:false}}}}});
 }
 
-/* ══ LIQUIDATION WS ══ */
+/* ══ LIQUIDATION WS — with auto-reconnect + activity watchdog ═══ */
 let liqWS=null;
 const liqData={};
 let liqCharts=[null,null,null,null];
+let liqLastEvent=0; // timestamp of last received event
+
 function liqBS(p){return p>10000?200:p>1000?20:p>100?2:p>10?0.2:0.02;}
 function liqKey(p,bs){return Math.round(p/bs)*bs;}
 function initLiq(sym){if(!liqData[sym])liqData[sym]={short:{},long:{},count:0};}
+
 function connectLiqWS(){
   if(liqWS){try{liqWS.close();}catch(e){}}
-  liqWS=new WebSocket('wss://fstream.binance.com/ws/!forceOrder@arr');
-  liqWS.onmessage=e=>{
-    try{const msg=JSON.parse(e.data),o=msg.o||msg,sym=o.s;if(!sym)return;initLiq(sym);const p=parseFloat(o.p),qty=parseFloat(o.q)*p,bs=liqBS(p),bk=liqKey(p,bs);if(o.S==='BUY')liqData[sym].short[bk]=(liqData[sym].short[bk]||0)+qty;else liqData[sym].long[bk]=(liqData[sym].long[bk]||0)+qty;liqData[sym].count++;}catch(e2){}
+  liqWS=null;
+  const ws=new WebSocket('wss://fstream.binance.com/ws/!forceOrder@arr');
+  ws.onopen=()=>{liqWS=ws;liqLastEvent=Date.now();console.log('Liq WS connected');};
+  ws.onmessage=e=>{
+    liqLastEvent=Date.now();
+    try{
+      const msg=JSON.parse(e.data),o=msg.o||msg,sym=o.s;
+      if(!sym)return;
+      initLiq(sym);
+      const p=parseFloat(o.p),qty=parseFloat(o.q)*p,bs=liqBS(p),bk=liqKey(p,bs);
+      if(o.S==='BUY')liqData[sym].short[bk]=(liqData[sym].short[bk]||0)+qty;
+      else liqData[sym].long[bk]=(liqData[sym].long[bk]||0)+qty;
+      liqData[sym].count++;
+    }catch(e2){}
   };
-  liqWS.onclose=()=>setTimeout(connectLiqWS,5000);
-  setInterval(()=>[0,1,2,3].forEach(t=>renderLiq(t)),3000);
+  ws.onerror=()=>{liqWS=null;};
+  ws.onclose=()=>{liqWS=null;setTimeout(connectLiqWS,5000);};
 }
+
+// Watchdog: reconnect if no events for 45s (stream stalled)
+setInterval(()=>{
+  if(Date.now()-liqLastEvent>45000){
+    console.log('Liq WS stalled, reconnecting…');
+    connectLiqWS();
+  }
+},15000);
+
+// Render every 3s
+setInterval(()=>[0,1,2,3].forEach(t=>renderLiq(t)),3000);
+
 function renderLiq(tab){
   const sym=pair;initLiq(sym);const ld=liqData[sym];
   document.getElementById('liqCount'+tab).textContent=`${ld.count} events`;
   const cp=storedPrice;if(!cp)return;
-  const shorts=Object.entries(ld.short).map(([p,v])=>({price:+p,val:v,type:'short'})).filter(x=>x.price>=cp*0.93).sort((a,b)=>b.price-a.price);
-  const longs=Object.entries(ld.long).map(([p,v])=>({price:+p,val:v,type:'long'})).filter(x=>x.price<=cp*1.07).sort((a,b)=>b.price-a.price);
+  const shorts=Object.entries(ld.short).map(([p,v])=>({price:+p,val:v,type:'short'})).filter(x=>x.price>=cp*0.92).sort((a,b)=>b.price-a.price);
+  const longs=Object.entries(ld.long).map(([p,v])=>({price:+p,val:v,type:'long'})).filter(x=>x.price<=cp*1.08).sort((a,b)=>b.price-a.price);
   const all=[...shorts.slice(0,6),...longs.slice(0,6)];
-  if(!all.length)return;
+
+  // Update key levels even with no chart data
   const dec=pdec(cp);
+  const bigShort=shorts.length?shorts.reduce((a,b)=>b.val>a.val?b:a):null;
+  const bigLong=longs.length?longs.reduce((a,b)=>b.val>a.val?b:a):null;
+  document.getElementById('liqlevels'+tab).innerHTML=`
+    <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Biggest short cluster</div><div class="liq-lvl-price">${bigShort?fmt(bigShort.price,dec):'Collecting…'}</div><div class="liq-lvl-note">${bigShort?`$${(bigShort.val/1000).toFixed(0)}K — enter short AFTER sweep + reversal`:'Accumulating events…'}</div></div>
+    <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Biggest long cluster</div><div class="liq-lvl-price">${bigLong?fmt(bigLong.price,dec):'Collecting…'}</div><div class="liq-lvl-note">${bigLong?`$${(bigLong.val/1000).toFixed(0)}K — enter long AFTER sweep + reversal`:'Accumulating events…'}</div></div>`;
+
+  if(!all.length)return;
   const labels=all.map(c=>{const pct=((c.price-cp)/cp*100).toFixed(2);return `${pct>0?'+':''}${pct}%`;});
   const bgs=all.map(c=>c.type==='short'?'rgba(34,197,94,0.6)':'rgba(239,68,68,0.6)');
   const borders=all.map(c=>c.type==='short'?'#22c55e':'#ef4444');
@@ -821,24 +771,19 @@ function renderLiq(tab){
   const cvs=document.getElementById('liqc'+tab);if(!cvs)return;
   if(liqCharts[tab])liqCharts[tab].destroy();
   liqCharts[tab]=new Chart(cvs,{type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:bgs,borderColor:borders,borderWidth:1,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,animation:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`$${vals[c.dataIndex].toFixed(0)}K liquidated`}}},scales:{x:{display:false,border:{display:false}},y:{ticks:{color:'#4a4f66',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},border:{display:false}}}}});
-  const bigShort=shorts.length?shorts.reduce((a,b)=>b.val>a.val?b:a):null;
-  const bigLong=longs.length?longs.reduce((a,b)=>b.val>a.val?b:a):null;
-  document.getElementById('liqlevels'+tab).innerHTML=`
-    <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Biggest short cluster</div><div class="liq-lvl-price">${bigShort?fmt(bigShort.price,dec):'Building…'}</div><div class="liq-lvl-note">${bigShort?`$${(bigShort.val/1000).toFixed(0)}K — enter short AFTER sweep + reversal`:'Accumulating…'}</div></div>
-    <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Biggest long cluster</div><div class="liq-lvl-price">${bigLong?fmt(bigLong.price,dec):'Building…'}</div><div class="liq-lvl-note">${bigLong?`$${(bigLong.val/1000).toFixed(0)}K — enter long AFTER sweep + reversal`:'Accumulating…'}</div></div>`;
 }
 
-/* ══ HELPERS ══ */
+/* ══ HELPERS ════════════════════════════════════════════════════ */
 const $=id=>document.getElementById(id);
 const fmt=(n,d)=>n==null||isNaN(n)?'—':n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const pdec=p=>p>=10000?1:p>=100?2:p>=1?3:5;
 function ema(arr,p){const k=2/(p+1);let prev=null;const o=[];for(const v of arr){prev=prev===null?v:v*k+prev*(1-k);o.push(prev);}return o;}
 function rsiCalc(cl,p=14){if(cl.length<p+1)return cl.map(()=>null);const o=Array(p).fill(null);for(let i=p;i<cl.length;i++){let g=0,l=0;for(let j=i-p+1;j<=i;j++){const d=cl[j]-cl[j-1];d>0?g+=d:l-=d;}o.push(100-100/(1+(l===0?Infinity:g/l)));}return o;}
 function atrCalc(c,p=14){if(c.length<2)return null;const tr=[];for(let i=1;i<c.length;i++){const h=c[i].h,l=c[i].l,pc=c[i-1].c;tr.push(Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)));}const sl=tr.slice(-p);return sl.reduce((a,b)=>a+b,0)/sl.length;}
-function setRing(i,p,t,c){const circ=188;$('arc'+i).style.strokeDashoffset=circ-(p/t)*circ;$('arc'+i).style.stroke=c;$('rnum'+i).textContent=p;const el=$('score'+i);el.textContent=`${p}/${t}`;el.className='tfscore'+(p>=t?' sp':p>=t-1?' sn':p<=1?' sf':'');}
+function setRing(i,p,t,c){const circ=188;$('arc'+i).style.strokeDashoffset=circ-(p/t)*circ;$('arc'+i).style.stroke=c;$('rnum'+i).textContent=p;const el=$('score'+i);el.textContent=`${p}/${t}`;el.className='tfscore';}
 function sigCard(s){const dc=s.pass===true?'sdot sp':s.pass===false?'sdot sf':s.pass==='warn'?'sdot sw':'sdot sn';const bc=s.pass===true?'bar bp':s.pass===false?'bar bf':s.pass==='warn'?'bar bw':'bar bn';const cc=s.pass===true?'sig passing':s.pass===false?'sig failing':'sig';return `<div class="${cc}"><div class="sigtop"><span class="signame">${s.name}</span><span class="${dc}"></span></div><div class="sigval">${s.val}</div><div class="sigmeta">${s.meta}</div><div class="sigtf">${s.tf}</div><div class="barbg"><div class="${bc}" style="width:${Math.min(100,Math.max(0,s.pct))}%"></div></div></div>`;}
 
-/* ══ DATA ══ */
+/* ══ DATA ═══════════════════════════════════════════════════════ */
 const FAPI='https://fapi.binance.com',WSB='wss://fstream.binance.com/ws';
 let pair='BTCUSDT',lastP=null,storedFR=NaN,storedOI=NaN,storedPrice=0;
 let ws=null,rfTimer=null;
@@ -864,15 +809,15 @@ function flashPrice(p){
   lastP=p;
 }
 
-/* ══ ANALYSE WEEKLY ══ */
+/* ══ ANALYSE WEEKLY ═════════════════════════════════════════════ */
 function analyseWeekly(){
   const cW=D.cW,cM=D.cM;
-  if(cW.length<25){$('vtitle3').textContent='Building…';$('vsub3').textContent=`Weekly: ${cW.length} candles`;$('score3').textContent='—';return;}
+  if(cW.length<25){$('vtitle3').textContent='Building…';$('vsub3').textContent=`Weekly: ${cW.length} candles`;document.getElementById('score3').textContent='—';return;}
   const clW=cW.map(x=>x.c),vlW=cW.map(x=>x.v),clM=cM.length?cM.map(x=>x.c):[];
   const price=clW.at(-1);
   const wE10=ema(clW,10),wE20=ema(clW,20);CD.e3a=wE10;CD.e3b=wE20;
   const wBull=wE10.at(-1)>wE20.at(-1),wDiff=(wE10.at(-1)-wE20.at(-1))/wE20.at(-1)*100,wFlat=Math.abs(wDiff)<0.5;
-  const w200=clW.length>=200?clW.slice(-200).reduce((a,b)=>a+b,0)/200:clW.reduce((a,b)=>a+b,0)/clW.length;
+  const w200=clW.reduce((s,_,i,a)=>{const sl=a.slice(Math.max(0,i-199),i+1);return sl.reduce((x,y)=>x+y,0)/sl.length;},0);
   CD.e3c=clW.map((_,i,arr)=>{const sl=arr.slice(Math.max(0,i-199),i+1);return sl.reduce((a,b)=>a+b,0)/sl.length;});
   const above200=price>w200,pctFrom200=((price-w200)/w200*100).toFixed(1);
   const wRSI=rsiCalc(clW,14);CD.rs3=wRSI;const lRSIw=wRSI.at(-1);
@@ -888,9 +833,9 @@ function analyseWeekly(){
   scores[3]=passed;totals[3]=total;dirs[3]=dir;
   const banner=$('macroBanner');
   let col,vt,vs,bc;
-  if(passed>=total&&dir==='LONG'){col='var(--grn)';vt='🟢 MACRO BULLISH';vs=`${passed}/${total} weekly signals green — prioritise LONG setups on all lower tabs`;bc='bull';}
+  if(passed>=total&&dir==='LONG'){col='var(--grn)';vt='🟢 MACRO BULLISH';vs=`${passed}/${total} weekly signals green — prioritise LONG on all lower tabs`;bc='bull';}
   else if(passed>=total&&dir==='SHORT'){col='var(--red)';vt='🔴 MACRO BEARISH';vs=`${passed}/${total} weekly signals — only SHORT setups align with macro`;bc='bear';}
-  else if(passed>=total-2&&dir==='LONG'){col='var(--amb)';vt='⚠️ CAUTIOUS BULLISH';vs=`${passed}/${total} — trend leans long but not fully confirmed`;bc='bull';}
+  else if(passed>=total-2&&dir==='LONG'){col='var(--amb)';vt='⚠️ CAUTIOUS BULLISH';vs=`${passed}/${total} — trend leans long, not fully confirmed`;bc='bull';}
   else if(passed>=total-2&&dir==='SHORT'){col='var(--amb)';vt='⚠️ CAUTIOUS BEARISH';vs=`${passed}/${total} — trend leans short, lower confidence`;bc='bear';}
   else{col='var(--t3)';vt='↔️ MACRO NEUTRAL';vs='No clear weekly trend — trade both sides with caution, reduce size';bc='flat';}
   banner.className=`macro-banner ${bc}`;
@@ -917,15 +862,15 @@ function analyseWeekly(){
     {name:'Weekly RSI',tf:'WEEKLY',val:lRSIw!=null?lRSIw.toFixed(1):'—',meta:lRSIw==null?'Calculating…':lRSIw<35?'↓ Oversold — cycle low':lRSIw>65?'↑ Overbought — distribution':dir==='LONG'?`Buy zone 30–55 | ${wRSILong?'✓':'✗'}`:`Sell zone 45–72 | ${wRSIShort?'✓':'✗'}`,pass:s3,pct:lRSIw!=null?Math.min(100,Math.max(0,((lRSIw-20)/60)*100)):50},
     {name:'Monthly trend',tf:'MONTHLY',val:mBull===null?'Insufficient data':mBull?'▲ Up':'▼ Down',meta:mBull===null?'Need more monthly candles':mBull?`Monthly EMA bullish (+${mDiff.toFixed(2)}%)`:`Monthly EMA bearish (${mDiff.toFixed(2)}%)`,pass:s4,pct:mBull===null?50:mBull?82:18},
     {name:'Weekly volume',tf:'WEEKLY',val:`${wVrat.toFixed(2)}×`,meta:wVolOk?'✓ Above avg — institutional activity':'✗ Below avg — weak conviction',pass:s5,pct:Math.min(100,(wVrat/1.5)*100)},
-    {name:'OI direction',tf:'TREND',val:oiAvail?(oiTr==='rising'?'▲ Rising':oiTr==='falling'?'▼ Falling':'→ Flat'):'Building…',meta:oiAvail?oiTr==='rising'?'✓ Capital flowing in — trend has legs':oiTr==='falling'?'✗ Capital leaving — weakening':'→ Neutral':'Need 5+ OI readings',pass:s6,pct:oiAvail?oiTr==='rising'?85:oiTr==='falling'?15:45:50},
+    {name:'OI direction',tf:'TREND',val:oiAvail?(oiTr==='rising'?'▲ Rising':oiTr==='falling'?'▼ Falling':'→ Flat'):'Building…',meta:oiAvail?oiTr==='rising'?'✓ Capital flowing in':oiTr==='falling'?'✗ Capital leaving':'→ Neutral':'Need 5+ OI readings',pass:s6,pct:oiAvail?oiTr==='rising'?85:oiTr==='falling'?15:45:50},
   ].map(sigCard).join('');
   renderOIChart(3);renderLiq(3);drawChart(3);fireAlert(3,passed,dir,total);
 }
 
-/* ══ ANALYSE SWING ══ */
+/* ══ ANALYSE SWING ══════════════════════════════════════════════ */
 function analyseSwing(){
   const cDa=D.cD,c4h=D.c4h;
-  if(cDa.length<25||c4h.length<55){$('vtitle2').textContent='Building…';$('vsub2').textContent=`Daily:${cDa.length} 4H:${c4h.length}`;$('score2').textContent='—';return;}
+  if(cDa.length<25||c4h.length<55){$('vtitle2').textContent='Building…';$('vsub2').textContent=`Daily:${cDa.length} 4H:${c4h.length}`;document.getElementById('score2').textContent='—';return;}
   const clD=cDa.map(x=>x.c),vlD=cDa.map(x=>x.v),cl4h=c4h.map(x=>x.c),price=cl4h.at(-1);
   const dE20=ema(clD,20),dE50=ema(clD,50);
   const dDiff=(dE20.at(-1)-dE50.at(-1))/dE50.at(-1)*100,dFlat=Math.abs(dDiff)<0.3,dUp=dE20.at(-1)>dE50.at(-1);
@@ -959,12 +904,11 @@ function analyseSwing(){
   $('fo2r').textContent=frAvail?`${frPct.toFixed(4)}%`:'—';if(frAvail){$('fo2r').style.color=frOk?'var(--grn)':'var(--red)';$('fo2rm').textContent=frOk?'✓ Neutral — safe multi-day':'✗ Extreme — erodes profit daily';}
   $('fo2oi').textContent=isNaN(storedOI)?'—':storedOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1});
   if(atrD){$('atr2d').textContent=fmt(atrD,0);$('atr2sl').textContent=fmt(atrD,0);}if(atr4)$('atr2h').textContent=fmt(atr4,0);
-  const n=Math.min(c4h.length,60);
-  CD.lb2=c4h.slice(-n).map(x=>{const d=new Date(x.t);return `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;});
+  const n=Math.min(c4h.length,60);CD.lb2=c4h.slice(-n).map(x=>{const d=new Date(x.t);return `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;});
   $('sigs2').innerHTML=[
     {name:'Daily trend',tf:'DAILY',val:dFlat?'Sideways':dUp?'▲ Uptrend':'▼ Downtrend',meta:`Daily EMA20/50 gap ${dDiff.toFixed(2)}%`,pass:s1,pct:dFlat?40:dUp?88:12},
     {name:'4H EMA align',tf:'4H',val:h4Bull?'▲ EMA20>50':'▼ EMA20<50',meta:`4H gap ${h4Diff>=0?'+':''}${h4Diff.toFixed(2)}%`,pass:s2,pct:h4Bull?82:18},
-    {name:'4H RSI zone',tf:'4H',val:lRSI!=null?lRSI.toFixed(1):'—',meta:dir==='LONG'?`Buy 30–52 | ${rsiLong?'✓ In range':'✗ Wait for dip'}`:dir==='SHORT'?`Sell 50–72 | ${rsiShort?'✓ In range':'✗ Wait for push'}`:'Set daily direction first',pass:s3,pct:lRSI!=null?Math.min(100,Math.max(0,((lRSI-20)/60)*100)):50},
+    {name:'4H RSI zone',tf:'4H',val:lRSI!=null?lRSI.toFixed(1):'—',meta:dir==='LONG'?`Buy 30–52 | ${rsiLong?'✓':'✗'}`:dir==='SHORT'?`Sell 50–72 | ${rsiShort?'✓':'✗'}`:'Set daily direction first',pass:s3,pct:lRSI!=null?Math.min(100,Math.max(0,((lRSI-20)/60)*100)):50},
     {name:'Daily volume',tf:'DAILY',val:`${vrat.toFixed(2)}×`,meta:volOk?'✓ Elevated ≥1.2×':'✗ Below avg',pass:s4,pct:Math.min(100,(vrat/2)*100)},
     {name:'Funding rate',tf:'8H × DAYS',val:frAvail?`${frPct.toFixed(4)}%`:'…',meta:frAvail?frOk?'✓ Neutral':'✗ Extreme':'Loading',pass:s5,pct:frAvail?100-Math.min(100,(Math.abs(frPct)/0.1)*100):50},
     {name:'OI direction',tf:'TREND',val:oiAvail?(oiTr==='rising'?'▲ Rising':oiTr==='falling'?'▼ Falling':'→ Flat'):'Building…',meta:oiAvail?oiTr==='rising'?'✓ Institutional positioning':oiTr==='falling'?'✗ No new money — avoid':'→ Wait for expansion':'Need 5+ OI readings',pass:s6,pct:oiAvail?oiTr==='rising'?85:oiTr==='falling'?15:45:50},
@@ -972,10 +916,10 @@ function analyseSwing(){
   renderOIChart(2);renderLiq(2);drawChart(2);fireAlert(2,passed,dir,total);
 }
 
-/* ══ ANALYSE HOURLY ══ */
+/* ══ ANALYSE HOURLY ══════════════════════════════════════════════ */
 function analyseHourly(){
   const c1h=D.c1h,c4h=D.c4h;
-  if(c1h.length<55||c4h.length<30){$('vtitle1').textContent='Building…';$('vsub1').textContent=`1H:${c1h.length} 4H:${c4h.length}`;$('score1').textContent='—';return;}
+  if(c1h.length<55||c4h.length<30){$('vtitle1').textContent='Building…';$('vsub1').textContent=`1H:${c1h.length} 4H:${c4h.length}`;document.getElementById('score1').textContent='—';return;}
   const cl1h=c1h.map(x=>x.c),vl1h=c1h.map(x=>x.v),cl4h=c4h.map(x=>x.c),price=cl1h.at(-1);
   const e20_4=ema(cl4h,20),e50_4=ema(cl4h,50);
   const d4=(e20_4.at(-1)-e50_4.at(-1))/e50_4.at(-1)*100,flat4=Math.abs(d4)<0.15,bull4=e20_4.at(-1)>e50_4.at(-1);
@@ -1005,8 +949,7 @@ function analyseHourly(){
   $('s1cand').textContent=`${c1h.length}/100`;
   $('fo1r').textContent=frAvail?`${frPct.toFixed(4)}%`:'—';if(frAvail){$('fo1r').style.color=frOk?'var(--grn)':'var(--red)';$('fo1rm').textContent=frOk?'✓ Neutral — safe 2–12h hold':'✗ Extreme — cost eats profit';}
   $('fo1oi').textContent=isNaN(storedOI)?'—':storedOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1});
-  const n=Math.min(c1h.length,60);
-  CD.lb1=c1h.slice(-n).map(x=>{const d=new Date(x.t);return `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}h`;});
+  const n=Math.min(c1h.length,60);CD.lb1=c1h.slice(-n).map(x=>{const d=new Date(x.t);return `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}h`;});
   $('sigs1').innerHTML=[
     {name:'4H trend',tf:'4H',val:flat4?'Sideways':bull4?'▲ Uptrend':'▼ Downtrend',meta:`EMA20/50 gap ${d4.toFixed(2)}%`,pass:s1,pct:flat4?40:bull4?85:15},
     {name:'1H EMA align',tf:'1H',val:bull1h?'▲ EMA20>50':'▼ EMA20<50',meta:`Gap ${h1d>=0?'+':''}${h1d.toFixed(2)}%`,pass:s2,pct:bull1h?80:20},
@@ -1018,10 +961,10 @@ function analyseHourly(){
   renderOIChart(1);renderLiq(1);drawChart(1);fireAlert(1,passed,dir,total);
 }
 
-/* ══ ANALYSE SCALP ══ */
+/* ══ ANALYSE SCALP ═══════════════════════════════════════════════ */
 function analyseScalp(){
   const c1=D.c1m,c15=D.c15m;
-  if(c1.length<22||c15.length<5){$('vtitle0').textContent='Building…';$('vsub0').textContent=`1m:${c1.length} 15m:${c15.length}`;$('score0').textContent='—';return;}
+  if(c1.length<22||c15.length<5){$('vtitle0').textContent='Building…';$('vsub0').textContent=`1m:${c1.length} 15m:${c15.length}`;document.getElementById('score0').textContent='—';return;}
   const cl1=c1.map(x=>x.c),vl1=c1.map(x=>x.v),cl15=c15.map(x=>x.c),price=cl1.at(-1);
   storedPrice=price;
   const e9_15=ema(cl15,9),e21_15=ema(cl15,21);
@@ -1054,8 +997,7 @@ function analyseScalp(){
   $('s0cand').textContent=`${c1.length}/100`;
   $('fo0r').textContent=frAvail?`${frPct.toFixed(4)}%`:'—';if(frAvail){$('fo0r').style.color=frOk?'var(--grn)':'var(--red)';$('fo0rm').textContent=frOk?'✓ Neutral':'✗ Extreme — avoid';}
   $('fo0oi').textContent=isNaN(storedOI)?'—':storedOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1});
-  const n=Math.min(c1.length,60);
-  CD.lb0=c1.slice(-n).map(x=>{const d=new Date(x.t);return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;});
+  const n=Math.min(c1.length,60);CD.lb0=c1.slice(-n).map(x=>{const d=new Date(x.t);return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;});
   $('sigs0').innerHTML=[
     {name:'15m Trend',tf:'15M',val:flat?'Sideways':tUp?'▲ Uptrend':'▼ Downtrend',meta:`EMA9/21 gap ${(d15*100).toFixed(3)}%`,pass:s1,pct:flat?40:tUp?88:12},
     {name:'1m EMA cross',tf:'1M',val:bull?'▲ Above 21':'▼ Below 21',meta:`${ediff>=0?'+':''}${ediff.toFixed(3)}%${crossed?' ✦ CROSS!':''}`,pass:s2,pct:bull?82:18},
@@ -1067,7 +1009,7 @@ function analyseScalp(){
   renderOIChart(0);renderLiq(0);drawChart(0);fireAlert(0,passed,dir,total);
 }
 
-/* ══ CHARTS ══ */
+/* ══ CHARTS ══════════════════════════════════════════════════════ */
 function drawChart(tab){
   const gc='rgba(255,255,255,0.05)',tc='#4a4f66';
   const base={responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:5,color:tc,font:{size:9}},grid:{color:gc},border:{display:false}},y:{ticks:{maxTicksLimit:4,color:tc,font:{size:10}},grid:{color:gc},border:{display:false}}}};
@@ -1094,7 +1036,7 @@ function drawChart(tab){
   }
 }
 
-/* ══ LOAD ══ */
+/* ══ LOAD ════════════════════════════════════════════════════════ */
 async function loadAll(){
   $('sDot').className='dot';$('sTxt').textContent='Fetching…';
   try{
@@ -1107,7 +1049,7 @@ async function loadAll(){
     if(fr!==null)storedFR=fr*100;
     if(oi!==null){storedOI=oi;oiPush(oi);}
     analyseWeekly();analyseSwing();analyseHourly();analyseScalp();
-    updateConfluence();
+    updateBanner();
     $('sDot').className='dot live';$('sTxt').textContent='Live';
   }catch(e){$('sDot').className='dot err';$('sTxt').textContent='Error: '+e.message;console.error(e);}
 }
@@ -1119,18 +1061,13 @@ $('pairSel').addEventListener('change',e=>{
   D={c1m:[],c15m:[],c1h:[],c4h:[],cD:[],cW:[],cM:[]};
   lastP=null;storedFR=NaN;storedOI=NaN;storedPrice=0;weeklyDir='NEUTRAL';
   lastLevels=[0,0,0,0];scores[0]=scores[1]=scores[2]=scores[3]=0;
+  [0,1,2,3].forEach(i=>updateTabBias(i));
   connectPriceWS();hardRefresh();
 });
 
-/* ══ INIT ══ */
 connectPriceWS();
 connectLiqWS();
 hardRefresh();
-// Run layout fix multiple times to catch slow renders
-scheduleLayout();
-setTimeout(scheduleLayout,200);
-setTimeout(scheduleLayout,500);
-setTimeout(scheduleLayout,1000);
 </script>
 </body>
 </html>
