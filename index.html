@@ -17,9 +17,8 @@
 html,body{height:100%;overscroll-behavior:none;}
 body{background:var(--bg);color:var(--text);font-family:Roboto,'Segoe UI',sans-serif;font-size:14px;}
 
-/* PULL TO REFRESH */
-.ptr{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:center;height:0;overflow:hidden;background:var(--bg2);border-bottom:1px solid var(--bdr);transition:height .15s;}
-.ptr.show{height:48px;}
+/* PTR */
+.ptr{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:center;height:0;overflow:hidden;background:var(--bg2);border-bottom:1px solid var(--bdr);will-change:height;}
 .ptr-spin{width:20px;height:20px;border:2px solid var(--bdr2);border-top-color:var(--amb);border-radius:50%;animation:spin .7s linear infinite;display:none;}
 .ptr-txt{font-size:12px;color:var(--t2);margin-left:10px;font-weight:600;}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -55,36 +54,52 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 @keyframes abp{0%,100%{opacity:1}50%{opacity:.75}}
 
 /* CONFLUENCE */
-.confbar{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:8px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.confbar{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:7px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .cbtitle{font-size:10px;color:var(--t3);letter-spacing:.09em;text-transform:uppercase;font-weight:700;white-space:nowrap;}
-.cbadges{display:flex;gap:6px;flex:1;flex-wrap:wrap;}
-.cbadge{font-size:11px;font-weight:700;padding:4px 9px;border-radius:20px;border:1px solid var(--bdr2);background:var(--bg3);color:var(--t3);white-space:nowrap;transition:all .4s;}
+.cbadges{display:flex;gap:5px;flex:1;flex-wrap:wrap;}
+.cbadge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;border:1px solid var(--bdr2);background:var(--bg3);color:var(--t3);white-space:nowrap;transition:all .4s;}
 .cbadge.near{border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.1);color:var(--amb);}
 .cbadge.pass{border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.08);color:var(--grn);}
-.cbadge.full{border-color:var(--grn);background:rgba(34,197,94,.18);color:var(--grn);box-shadow:0 0 8px rgba(34,197,94,.25);}
+.cbadge.full{border-color:var(--grn);background:rgba(34,197,94,.18);color:var(--grn);box-shadow:0 0 6px rgba(34,197,94,.2);}
 .conf-all{font-size:11px;font-weight:800;color:var(--t3);white-space:nowrap;}
 .conf-all.on{color:var(--grn);}
 
-/* TF TABS */
+/* TF TABS — 4 tabs */
 .tftabs{background:var(--bg2);border-bottom:1px solid var(--bdr);display:flex;position:sticky;top:52px;z-index:25;}
-.tftab{flex:1;padding:9px 4px;text-align:center;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--t3);border-bottom:2px solid transparent;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:50px;justify-content:center;user-select:none;}
+.tftab{flex:1;padding:8px 2px;text-align:center;cursor:pointer;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--t3);border-bottom:2px solid transparent;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:48px;justify-content:center;user-select:none;}
 .tftab.active{color:var(--text);border-bottom-color:var(--amb);}
-.tflabel{font-size:9px;font-weight:600;letter-spacing:.06em;}
+.tflabel{font-size:8px;font-weight:600;letter-spacing:.05em;}
 .tftab.active .tflabel{color:var(--t2);}
-.tfscore{font-size:10px;padding:2px 6px;border-radius:10px;font-weight:800;background:var(--bg3);color:var(--t3);min-width:26px;}
+.tfscore{font-size:9px;padding:2px 5px;border-radius:10px;font-weight:800;background:var(--bg3);color:var(--t3);min-width:24px;}
 .tfscore.sp{background:rgba(34,197,94,.15);color:var(--grn);}
 .tfscore.sn{background:rgba(245,158,11,.15);color:var(--amb);}
 .tfscore.sf{background:rgba(239,68,68,.1);color:var(--red);}
 
 /* SCROLL BODY */
-.scroll-body{height:calc(100vh - 158px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.scroll-body{overflow-y:auto;-webkit-overflow-scrolling:touch;position:fixed;top:0;left:0;right:0;bottom:0;padding-top:158px;}
 
 /* PAGES */
-.page{display:none;padding:12px 12px 30px;max-width:700px;margin:0 auto;flex-direction:column;gap:10px;}
+.page{display:none;padding:12px 12px 40px;max-width:700px;margin:0 auto;flex-direction:column;gap:10px;}
 .page.active{display:flex;}
 
 /* CARD */
 .card{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:14px;}
+
+/* MACRO CONTEXT BANNER — weekly only */
+.macro-banner{border-radius:12px;padding:14px 16px;border:2px solid;}
+.macro-banner.bull{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.06);}
+.macro-banner.bear{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.06);}
+.macro-banner.flat{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.05);}
+.macro-tag{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:4px;}
+.macro-banner.bull .macro-tag{color:var(--grn);}
+.macro-banner.bear .macro-tag{color:var(--red);}
+.macro-banner.flat .macro-tag{color:var(--amb);}
+.macro-title{font-size:20px;font-weight:800;margin-bottom:4px;}
+.macro-sub{font-size:12px;color:var(--t2);line-height:1.5;}
+.macro-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.macro-stat{background:var(--bg3);border-radius:8px;padding:8px 10px;text-align:center;}
+.macro-stat-lbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-bottom:2px;}
+.macro-stat-val{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;}
 
 /* VERDICT */
 .verdict{display:flex;align-items:center;gap:14px;}
@@ -114,14 +129,12 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .tbox.tp .tval{color:var(--grn);}
 .tsub{font-size:10px;color:var(--t2);margin-top:2px;line-height:1.3;}
 
-/* STAT ROW */
+/* STAT / LEVEL ROWS */
 .statrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:7px;}
 .sbox{background:var(--bg3);border-radius:10px;padding:8px;text-align:center;}
 .slbl{font-size:9px;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;font-weight:600;margin-bottom:2px;}
 .sval{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;}
 .sg{color:var(--grn);}.sr{color:var(--red);}.sa{color:var(--amb);}
-
-/* LEVELS (swing) */
 .lvlrow{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px;}
 .lvlbox{background:var(--bg3);border-radius:10px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center;}
 .lvllbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;font-weight:700;}
@@ -129,7 +142,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .lvlval{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;}
 .lvlhi{color:var(--grn);}.lvllo{color:var(--red);}
 
-/* OI TREND CARD */
+/* OI TREND */
 .oi-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:14px;}
 .oi-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
 .oi-title{font-size:10px;color:var(--t3);letter-spacing:.09em;text-transform:uppercase;font-weight:700;}
@@ -142,7 +155,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .oi-insight{font-size:11px;color:var(--t2);margin-top:8px;line-height:1.5;padding:8px 10px;background:var(--bg3);border-radius:8px;}
 .oi-insight b{color:var(--text);}
 
-/* LIQUIDATION HEATMAP */
+/* LIQUIDATION */
 .liqmap{border-radius:12px;border:1px solid rgba(255,107,53,.2);background:rgba(255,107,53,.03);padding:14px;}
 .liq-title{font-size:10px;color:#ff6b35;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;}
 .liq-live-dot{width:7px;height:7px;border-radius:50%;background:#ff6b35;animation:blink 1s infinite;display:inline-block;margin-right:5px;}
@@ -161,7 +174,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .liq-legend{display:flex;gap:14px;margin-bottom:6px;flex-wrap:wrap;}
 .liq-legend span{font-size:11px;color:var(--t2);display:flex;align-items:center;gap:5px;}
 .liq-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;}
-.liqwrap{position:relative;height:150px;width:100%;}
+.liqwrap{position:relative;height:140px;width:100%;}
 .liq-note{font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5;font-style:italic;}
 
 /* DIVIDER */
@@ -192,13 +205,11 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .cleg i{display:inline-block;width:14px;height:2px;border-radius:1px;}
 .cwrap{position:relative;height:120px;width:100%;}
 
-/* FO BOX */
+/* FO / ATR */
 .fobox{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .folbl{font-size:10px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:3px;}
 .foval{font-size:18px;font-weight:800;margin-bottom:2px;font-variant-numeric:tabular-nums;}
 .fometa{font-size:11px;color:var(--t2);line-height:1.4;}
-
-/* ATR ROW */
 .atrrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;}
 .atrbox{background:var(--bg3);border-radius:10px;padding:9px 10px;text-align:center;}
 .atrlbl{font-size:9px;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;font-weight:600;margin-bottom:2px;}
@@ -218,7 +229,6 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 
 /* DESKTOP */
 @media(min-width:640px){
-  .scroll-body{height:calc(100vh - 158px);}
   .page{padding:18px 20px 18px;max-width:1100px;}
   .sigs{grid-template-columns:repeat(3,1fr);}
   .charts2{display:grid;grid-template-columns:1.4fr 1fr;gap:12px;}
@@ -262,15 +272,19 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 <div class="confbar">
   <div class="cbtitle">Confluence</div>
   <div class="cbadges">
+    <div class="cbadge" id="confW">Weekly —</div>
     <div class="cbadge" id="confS">Scalp —</div>
     <div class="cbadge" id="confH">1H —</div>
-    <div class="cbadge" id="confW">Swing —</div>
+    <div class="cbadge" id="confD">Swing —</div>
   </div>
   <div class="conf-all" id="confAll">Not aligned</div>
 </div>
 
 <div class="tftabs">
-  <div class="tftab active" id="tft0" onclick="switchPage(0)">
+  <div class="tftab active" id="tft3" onclick="switchPage(3)">
+    <span>🌐 Weekly</span><span class="tflabel">Macro view</span><span class="tfscore" id="score3">—</span>
+  </div>
+  <div class="tftab" id="tft0" onclick="switchPage(0)">
     <span>⚡ Scalp</span><span class="tflabel">1–15 min</span><span class="tfscore" id="score0">—</span>
   </div>
   <div class="tftab" id="tft1" onclick="switchPage(1)">
@@ -281,10 +295,122 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
   </div>
 </div>
 
+<!-- SCROLL WRAPPER — fixed, full viewport, padding-top = header stack height -->
 <div class="scroll-body" id="scrollBody">
 
+<!-- ═══════════════════════════════════════════════════════
+     PAGE 3 — WEEKLY MACRO (shown first/default)
+═══════════════════════════════════════════════════════ -->
+<div class="page active" id="page3">
+  <!-- Macro context banner -->
+  <div class="macro-banner flat" id="macroBanner">
+    <div class="macro-tag">Weekly macro view</div>
+    <div class="macro-title" id="macroTitle">Loading weekly data…</div>
+    <div class="macro-sub" id="macroSub">Fetching weekly + monthly candles to establish big-picture bias</div>
+    <div class="macro-stats">
+      <div class="macro-stat"><div class="macro-stat-lbl">Weekly trend</div><div class="macro-stat-val" id="mWeekTrend">—</div></div>
+      <div class="macro-stat"><div class="macro-stat-lbl">Monthly trend</div><div class="macro-stat-val" id="mMonthTrend">—</div></div>
+      <div class="macro-stat"><div class="macro-stat-lbl">Price vs 200W MA</div><div class="macro-stat-val" id="m200w">—</div></div>
+    </div>
+  </div>
+
+  <!-- Verdict ring -->
+  <div class="card">
+    <div class="verdict">
+      <div class="rw"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="30" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="7"/>
+        <circle cx="38" cy="38" r="30" fill="none" id="arc3" stroke="var(--t3)" stroke-width="7" stroke-dasharray="188" stroke-dashoffset="188" stroke-linecap="round" transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .9s,stroke .5s;"/></svg>
+        <div class="rnum" id="rnum3">—</div></div>
+      <div class="vbody">
+        <div class="vtag">Weekly macro · big picture</div>
+        <div class="vtitle" id="vtitle3">Loading…</div>
+        <div class="vsub" id="vsub3">Establishes allowed trade direction for all lower tabs</div>
+        <div class="vdir" id="vdir3"></div>
+        <div class="vtime" id="vtime3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly targets — wider, ATR-based -->
+  <div class="card" style="padding:12px;">
+    <div style="font-size:10px;color:var(--t3);letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin-bottom:8px;">Key weekly levels</div>
+    <div class="targets">
+      <div class="tbox en"><div class="tlbl">Current price</div><div class="tval" id="t3en">—</div><div class="tsub">Macro entry zone</div></div>
+      <div class="tbox sl"><div class="tlbl">Weekly support</div><div class="tval" id="t3sl">—</div><div class="tsub">2× weekly ATR below</div></div>
+      <div class="tbox tp"><div class="tlbl">Weekly resistance</div><div class="tval" id="t3tp">—</div><div class="tsub">Next weekly high</div></div>
+    </div>
+    <div class="statrow">
+      <div class="sbox"><div class="slbl">Weekly ATR</div><div class="sval sa" id="s3atr">—</div></div>
+      <div class="sbox"><div class="slbl">Monthly ATR</div><div class="sval sa" id="s3matr">—</div></div>
+      <div class="sbox"><div class="slbl">Prev week range</div><div class="sval sa" id="s3range">—</div></div>
+    </div>
+    <div class="lvlrow">
+      <div class="lvlbox"><div><div class="lvllbl">Prev week high</div><div class="lvldist" id="pwhd">—</div></div><div class="lvlval lvlhi" id="pwh">—</div></div>
+      <div class="lvlbox"><div><div class="lvllbl">Prev week low</div><div class="lvldist" id="pwld">—</div></div><div class="lvlval lvllo" id="pwl">—</div></div>
+    </div>
+  </div>
+
+  <!-- OI trend -->
+  <div class="oi-card">
+    <div class="oi-header">
+      <span class="oi-title">📊 Open interest trend</span>
+      <div class="oi-badges"><span class="oi-badge" id="oiBadge3">Loading…</span><span class="oi-badge" id="oiVal3">—</span></div>
+    </div>
+    <div class="oi-wrap"><canvas id="oiChart3"></canvas></div>
+    <div class="oi-insight" id="oiInsight3">Building OI history…</div>
+  </div>
+
+  <!-- Liq heatmap -->
+  <div class="liqmap">
+    <div class="liq-title"><span><span class="liq-live-dot"></span>Live liquidation clusters</span><span class="liq-count" id="liqCount3">0 events</span></div>
+    <div class="liq-levels" id="liqlevels3">
+      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Shorts squeezed above price</div></div>
+      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Longs stopped below price</div></div>
+    </div>
+    <div class="liq-legend"><span><i style="background:#22c55e;opacity:.8"></i>Short liq (above)</span><span><i style="background:#ef4444;opacity:.8"></i>Long liq (below)</span></div>
+    <div class="liqwrap"><canvas id="liqc3"></canvas></div>
+    <div class="liq-note">Weekly macro clusters represent the largest stop-hunt targets. Major price sweeps to these levels happen over days/weeks.</div>
+  </div>
+
+  <div class="divider">Weekly signal breakdown</div>
+  <div class="sigs" id="sigs3"><div class="sig"><div class="signame">Loading…</div></div></div>
+
+  <div class="divider">Weekly + Monthly charts</div>
+  <div class="charts2">
+    <div class="card">
+      <div class="clbl">Weekly Price · EMA 10 · EMA 20 · 200W MA</div>
+      <div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA10</span><span><i style="background:#ef4444"></i>EMA20</span><span><i style="background:#8b5cf6"></i>200W</span></div>
+      <div class="cwrap" style="height:140px;"><canvas id="pc3"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:10px;">
+      <div class="clbl">Weekly RSI · cycle zones</div>
+      <div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.5)"></i>Oversold &lt;35</span><span><i style="background:rgba(239,68,68,.4)"></i>Overbought &gt;65</span></div>
+      <div class="cwrap" style="height:140px;"><canvas id="rc3"></canvas></div>
+    </div>
+  </div>
+
+  <div class="divider">Info</div>
+  <div class="card">
+    <div class="fobox">
+      <div><div class="folbl">Funding rate</div><div class="foval" id="fo3r">—</div><div class="fometa" id="fo3rm">Multi-week holds pay 21+ funding periods</div></div>
+      <div><div class="folbl">Open interest</div><div class="foval" id="fo3oi">—</div><div class="fometa" id="fo3oim">Weekly OI expansion = cycle continuation</div></div>
+    </div>
+  </div>
+
+  <div class="divider">Guide</div>
+  <div class="guidance">
+    <div class="gtitle">🌐 Weekly macro guide — the big picture</div>
+    <div class="gitem"><span class="gico">🏔</span><span><b>This tab sets the allowed direction for all other tabs.</b> If weekly is bearish, do not take long signals on scalp/hourly/swing — you are fighting the macro trend.</span></div>
+    <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: weeks to months.</b> These are not scalp entries. Use weekly signals to determine position bias, then execute on lower timeframes.</span></div>
+    <div class="gitem"><span class="gico">📐</span><span><b>200-week MA is the ultimate support.</b> BTC has never closed a weekly candle below the 200W MA without recovering. It is the macro floor in bull markets.</span></div>
+    <div class="gitem"><span class="gico">📊</span><span><b>Weekly RSI below 35</b> = historically significant buy zone (generational lows). Above 65 = distribution zone (major tops). These don't appear often — act when they do.</span></div>
+    <div class="gitem"><span class="gico">🔗</span><span><b>Confluence across all 4 tabs</b> = the highest possible confidence trade. Weekly green → Swing green → Hourly green → Scalp green in the same direction is a rare and powerful alignment.</span></div>
+    <div class="gitem"><span class="gico">💡</span><span><b>Why your lower-timeframe trades fail:</b> If weekly is in a downtrend and you're taking scalp longs, you're buying into macro distribution. The trend on the highest timeframe always wins eventually.</span></div>
+  </div>
+  <div class="card"><div class="foot"><b>Weekly signals:</b> Weekly EMA 10/20 cross · Price vs 200W MA · Weekly RSI zone · Monthly trend · Weekly volume · OI direction.<br><b>This is macro context, not a direct entry signal. Use it to filter all lower timeframe trades.</b><br><b>⚠ Learning only. Not financial advice.</b></div></div>
+</div>
+
 <!-- ═══ PAGE 0 — SCALP ═══ -->
-<div class="page active" id="page0">
+<div class="page" id="page0">
   <div class="card">
     <div class="verdict">
       <div class="rw"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="30" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="7"/>
@@ -299,6 +425,10 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       </div>
     </div>
   </div>
+  <!-- Weekly bias warning -->
+  <div id="weeklyWarn0" style="display:none;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:10px 13px;font-size:11px;color:#f87171;line-height:1.5;">
+    ⚠️ <b>Weekly macro is bearish.</b> Scalp longs go against the macro trend — lower win rate expected. Only short setups align with higher timeframes.
+  </div>
   <div class="card" style="padding:12px;">
     <div class="targets">
       <div class="tbox en"><div class="tlbl">Entry</div><div class="tval" id="t0en">—</div><div class="tsub">Market price</div></div>
@@ -311,66 +441,36 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       <div class="sbox"><div class="slbl">Candles</div><div class="sval sa" id="s0cand">—</div></div>
     </div>
   </div>
-  <!-- OI Trend -->
-  <div class="oi-card" id="oiCard0">
-    <div class="oi-header">
-      <span class="oi-title">📊 Open interest trend</span>
-      <div class="oi-badges">
-        <span class="oi-badge" id="oiBadge0">Loading…</span>
-        <span class="oi-badge" id="oiVal0">—</span>
-      </div>
-    </div>
+  <div class="oi-card">
+    <div class="oi-header"><span class="oi-title">📊 Open interest trend</span><div class="oi-badges"><span class="oi-badge" id="oiBadge0">Loading…</span><span class="oi-badge" id="oiVal0">—</span></div></div>
     <div class="oi-wrap"><canvas id="oiChart0"></canvas></div>
     <div class="oi-insight" id="oiInsight0">Building OI history…</div>
   </div>
-  <!-- Liquidity Heatmap -->
   <div class="liqmap">
-    <div class="liq-title">
-      <span><span class="liq-live-dot"></span>Live liquidation clusters</span>
-      <span class="liq-count" id="liqCount0">0 events</span>
-    </div>
-    <div class="liq-levels" id="liqlevels0">
-      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Shorts squeezed above price</div></div>
-      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Longs stopped below price</div></div>
-    </div>
-    <div class="liq-legend">
-      <span><i style="background:#22c55e;opacity:.8"></i>Short liq (above price)</span>
-      <span><i style="background:#ef4444;opacity:.8"></i>Long liq (below price)</span>
-    </div>
+    <div class="liq-title"><span><span class="liq-live-dot"></span>Live liquidation clusters</span><span class="liq-count" id="liqCount0">0 events</span></div>
+    <div class="liq-levels" id="liqlevels0"><div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liq zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Shorts squeezed above</div></div><div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liq zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Longs stopped below</div></div></div>
+    <div class="liq-legend"><span><i style="background:#22c55e;opacity:.8"></i>Short liq (above)</span><span><i style="background:#ef4444;opacity:.8"></i>Long liq (below)</span></div>
     <div class="liqwrap"><canvas id="liqc0"></canvas></div>
-    <div class="liq-note">Real liquidation orders from Binance. Enter AFTER price sweeps a cluster and reverses — the sweep is MM grabbing stops before the real move.</div>
+    <div class="liq-note">Enter AFTER price sweeps a cluster and reverses — the sweep is MM grabbing stops before the real move.</div>
   </div>
   <div class="divider">Signal breakdown</div>
   <div class="sigs" id="sigs0"><div class="sig"><div class="signame">Loading…</div></div></div>
   <div class="divider">Charts</div>
   <div class="charts2">
-    <div class="card">
-      <div class="clbl">1m Price · EMA9 · EMA21</div>
-      <div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA9</span><span><i style="background:#ef4444"></i>EMA21</span></div>
-      <div class="cwrap"><canvas id="pc0"></canvas></div>
-    </div>
-    <div class="card" style="margin-top:10px;">
-      <div class="clbl">RSI 14 · 1m · zone 44–57</div>
-      <div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.5)"></i>44–57</span></div>
-      <div class="cwrap"><canvas id="rc0"></canvas></div>
-    </div>
+    <div class="card"><div class="clbl">1m Price · EMA9 · EMA21</div><div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA9</span><span><i style="background:#ef4444"></i>EMA21</span></div><div class="cwrap"><canvas id="pc0"></canvas></div></div>
+    <div class="card" style="margin-top:10px;"><div class="clbl">RSI 14 · 1m · zone 44–57</div><div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.5)"></i>44–57</span></div><div class="cwrap"><canvas id="rc0"></canvas></div></div>
   </div>
   <div class="divider">Info</div>
-  <div class="card">
-    <div class="fobox">
-      <div><div class="folbl">Funding rate</div><div class="foval" id="fo0r">—</div><div class="fometa" id="fo0rm">Target: −0.05% to +0.05%</div></div>
-      <div><div class="folbl">Open interest</div><div class="foval" id="fo0oi">—</div><div class="fometa" id="fo0oim">See OI trend chart above</div></div>
-    </div>
-  </div>
+  <div class="card"><div class="fobox"><div><div class="folbl">Funding rate</div><div class="foval" id="fo0r">—</div><div class="fometa" id="fo0rm">Target: −0.05% to +0.05%</div></div><div><div class="folbl">Open interest</div><div class="foval" id="fo0oi">—</div><div class="fometa">See OI trend chart above</div></div></div></div>
   <div class="divider">Guide</div>
   <div class="guidance">
     <div class="gtitle">⚡ Scalp guide — 1 to 15 minutes</div>
-    <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 3–15 min.</b> If price hasn't moved toward TP within 30 min, exit manually — signal expired.</span></div>
-    <div class="gitem"><span class="gico">🕐</span><span><b>Entry timing:</b> Wait for the 1m crossover candle to fully close. Enter on the open of the next candle — never mid-candle.</span></div>
-    <div class="gitem"><span class="gico">🛑</span><span><b>Stop is fixed at 0.25%.</b> Do not move it. Widening stops is how accounts blow up.</span></div>
-    <div class="gitem"><span class="gico">📊</span><span><b>OI rising + price rising</b> = real buyers entering. OI falling + price rising = shorts covering only — weaker signal.</span></div>
-    <div class="gitem"><span class="gico">💧</span><span><b>Liquidity zones:</b> Enter after price sweeps a real cluster and reverses. The sweep is MM grabbing stops before the move.</span></div>
-    <div class="gitem"><span class="gico">🌊</span><span><b>Best condition:</b> All 3 tabs green in same direction = highest confidence. Never scalp against the swing trend.</span></div>
+    <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 3–15 min.</b> Exit manually at 30 min if TP not hit — signal expired.</span></div>
+    <div class="gitem"><span class="gico">🏔</span><span><b>Check weekly tab first.</b> Only take scalps in the direction the weekly macro allows. Counter-trend scalps fail more often.</span></div>
+    <div class="gitem"><span class="gico">🕐</span><span><b>Entry timing:</b> Wait for the 1m candle to fully close. Enter on the open of the next candle — never mid-candle.</span></div>
+    <div class="gitem"><span class="gico">🛑</span><span><b>Stop is fixed at 0.25%.</b> Do not move it. This is the rule that keeps you alive.</span></div>
+    <div class="gitem"><span class="gico">💧</span><span><b>Enter after a liquidity sweep reversal,</b> not before the sweep. The sweep is the manipulation.</span></div>
+    <div class="gitem"><span class="gico">🔁</span><span><b>After a trade:</b> Wait 15 min. No revenge trading. No immediate re-entry.</span></div>
   </div>
   <div class="card"><div class="foot"><b>Rules:</b> 15m trend · 1m EMA cross · RSI 44–57 · Vol ≥1.5× · Funding neutral · OI rising.<br><b>Risk:</b> SL 0.25% · TP 0.375% · 3–5× lev · 1 trade · 20/day · Stop −3%/day.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
 </div>
@@ -391,6 +491,9 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       </div>
     </div>
   </div>
+  <div id="weeklyWarn1" style="display:none;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:10px 13px;font-size:11px;color:#f87171;line-height:1.5;">
+    ⚠️ <b>Weekly macro is bearish.</b> Hourly longs conflict with macro trend. Prioritise short setups.
+  </div>
   <div class="card" style="padding:12px;">
     <div class="targets">
       <div class="tbox en"><div class="tlbl">Entry</div><div class="tval" id="t1en">—</div><div class="tsub">Near 1H level</div></div>
@@ -404,63 +507,35 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
     </div>
   </div>
   <div class="oi-card">
-    <div class="oi-header">
-      <span class="oi-title">📊 Open interest trend</span>
-      <div class="oi-badges">
-        <span class="oi-badge" id="oiBadge1">Loading…</span>
-        <span class="oi-badge" id="oiVal1">—</span>
-      </div>
-    </div>
+    <div class="oi-header"><span class="oi-title">📊 Open interest trend</span><div class="oi-badges"><span class="oi-badge" id="oiBadge1">Loading…</span><span class="oi-badge" id="oiVal1">—</span></div></div>
     <div class="oi-wrap"><canvas id="oiChart1"></canvas></div>
     <div class="oi-insight" id="oiInsight1">Building OI history…</div>
   </div>
   <div class="liqmap">
-    <div class="liq-title">
-      <span><span class="liq-live-dot"></span>Live liquidation clusters</span>
-      <span class="liq-count" id="liqCount1">0 events</span>
-    </div>
-    <div class="liq-levels" id="liqlevels1">
-      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Shorts squeezed above price</div></div>
-      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Longs stopped below price</div></div>
-    </div>
-    <div class="liq-legend">
-      <span><i style="background:#22c55e;opacity:.8"></i>Short liq (above price)</span>
-      <span><i style="background:#ef4444;opacity:.8"></i>Long liq (below price)</span>
-    </div>
+    <div class="liq-title"><span><span class="liq-live-dot"></span>Live liquidation clusters</span><span class="liq-count" id="liqCount1">0 events</span></div>
+    <div class="liq-levels" id="liqlevels1"><div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liq zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Shorts squeezed above</div></div><div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liq zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Longs stopped below</div></div></div>
+    <div class="liq-legend"><span><i style="background:#22c55e;opacity:.8"></i>Short liq (above)</span><span><i style="background:#ef4444;opacity:.8"></i>Long liq (below)</span></div>
     <div class="liqwrap"><canvas id="liqc1"></canvas></div>
-    <div class="liq-note">Real liquidation orders from Binance. Clusters grow as more liquidations accumulate at each price level.</div>
+    <div class="liq-note">Clusters grow as real liquidations accumulate. More volatile sessions = denser clusters.</div>
   </div>
   <div class="divider">Signal breakdown</div>
   <div class="sigs" id="sigs1"><div class="sig"><div class="signame">Loading…</div></div></div>
   <div class="divider">Charts</div>
   <div class="charts2">
-    <div class="card">
-      <div class="clbl">1H Price · EMA20 · EMA50</div>
-      <div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA20</span><span><i style="background:#ef4444"></i>EMA50</span></div>
-      <div class="cwrap"><canvas id="pc1"></canvas></div>
-    </div>
-    <div class="card" style="margin-top:10px;">
-      <div class="clbl">RSI 14 · 1H · zone 40–60</div>
-      <div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.5)"></i>40–60</span></div>
-      <div class="cwrap"><canvas id="rc1"></canvas></div>
-    </div>
+    <div class="card"><div class="clbl">1H Price · EMA20 · EMA50</div><div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA20</span><span><i style="background:#ef4444"></i>EMA50</span></div><div class="cwrap"><canvas id="pc1"></canvas></div></div>
+    <div class="card" style="margin-top:10px;"><div class="clbl">RSI 14 · 1H · zone 40–60</div><div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.5)"></i>40–60</span></div><div class="cwrap"><canvas id="rc1"></canvas></div></div>
   </div>
   <div class="divider">Info</div>
-  <div class="card">
-    <div class="fobox">
-      <div><div class="folbl">Funding rate</div><div class="foval" id="fo1r">—</div><div class="fometa" id="fo1rm">Paid once per 8h hold</div></div>
-      <div><div class="folbl">Open interest</div><div class="foval" id="fo1oi">—</div><div class="fometa" id="fo1oim">See OI trend chart above</div></div>
-    </div>
-  </div>
+  <div class="card"><div class="fobox"><div><div class="folbl">Funding rate</div><div class="foval" id="fo1r">—</div><div class="fometa" id="fo1rm">Paid once per 8h hold</div></div><div><div class="folbl">Open interest</div><div class="foval" id="fo1oi">—</div><div class="fometa">See OI trend chart above</div></div></div></div>
   <div class="divider">Guide</div>
   <div class="guidance">
     <div class="gtitle">📈 Hourly guide — 2 to 12 hours</div>
-    <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 2–12 hours.</b> Check every 2–4h. Set your orders and stop watching tick by tick.</span></div>
-    <div class="gitem"><span class="gico">📍</span><span><b>Entry near 1H key levels only.</b> Price in the middle of a range = no trade.</span></div>
-    <div class="gitem"><span class="gico">🛑</span><span><b>Stop below the 1H swing low</b> — usually 0.5–1% wide. Enough to survive 1–2 wick candles.</span></div>
-    <div class="gitem"><span class="gico">📊</span><span><b>OI trend matters here.</b> If OI is falling while price rises, it's a short squeeze — exits will be fast. Only trade rising OI setups.</span></div>
-    <div class="gitem"><span class="gico">💧</span><span><b>Liquidity clusters below price</b> = where MM pushes to grab long stops before reversing. Enter after the sweep.</span></div>
+    <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 2–12 hours.</b> Check every 2–4h. Set orders, then step away.</span></div>
+    <div class="gitem"><span class="gico">🏔</span><span><b>Weekly must agree.</b> Hourly trades in the direction of the weekly trend win significantly more. Check weekly tab first.</span></div>
+    <div class="gitem"><span class="gico">📍</span><span><b>Entry near 1H key levels only.</b> Mid-range = no trade.</span></div>
+    <div class="gitem"><span class="gico">🛑</span><span><b>Stop below the 1H swing low</b> — 0.5–1% wide. Enough for wick noise.</span></div>
     <div class="gitem"><span class="gico">⏰</span><span><b>Time exit:</b> If trade hasn't moved 40% toward TP in 6 hours, close manually. Momentum faded.</span></div>
+    <div class="gitem"><span class="gico">💰</span><span><b>Funding:</b> You'll pay one 8h period. Ensure TP is worth it before entering.</span></div>
   </div>
   <div class="card"><div class="foot"><b>Rules:</b> 4H trend · 1H EMA align · RSI 40–60 · Vol ≥1.3× · Funding neutral · OI rising.<br><b>Risk:</b> SL ~0.5–1% · TP ~1–2% · 2–3× lev · 1 trade · 5/day max.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
 </div>
@@ -481,6 +556,9 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
       </div>
     </div>
   </div>
+  <div id="weeklyWarn2" style="display:none;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:10px 13px;font-size:11px;color:#f87171;line-height:1.5;">
+    ⚠️ <b>Weekly macro is bearish.</b> Swing longs conflict with macro trend. Only short swings are macro-aligned.
+  </div>
   <div class="card" style="padding:12px;">
     <div class="targets">
       <div class="tbox en"><div class="tlbl">Entry zone</div><div class="tval" id="t2en">—</div><div class="tsub">Near prev day level</div></div>
@@ -498,68 +576,38 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
     </div>
   </div>
   <div class="oi-card">
-    <div class="oi-header">
-      <span class="oi-title">📊 Open interest trend</span>
-      <div class="oi-badges">
-        <span class="oi-badge" id="oiBadge2">Loading…</span>
-        <span class="oi-badge" id="oiVal2">—</span>
-      </div>
-    </div>
+    <div class="oi-header"><span class="oi-title">📊 Open interest trend</span><div class="oi-badges"><span class="oi-badge" id="oiBadge2">Loading…</span><span class="oi-badge" id="oiVal2">—</span></div></div>
     <div class="oi-wrap"><canvas id="oiChart2"></canvas></div>
     <div class="oi-insight" id="oiInsight2">Building OI history…</div>
   </div>
   <div class="liqmap">
-    <div class="liq-title">
-      <span><span class="liq-live-dot"></span>Live liquidation clusters</span>
-      <span class="liq-count" id="liqCount2">0 events</span>
-    </div>
-    <div class="liq-levels" id="liqlevels2">
-      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Shorts squeezed above price</div></div>
-      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Longs stopped below price</div></div>
-    </div>
-    <div class="liq-legend">
-      <span><i style="background:#22c55e;opacity:.8"></i>Short liq (above price)</span>
-      <span><i style="background:#ef4444;opacity:.8"></i>Long liq (below price)</span>
-    </div>
+    <div class="liq-title"><span><span class="liq-live-dot"></span>Live liquidation clusters</span><span class="liq-count" id="liqCount2">0 events</span></div>
+    <div class="liq-levels" id="liqlevels2"><div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liq zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Shorts squeezed above</div></div><div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liq zone</div><div class="liq-lvl-price">Collecting…</div><div class="liq-lvl-note">Longs stopped below</div></div></div>
+    <div class="liq-legend"><span><i style="background:#22c55e;opacity:.8"></i>Short liq (above)</span><span><i style="background:#ef4444;opacity:.8"></i>Long liq (below)</span></div>
     <div class="liqwrap"><canvas id="liqc2"></canvas></div>
-    <div class="liq-note">Large clusters = major sweep targets. Price wicks into these before the real move. Plan entries at these levels.</div>
+    <div class="liq-note">Large clusters = major sweep targets. Price wicks into these before the real move.</div>
   </div>
   <div class="divider">Signal breakdown</div>
   <div class="sigs" id="sigs2"><div class="sig"><div class="signame">Loading…</div></div></div>
   <div class="divider">Charts</div>
   <div class="charts2">
-    <div class="card">
-      <div class="clbl">4H Price · EMA20 · EMA50</div>
-      <div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA20</span><span><i style="background:#ef4444"></i>EMA50</span></div>
-      <div class="cwrap"><canvas id="pc2"></canvas></div>
-    </div>
-    <div class="card" style="margin-top:10px;">
-      <div class="clbl">RSI 14 · 4H · swing zones</div>
-      <div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.4)"></i>Buy 30–52</span><span><i style="background:rgba(239,68,68,.35)"></i>Sell 50–72</span></div>
-      <div class="cwrap"><canvas id="rc2"></canvas></div>
-    </div>
+    <div class="card"><div class="clbl">4H Price · EMA20 · EMA50</div><div class="cleg"><span><i style="background:#3b82f6"></i>Price</span><span><i style="background:#f59e0b"></i>EMA20</span><span><i style="background:#ef4444"></i>EMA50</span></div><div class="cwrap"><canvas id="pc2"></canvas></div></div>
+    <div class="card" style="margin-top:10px;"><div class="clbl">RSI 14 · 4H · swing zones</div><div class="cleg"><span><i style="background:#8b5cf6"></i>RSI</span><span><i style="background:rgba(34,197,94,.4)"></i>Buy 30–52</span><span><i style="background:rgba(239,68,68,.35)"></i>Sell 50–72</span></div><div class="cwrap"><canvas id="rc2"></canvas></div></div>
   </div>
   <div class="divider">Info</div>
   <div class="card">
-    <div class="fobox">
-      <div><div class="folbl">Funding rate</div><div class="foval" id="fo2r">—</div><div class="fometa" id="fo2rm">Paid every 8h — 9× on 3-day hold</div></div>
-      <div><div class="folbl">Open interest</div><div class="foval" id="fo2oi">—</div><div class="fometa" id="fo2oim">See OI trend chart above</div></div>
-    </div>
-    <div class="atrrow">
-      <div class="atrbox"><div class="atrlbl">Daily ATR</div><div class="atrval" id="atr2d">—</div></div>
-      <div class="atrbox"><div class="atrlbl">4H ATR</div><div class="atrval" id="atr2h">—</div></div>
-      <div class="atrbox"><div class="atrlbl">ATR SL dist</div><div class="atrval" id="atr2sl">—</div></div>
-    </div>
+    <div class="fobox"><div><div class="folbl">Funding rate</div><div class="foval" id="fo2r">—</div><div class="fometa" id="fo2rm">Paid every 8h — 9× on 3-day hold</div></div><div><div class="folbl">Open interest</div><div class="foval" id="fo2oi">—</div><div class="fometa">See OI trend chart above</div></div></div>
+    <div class="atrrow"><div class="atrbox"><div class="atrlbl">Daily ATR</div><div class="atrval" id="atr2d">—</div></div><div class="atrbox"><div class="atrlbl">4H ATR</div><div class="atrval" id="atr2h">—</div></div><div class="atrbox"><div class="atrlbl">ATR SL dist</div><div class="atrval" id="atr2sl">—</div></div></div>
   </div>
   <div class="divider">Guide</div>
   <div class="guidance">
     <div class="gtitle">🌊 Swing guide — 4 hours to 3 days</div>
-    <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 4h to 3 days.</b> Check once or twice a day. Needs time and room to develop.</span></div>
+    <div class="gitem"><span class="gico">⏱</span><span><b>Hold time: 4h to 3 days.</b> Check once or twice a day. Needs time to develop.</span></div>
+    <div class="gitem"><span class="gico">🏔</span><span><b>Weekly alignment is essential for swing trades.</b> A 3-day swing against the weekly trend will get crushed. Check weekly tab first.</span></div>
     <div class="gitem"><span class="gico">📍</span><span><b>Entry at key levels only</b> — prev day high/low or major 4H structure. Never enter mid-range.</span></div>
-    <div class="gitem"><span class="gico">🛑</span><span><b>Stop = 1× Daily ATR.</b> BTC moves $1k–3k/day — stop must survive that noise. Use smaller size.</span></div>
-    <div class="gitem"><span class="gico">📊</span><span><b>OI is critical on swing.</b> Sustained rising OI over days = real institutional positioning. Flat or falling OI = no conviction, skip.</span></div>
-    <div class="gitem"><span class="gico">💧</span><span><b>Large liquidity clusters</b> are major sweep zones. Price wicks into these before the real move. Plan entries there.</span></div>
-    <div class="gitem"><span class="gico">📅</span><span><b>Frequency: 2–5 setups per week.</b> Most days you should be watching, not trading.</span></div>
+    <div class="gitem"><span class="gico">🛑</span><span><b>Stop = 1× Daily ATR.</b> Purposely wide. BTC moves $1k–3k/day — stop must survive noise.</span></div>
+    <div class="gitem"><span class="gico">⏰</span><span><b>Time exit:</b> If trade hasn't moved 50% toward TP in 24h, close manually.</span></div>
+    <div class="gitem"><span class="gico">📅</span><span><b>Frequency: 2–5 setups per week.</b> Most days you should be watching.</span></div>
   </div>
   <div class="card"><div class="foot"><b>Rules:</b> Daily EMA trend · 4H EMA align · 4H RSI swing zone · Daily vol ≥1.2× · Funding neutral · OI rising.<br><b>Risk:</b> SL = 1× ATR · TP = 1.8× ATR · 2× lev max · 1 trade · 5/week.<br><b>⚠ Learning only. Testnet first. Not financial advice.</b></div></div>
 </div>
@@ -567,59 +615,84 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 </div><!-- /scroll-body -->
 
 <script>
-/* ══ PULL TO REFRESH ══════════════════════════════════════════════ */
+/* ══ PULL TO REFRESH — fixed approach using body touch events ════ */
 (function(){
   const sb=document.getElementById('scrollBody');
   const ind=document.getElementById('ptrEl');
   const txt=document.getElementById('ptrTxt');
   const spn=document.getElementById('ptrSpin');
-  let startY=0,pulling=false,refreshing=false;
-  const THRESH=65;
-  sb.addEventListener('touchstart',e=>{if(sb.scrollTop===0)startY=e.touches[0].clientY;},{passive:true});
-  sb.addEventListener('touchmove',e=>{
-    if(refreshing||startY===0)return;
-    const dy=e.touches[0].clientY-startY;
-    if(dy>8&&sb.scrollTop===0){
-      pulling=true;
-      const h=Math.min(dy*0.5,THRESH);
-      ind.style.height=h+'px';ind.classList.add('show');
-      txt.textContent=h>=THRESH*0.9?'Release to refresh…':'Pull down to refresh';
-      spn.style.display='none';
+  let startY=0,startScrollTop=0,pulling=false,refreshing=false;
+  const THRESH=70;
+
+  // Use document-level touch events for reliability across all pairs/states
+  document.addEventListener('touchstart',e=>{
+    startScrollTop=sb.scrollTop;
+    // Only start if at top of scroll
+    if(startScrollTop<=1){
+      startY=e.touches[0].clientY;
+    } else {
+      startY=0;
     }
   },{passive:true});
-  sb.addEventListener('touchend',()=>{
+
+  document.addEventListener('touchmove',e=>{
+    if(refreshing||startY===0)return;
+    const dy=e.touches[0].clientY-startY;
+    if(dy>5&&sb.scrollTop<=1){
+      pulling=true;
+      const h=Math.min(dy*0.45,THRESH);
+      ind.style.height=h+'px';
+      txt.textContent=h>=THRESH*0.88?'Release to refresh ↑':'Pull down to refresh ↓';
+      spn.style.display='none';
+    } else if(pulling&&dy<=0){
+      ind.style.height='0';pulling=false;
+    }
+  },{passive:true});
+
+  document.addEventListener('touchend',()=>{
     if(!pulling){startY=0;return;}
     pulling=false;
     const h=parseInt(ind.style.height)||0;
-    if(h>=THRESH*0.85){
-      refreshing=true;ind.style.height='48px';
-      txt.textContent='Refreshing…';spn.style.display='block';
+    if(h>=THRESH*0.8){
+      refreshing=true;
+      ind.style.height='48px';
+      txt.textContent='Refreshing…';
+      spn.style.display='block';
       hardRefresh();
-      setTimeout(()=>{ind.style.height='0';ind.classList.remove('show');refreshing=false;startY=0;},1800);
-    } else {ind.style.height='0';ind.classList.remove('show');startY=0;}
+      setTimeout(()=>{
+        ind.style.height='0';
+        refreshing=false;startY=0;
+      },2000);
+    } else {
+      ind.style.height='0';startY=0;
+    }
   },{passive:true});
 })();
 
-/* ══ PAGE NAV ═════════════════════════════════════════════════════ */
-let activePage=0;
+/* ══ PAGE NAV ════════════════════════════════════════════════════ */
+let activePage=3; // weekly is default
 function switchPage(i){
-  [0,1,2].forEach(j=>{document.getElementById('page'+j).classList.toggle('active',j===i);document.getElementById('tft'+j).classList.toggle('active',j===i);});
+  [0,1,2,3].forEach(j=>{
+    document.getElementById('page'+j).classList.toggle('active',j===i);
+    document.getElementById('tft'+j).classList.toggle('active',j===i);
+  });
   activePage=i;
   document.getElementById('scrollBody').scrollTop=0;
+  // re-render OI chart for newly visible tab
   renderOIChart(i);
   drawChart(i);
 }
 
-/* ══ ALERTS ═══════════════════════════════════════════════════════ */
-let alertsOn=false,notifPerm='default',lastLevels=[0,0,0];
-const TFNAMES=['⚡ 1–15m Scalp','📈 1H Hourly','🌊 4H/Daily Swing'];
+/* ══ ALERTS ══════════════════════════════════════════════════════ */
+let alertsOn=false,notifPerm='default',lastLevels=[0,0,0,0];
+const TFNAMES=['⚡ 1–15m Scalp','📈 1H Hourly','🌊 Swing','🌐 Weekly Macro'];
 async function toggleAlerts(){
   if(!alertsOn){
     if('Notification' in window)notifPerm=await Notification.requestPermission();
     alertsOn=true;document.getElementById('notifBtn').className='nbtn on';document.getElementById('notifBtn').textContent='🔔 ON';
-    toast('Alerts on — notified at 4, 5, and 6 signals per pair');
+    toast('Alerts on — fires at 4, 5, 6 signals per tab, includes pair name');
   } else {
-    alertsOn=false;lastLevels=[0,0,0];document.getElementById('notifBtn').className='nbtn';document.getElementById('notifBtn').textContent='🔔 ALERTS';toast('Alerts off');
+    alertsOn=false;lastLevels=[0,0,0,0];document.getElementById('notifBtn').className='nbtn';document.getElementById('notifBtn').textContent='🔔 ALERTS';toast('Alerts off');
   }
 }
 function fireAlert(tab,passed,dir,total){
@@ -627,7 +700,7 @@ function fireAlert(tab,passed,dir,total){
   if(passed<=lastLevels[tab])return;
   lastLevels[tab]=passed;
   const name=TFNAMES[tab];
-  const msg=passed>=total?`🚨 ${name} [${pair}]: ALL GREEN — ${dir} ENTRY NOW`:passed===total-1?`🔔 ${name} [${pair}]: ${passed}/${total} — ${dir} nearly ready`:`⚠️ ${name} [${pair}]: ${passed}/${total} — ${dir} building`;
+  const msg=passed>=total?`🚨 ${name} [${pair}]: ALL GREEN — ${dir} NOW`:passed===total-1?`🔔 ${name} [${pair}]: ${passed}/${total} — ${dir} nearly ready`:`⚠️ ${name} [${pair}]: ${passed}/${total} — ${dir} building`;
   if(navigator.vibrate){if(passed>=total)navigator.vibrate([400,100,400,100,400]);else if(passed===total-1)navigator.vibrate([200,80,200]);else navigator.vibrate([100,60,100]);}
   if(notifPerm==='granted'){try{new Notification(passed>=total?`🚨 ${name} — ${pair}`:`🔔 ${name} — ${pair}`,{body:msg,tag:'sig'+tab+pair,requireInteraction:passed>=total});}catch(e){}}
   try{const ctx=new(window.AudioContext||window.webkitAudioContext)();const n=passed>=total?3:passed===total-1?2:1;for(let i=0;i<n;i++){const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=passed>=total?900:passed===total-1?700:550;g.gain.setValueAtTime(0.25,ctx.currentTime+i*0.35);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.35+0.28);o.start(ctx.currentTime+i*0.35);o.stop(ctx.currentTime+i*0.35+0.28);}}catch(e){}
@@ -639,211 +712,114 @@ function toast(msg){
   t.textContent=msg;t.style.opacity='1';clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',3500);
 }
 
-/* ══ CONFLUENCE ═══════════════════════════════════════════════════ */
-const scores=[0,0,0],totals=[4,4,4],dirs=['—','—','—'];
+/* ══ CONFLUENCE (4 tabs now) ══════════════════════════════════════ */
+const scores=[0,0,0,0],totals=[4,4,4,4],dirs=['—','—','—','—'];
+let weeklyDir='NEUTRAL'; // used to show warnings on lower tabs
+
 function updateConfluence(){
-  const badges=['confS','confH','confW'],labels=['Scalp','1H','Swing'];
-  [0,1,2].forEach(i=>{const el=document.getElementById(badges[i]);const pct=totals[i]?scores[i]/totals[i]:0;el.textContent=`${labels[i]} ${scores[i]}/${totals[i]}`;el.className='cbadge'+(pct>=1?' full':pct>=0.8?' pass':pct>=0.6?' near':'');});
-  const allFull=totals.every((t,i)=>t>0&&scores[i]>=t),sameDir=dirs[0]!=='—'&&dirs[0]===dirs[1]&&dirs[1]===dirs[2]&&dirs[0]!=='NEUTRAL';
+  const badges=['confS','confH','confD','confW'],labels=['Scalp','1H','Swing','Weekly'];
+  const tabIdxs=[0,1,2,3];
+  tabIdxs.forEach(i=>{
+    const el=document.getElementById(badges[i]);
+    const pct=totals[i]?scores[i]/totals[i]:0;
+    el.textContent=`${labels[i]} ${scores[i]}/${totals[i]}`;
+    el.className='cbadge'+(pct>=1?' full':pct>=0.8?' pass':pct>=0.6?' near':'');
+  });
+  const allFull=[0,1,2,3].every(i=>totals[i]>0&&scores[i]>=totals[i]);
+  const sameDir=dirs.every(d=>d===dirs[0]&&d!=='—'&&d!=='NEUTRAL');
   const ca=document.getElementById('confAll');
-  if(allFull&&sameDir){ca.textContent=`🔥 ALL ALIGNED — ${dirs[0]}`;ca.className='conf-all on';if(alertsOn){if(navigator.vibrate)navigator.vibrate([500,150,500,150,500]);toast(`🔥 ALL 3 TABS ALIGNED [${pair}] — ${dirs[0]} — maximum confidence!`);}}
-  else{const ct=[0,1,2].filter(i=>totals[i]&&scores[i]>=totals[i]).length;ca.textContent=ct>0?`${ct}/3 tabs full`:'Not aligned';ca.className='conf-all';}
+  if(allFull&&sameDir){ca.textContent=`🔥 ALL 4 ALIGNED — ${dirs[0]}`;ca.className='conf-all on';if(alertsOn){if(navigator.vibrate)navigator.vibrate([500,150,500,150,500,150,500]);toast(`🔥 ALL 4 TABS ALIGNED [${pair}] — ${dirs[0]} — elite confidence!`);}}
+  else{const ct=[0,1,2,3].filter(i=>totals[i]&&scores[i]>=totals[i]).length;ca.textContent=ct>0?`${ct}/4 full`:'Not aligned';ca.className='conf-all';}
+
+  // Show/hide weekly warnings on lower tabs
+  const wBear=weeklyDir==='SHORT';
+  [0,1,2].forEach(i=>{const w=document.getElementById('weeklyWarn'+i);if(w)w.style.display=wBear?'block':'none';});
+
+  // Banner
   const mx=Math.max(...scores),mxi=scores.indexOf(mx),b=document.getElementById('alertBanner');
-  if(totals[mxi]&&mx>=totals[mxi]){b.className='abanner s6';b.textContent=`🚨 ${TFNAMES[mxi]} [${pair}] ALL GREEN — ${dirs[mxi]} ENTRY CONFIRMED`;}
+  if(totals[mxi]&&mx>=totals[mxi]){b.className='abanner s6';b.textContent=`🚨 ${TFNAMES[mxi]} [${pair}] ALL GREEN — ${dirs[mxi]} CONFIRMED`;}
   else if(totals[mxi]&&mx>=totals[mxi]-1){b.className='abanner s5';b.textContent=`🔔 ${TFNAMES[mxi]} [${pair}]: ${mx}/${totals[mxi]} — ${dirs[mxi]} nearly ready`;}
   else if(mx>=4){b.className='abanner s4';b.textContent=`⚠️ ${TFNAMES[mxi]} [${pair}]: ${mx}/${totals[mxi]} — ${dirs[mxi]} building`;}
   else b.className='abanner';
 }
 
-/* ══ OI HISTORY — localStorage ════════════════════════════════════
-   Key format: oi_{pair}  → [{t,v}]  (last 200 readings, ~50min @ 15s)
-   We store per-pair so switching pairs shows correct history.
-════════════════════════════════════════════════════════════════════ */
+/* ══ OI HISTORY — localStorage ════════════════════════════════════ */
 const OI_KEY=()=>`oi_${pair}`;
-const OI_MAX=200; // ~50 minutes at 15s interval
-
-function oiLoad(){
-  try{const raw=localStorage.getItem(OI_KEY());return raw?JSON.parse(raw):[];}catch(e){return [];}
-}
-function oiSave(hist){
-  try{localStorage.setItem(OI_KEY(),JSON.stringify(hist.slice(-OI_MAX)));}catch(e){}
-}
-function oiPush(val){
-  if(isNaN(val)||val<=0)return;
-  const hist=oiLoad();
-  hist.push({t:Date.now(),v:val});
-  oiSave(hist);
-}
-
+const OI_MAX=200;
+function oiLoad(){try{const r=localStorage.getItem(OI_KEY());return r?JSON.parse(r):[]}catch(e){return [];}}
+function oiSave(h){try{localStorage.setItem(OI_KEY(),JSON.stringify(h.slice(-OI_MAX)));}catch(e){}}
+function oiPush(val){if(isNaN(val)||val<=0)return;const h=oiLoad();h.push({t:Date.now(),v:val});oiSave(h);}
 function oiTrend(hist){
-  if(hist.length<3)return 'flat';
-  const half=Math.floor(hist.length/2);
+  if(hist.length<5)return 'flat';
+  const half=Math.max(2,Math.floor(hist.length/2));
   const early=hist.slice(0,half).reduce((a,b)=>a+b.v,0)/half;
   const late=hist.slice(-half).reduce((a,b)=>a+b.v,0)/half;
   const chg=(late-early)/early*100;
-  if(chg>0.15)return 'rising';
-  if(chg<-0.15)return 'falling';
-  return 'flat';
+  return chg>0.15?'rising':chg<-0.15?'falling':'flat';
 }
-
-let oiCharts=[null,null,null];
-
+let oiCharts=[null,null,null,null];
 function renderOIChart(tab){
-  const hist=oiLoad();
-  const trend=oiTrend(hist);
-  const curOI=hist.length?hist.at(-1).v:null;
-  const badgeEl=document.getElementById('oiBadge'+tab);
-  const valEl=document.getElementById('oiVal'+tab);
-  const insightEl=document.getElementById('oiInsight'+tab);
-
-  if(badgeEl){
-    badgeEl.textContent=trend==='rising'?'▲ Rising':trend==='falling'?'▼ Falling':'→ Flat';
-    badgeEl.className='oi-badge '+(trend==='rising'?'rising':trend==='falling'?'falling':'flat');
-  }
+  const hist=oiLoad(),trend=oiTrend(hist),curOI=hist.length?hist.at(-1).v:null;
+  const badgeEl=document.getElementById('oiBadge'+tab),valEl=document.getElementById('oiVal'+tab),insightEl=document.getElementById('oiInsight'+tab);
+  if(badgeEl){badgeEl.textContent=trend==='rising'?'▲ Rising':trend==='falling'?'▼ Falling':'→ Flat';badgeEl.className='oi-badge '+(trend==='rising'?'rising':trend==='falling'?'falling':'flat');}
   if(valEl&&curOI)valEl.textContent=curOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:2});
-
-  // Insight text
-  const price=storedPrice;
+  const d=dirs[tab];
   if(insightEl){
-    if(hist.length<5){insightEl.innerHTML='<b>Building OI history…</b> Data accumulates every 15s. Check back in a few minutes.';}
-    else if(trend==='rising'&&price>0){insightEl.innerHTML=`<b>OI rising ↑ + price ${dirs[tab]==='LONG'?'rising':'check direction'}</b> — Real buyers entering the market. Strong confirmation for ${dirs[tab]} trade.`;}
-    else if(trend==='falling'&&dirs[tab]==='LONG'){insightEl.innerHTML='<b>⚠️ OI falling while price rises</b> — This is a short squeeze, NOT real buying. Longs are covering. Higher risk — consider skipping or reducing size.';}
-    else if(trend==='falling'&&dirs[tab]==='SHORT'){insightEl.innerHTML='<b>OI falling ↓</b> — Longs are exiting. Can confirm a short but watch for reversal if OI stabilises.';}
-    else{insightEl.innerHTML='<b>OI flat →</b> — No new positioning. Market is in wait mode. Wait for OI to expand before entering.';}
+    if(hist.length<5){insightEl.innerHTML='<b>Building OI history…</b> Accumulates every 15s. Check back in ~2 minutes.';}
+    else if(trend==='rising'){insightEl.innerHTML=`<b>OI rising ↑</b> — New money entering. Real positioning, not a squeeze. Strong confirmation for ${d==='NEUTRAL'?'current direction':d} trades.`;}
+    else if(trend==='falling'&&d==='LONG'){insightEl.innerHTML='<b>⚠️ OI falling + price rising</b> — Short squeeze only. Longs covering, not new buyers. Higher failure risk — reduce size or skip.';}
+    else if(trend==='falling'){insightEl.innerHTML='<b>OI falling ↓</b> — Positions unwinding. Can confirm shorts but watch for reversal when OI stabilises.';}
+    else{insightEl.innerHTML='<b>OI flat →</b> — No new positioning. Market waiting. Hold off until OI expands.';}
   }
-
-  // Chart
   if(!hist.length)return;
-  const n=Math.min(hist.length,60);
-  const sl=hist.slice(-n);
+  const n=Math.min(hist.length,60),sl=hist.slice(-n);
   const labels=sl.map(x=>{const d=new Date(x.t);return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;});
   const vals=sl.map(x=>x.v);
-  const lineColor=trend==='rising'?'#22c55e':trend==='falling'?'#ef4444':'#f59e0b';
+  const lc=trend==='rising'?'#22c55e':trend==='falling'?'#ef4444':'#f59e0b';
+  const fillMap={'#22c55e':'rgba(34,197,94,0.08)','#ef4444':'rgba(239,68,68,0.08)','#f59e0b':'rgba(245,158,11,0.08)'};
   const gc='rgba(255,255,255,0.05)',tc='#4a4f66';
-
+  const cvs=document.getElementById('oiChart'+tab);if(!cvs)return;
   if(oiCharts[tab])oiCharts[tab].destroy();
-  oiCharts[tab]=new Chart(document.getElementById('oiChart'+tab),{
-    type:'line',
-    data:{labels,datasets:[{data:vals,borderColor:lineColor,borderWidth:1.5,pointRadius:0,tension:.3,fill:true,backgroundColor:lineColor.replace(')',', 0.08)').replace('rgb','rgba').replace('#22c55e','rgba(34,197,94,0.08)').replace('#ef4444','rgba(239,68,68,0.08)').replace('#f59e0b','rgba(245,158,11,0.08)')}]},
-    options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:5,color:tc,font:{size:9}},grid:{color:gc},border:{display:false}},y:{ticks:{maxTicksLimit:3,color:tc,font:{size:9},callback:v=>v.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1})},grid:{color:gc},border:{display:false}}}}
-  });
+  oiCharts[tab]=new Chart(cvs,{type:'line',data:{labels,datasets:[{data:vals,borderColor:lc,borderWidth:1.5,pointRadius:0,tension:.3,fill:true,backgroundColor:fillMap[lc]||'rgba(255,255,255,.05)'}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:5,color:tc,font:{size:9}},grid:{color:gc},border:{display:false}},y:{ticks:{maxTicksLimit:3,color:tc,font:{size:9},callback:v=>v.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1})},grid:{color:gc},border:{display:false}}}}});
 }
 
-/* ══ LIQUIDATION WEBSOCKET ════════════════════════════════════════
-   Stream: wss://fstream.binance.com/ws/!forceOrder@arr
-   Each event: {o:{s:symbol, S:side(BUY=short liq, SELL=long liq), p:price, q:qty, T:time}}
-   BUY  = market buy to close a short position = SHORT LIQUIDATION (green, above price)
-   SELL = market sell to close a long position = LONG LIQUIDATION  (red, below price)
-   We bucket into price clusters and render a horizontal bar chart.
-════════════════════════════════════════════════════════════════════ */
+/* ══ LIQUIDATION WS ══════════════════════════════════════════════ */
 let liqWS=null;
-// liqBuckets[pair] = {shortBuckets:{price:qty}, longBuckets:{price:qty}, count}
 const liqData={};
-let liqCharts=[null,null,null];
-
-function liqKey(price,bucketSize){return Math.round(price/bucketSize)*bucketSize;}
-
-function liqBucketSize(price){
-  if(price>10000)return 100;
-  if(price>1000)return 10;
-  if(price>100)return 1;
-  if(price>10)return 0.1;
-  return 0.01;
-}
-
-function initLiq(sym){if(!liqData[sym])liqData[sym]={short:{},long:{},count:0,lastUpdate:0};}
-
+let liqCharts=[null,null,null,null];
+function liqBucketSize(p){return p>10000?200:p>1000?20:p>100?2:p>10?0.2:0.02;}
+function liqKey(p,bs){return Math.round(p/bs)*bs;}
+function initLiq(sym){if(!liqData[sym])liqData[sym]={short:{},long:{},count:0};}
 function connectLiqWS(){
   if(liqWS){try{liqWS.close();}catch(e){}}
   liqWS=new WebSocket('wss://fstream.binance.com/ws/!forceOrder@arr');
-  liqWS.onopen=()=>console.log('Liq WS open');
-  liqWS.onerror=()=>console.log('Liq WS error');
-  liqWS.onclose=()=>setTimeout(connectLiqWS,5000);
   liqWS.onmessage=e=>{
-    try{
-      const msg=JSON.parse(e.data);
-      const o=msg.o||msg;
-      const sym=o.s;
-      if(!sym)return;
-      initLiq(sym);
-      const price=parseFloat(o.p);
-      const qty=parseFloat(o.q)*price; // value in USDT
-      const bs=liqBucketSize(price);
-      const bk=liqKey(price,bs);
-      const side=o.S; // BUY = short liq, SELL = long liq
-      if(side==='BUY'){liqData[sym].short[bk]=(liqData[sym].short[bk]||0)+qty;}
-      else{liqData[sym].long[bk]=(liqData[sym].long[bk]||0)+qty;}
-      liqData[sym].count++;
-      liqData[sym].lastUpdate=Date.now();
-      // throttle render
-      if(Date.now()-liqData[sym].lastUpdate<2000)return;
-    }catch(e2){}
+    try{const msg=JSON.parse(e.data),o=msg.o||msg,sym=o.s;if(!sym)return;initLiq(sym);const p=parseFloat(o.p),qty=parseFloat(o.q)*p,bs=liqBucketSize(p),bk=liqKey(p,bs);if(o.S==='BUY')liqData[sym].short[bk]=(liqData[sym].short[bk]||0)+qty;else liqData[sym].long[bk]=(liqData[sym].long[bk]||0)+qty;liqData[sym].count++;}catch(e2){}
   };
-  // Periodic render every 3s
-  setInterval(()=>{[0,1,2].forEach(t=>renderLiq(t));},3000);
+  liqWS.onclose=()=>setTimeout(connectLiqWS,5000);
+  setInterval(()=>[0,1,2,3].forEach(t=>renderLiq(t)),3000);
 }
-
 function renderLiq(tab){
-  const sym=pair;
-  initLiq(sym);
-  const ld=liqData[sym];
-  const cnt=ld.count;
-  const countEls=document.querySelectorAll('.liq-count');
-  if(countEls[tab])countEls[tab].textContent=`${cnt} events`;
-  document.getElementById('liqCount'+tab).textContent=`${cnt} events`;
-
-  const curPrice=storedPrice||0;
-  if(!curPrice)return;
-
-  // Separate short (above) and long (below) buckets relative to current price
-  const shortBuckets=Object.entries(ld.short).map(([p,v])=>({price:+p,val:v,type:'short'})).filter(x=>x.price>=curPrice*0.95);
-  const longBuckets=Object.entries(ld.long).map(([p,v])=>({price:+p,val:v,type:'long'})).filter(x=>x.price<=curPrice*1.05);
-
-  // Sort: shorts descending (highest above price first), longs descending
-  shortBuckets.sort((a,b)=>b.price-a.price);
-  longBuckets.sort((a,b)=>b.price-a.price);
-
-  // Chart: shorts on top, longs on bottom
-  const all=[...shortBuckets.slice(0,6),...longBuckets.slice(0,6)];
-  if(!all.length){
-    // Show placeholder if no data yet
-    document.getElementById('liqlevels'+tab).innerHTML=`
-      <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Short liquidation zone</div><div class="liq-lvl-price">Collecting live data…</div><div class="liq-lvl-note">Events stream in real time from Binance</div></div>
-      <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Long liquidation zone</div><div class="liq-lvl-price">Collecting live data…</div><div class="liq-lvl-note">More events appear during volatile moves</div></div>`;
-    return;
-  }
-
-  const dec=pdec(curPrice);
-  const labels=all.map(c=>{const pct=((c.price-curPrice)/curPrice*100).toFixed(2);return `${pct>0?'+':''}${pct}%`;});
+  const sym=pair;initLiq(sym);const ld=liqData[sym];
+  document.getElementById('liqCount'+tab).textContent=`${ld.count} events`;
+  const cp=storedPrice;if(!cp)return;
+  const shorts=Object.entries(ld.short).map(([p,v])=>({price:+p,val:v,type:'short'})).filter(x=>x.price>=cp*0.93).sort((a,b)=>b.price-a.price);
+  const longs=Object.entries(ld.long).map(([p,v])=>({price:+p,val:v,type:'long'})).filter(x=>x.price<=cp*1.07).sort((a,b)=>b.price-a.price);
+  const all=[...shorts.slice(0,6),...longs.slice(0,6)];
+  if(!all.length)return;
+  const dec=pdec(cp);
+  const labels=all.map(c=>{const pct=((c.price-cp)/cp*100).toFixed(2);return `${pct>0?'+':''}${pct}%`;});
   const bgs=all.map(c=>c.type==='short'?'rgba(34,197,94,0.6)':'rgba(239,68,68,0.6)');
   const borders=all.map(c=>c.type==='short'?'#22c55e':'#ef4444');
-  const vals=all.map(c=>c.val/1000); // in $K
-
+  const vals=all.map(c=>c.val/1000);
+  const cvs=document.getElementById('liqc'+tab);if(!cvs)return;
   if(liqCharts[tab])liqCharts[tab].destroy();
-  const canvas=document.getElementById('liqc'+tab);
-  if(!canvas)return;
-  liqCharts[tab]=new Chart(canvas,{
-    type:'bar',
-    data:{labels,datasets:[{data:vals,backgroundColor:bgs,borderColor:borders,borderWidth:1,borderRadius:3}]},
-    options:{responsive:true,maintainAspectRatio:false,animation:false,indexAxis:'y',
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`$${(vals[c.dataIndex]).toFixed(0)}K liquidated`}}},
-      scales:{x:{display:false,border:{display:false}},y:{ticks:{color:'#4a4f66',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},border:{display:false}}}}
-  });
-
-  // Key level cards
-  const bigShort=shortBuckets.length?shortBuckets.reduce((a,b)=>b.val>a.val?b:a):null;
-  const bigLong=longBuckets.length?longBuckets.reduce((a,b)=>b.val>a.val?b:a):null;
+  liqCharts[tab]=new Chart(cvs,{type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:bgs,borderColor:borders,borderWidth:1,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,animation:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`$${vals[c.dataIndex].toFixed(0)}K liquidated`}}},scales:{x:{display:false,border:{display:false}},y:{ticks:{color:'#4a4f66',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},border:{display:false}}}}});
+  const bigShort=shorts.length?shorts.reduce((a,b)=>b.val>a.val?b:a):null;
+  const bigLong=longs.length?longs.reduce((a,b)=>b.val>a.val?b:a):null;
   document.getElementById('liqlevels'+tab).innerHTML=`
-    <div class="liq-lvl short-liq">
-      <div class="liq-lvl-label">🟢 Biggest short cluster</div>
-      <div class="liq-lvl-price">${bigShort?fmt(bigShort.price,dec):'Building…'}</div>
-      <div class="liq-lvl-note">${bigShort?`$${(bigShort.val/1000).toFixed(0)}K liquidated here — shorts get squeezed above, enter short AFTER sweep reversal`:'Accumulating data…'}</div>
-    </div>
-    <div class="liq-lvl long-liq">
-      <div class="liq-lvl-label">🔴 Biggest long cluster</div>
-      <div class="liq-lvl-price">${bigLong?fmt(bigLong.price,dec):'Building…'}</div>
-      <div class="liq-lvl-note">${bigLong?`$${(bigLong.val/1000).toFixed(0)}K liquidated here — longs get stopped, enter long AFTER sweep reversal`:'Accumulating data…'}</div>
-    </div>`;
+    <div class="liq-lvl short-liq"><div class="liq-lvl-label">🟢 Biggest short cluster</div><div class="liq-lvl-price">${bigShort?fmt(bigShort.price,dec):'Building…'}</div><div class="liq-lvl-note">${bigShort?`$${(bigShort.val/1000).toFixed(0)}K liquidated — enter short AFTER sweep + reversal`:'Accumulating events…'}</div></div>
+    <div class="liq-lvl long-liq"><div class="liq-lvl-label">🔴 Biggest long cluster</div><div class="liq-lvl-price">${bigLong?fmt(bigLong.price,dec):'Building…'}</div><div class="liq-lvl-note">${bigLong?`$${(bigLong.val/1000).toFixed(0)}K liquidated — enter long AFTER sweep + reversal`:'Accumulating events…'}</div></div>`;
 }
 
 /* ══ HELPERS ══════════════════════════════════════════════════════ */
@@ -860,9 +836,9 @@ function sigCard(s){const dc=s.pass===true?'sdot sp':s.pass===false?'sdot sf':s.
 const FAPI='https://fapi.binance.com',WSB='wss://fstream.binance.com/ws';
 let pair='BTCUSDT',lastP=null,storedFR=NaN,storedOI=NaN,storedPrice=0;
 let ws=null,rfTimer=null;
-let D={c1m:[],c15m:[],c1h:[],c4h:[],cD:[]};
-let CD={e0a:[],e0b:[],rs0:[],lb0:[],e1a:[],e1b:[],rs1:[],lb1:[],e2a:[],e2b:[],rs2:[],lb2:[]};
-let CH={p0:null,r0:null,p1:null,r1:null,p2:null,r2:null};
+let D={c1m:[],c15m:[],c1h:[],c4h:[],cD:[],cW:[],cM:[]};
+let CD={e0a:[],e0b:[],rs0:[],lb0:[],e1a:[],e1b:[],rs1:[],lb1:[],e2a:[],e2b:[],rs2:[],lb2:[],e3a:[],e3b:[],e3c:[],rs3:[],lb3:[]};
+let CH={p0:null,r0:null,p1:null,r1:null,p2:null,r2:null,p3:null,r3:null};
 
 async function fetchK(iv,lim){const r=await fetch(`${FAPI}/fapi/v1/klines?symbol=${pair}&interval=${iv}&limit=${lim}`);const d=await r.json();return d.map(k=>({t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[5]}));}
 async function fetchFR(){const r=await fetch(`${FAPI}/fapi/v1/fundingRate?symbol=${pair}&limit=1`);const d=await r.json();return d.length?+d[0].fundingRate:null;}
@@ -883,6 +859,98 @@ function flashPrice(p){
   lastP=p;
 }
 
+/* ══ ANALYSE WEEKLY ══════════════════════════════════════════════ */
+function analyseWeekly(){
+  const cW=D.cW,cM=D.cM;
+  if(cW.length<25){$('vtitle3').textContent='Building…';$('vsub3').textContent=`Weekly: ${cW.length} candles`;$('score3').textContent='—';return;}
+  const clW=cW.map(x=>x.c),vlW=cW.map(x=>x.v),clM=cM.length?cM.map(x=>x.c):[];
+  const price=clW.at(-1);
+
+  // S1: Weekly EMA 10 vs EMA 20
+  const wE10=ema(clW,10),wE20=ema(clW,20);CD.e3a=wE10;CD.e3b=wE20;
+  const wBull=wE10.at(-1)>wE20.at(-1),wDiff=(wE10.at(-1)-wE20.at(-1))/wE20.at(-1)*100;
+  const wFlat=Math.abs(wDiff)<0.5;
+
+  // S2: 200-week MA (simple moving average)
+  const w200=clW.length>=200?clW.slice(-200).reduce((a,b)=>a+b,0)/200:clW.reduce((a,b)=>a+b,0)/clW.length;
+  CD.e3c=clW.map((_,i,arr)=>{const sl=arr.slice(Math.max(0,i-199),i+1);return sl.reduce((a,b)=>a+b,0)/sl.length;});
+  const above200=price>w200,pctFrom200=((price-w200)/w200*100).toFixed(1);
+
+  // S3: Weekly RSI
+  const wRSI=rsiCalc(clW,14);CD.rs3=wRSI;
+  const lRSIw=wRSI.at(-1);
+  // Weekly RSI: buy zone <40, sell zone >60 (wider for weekly)
+  const wRSILong=lRSIw!=null&&lRSIw>=30&&lRSIw<=55,wRSIShort=lRSIw!=null&&lRSIw>=45&&lRSIw<=72;
+
+  // S4: Monthly trend (if available)
+  let mBull=null,mDiff=0;
+  if(clM.length>=5){const mE10=ema(clM,Math.min(10,clM.length)),mE20=ema(clM,Math.min(20,clM.length));mBull=mE10.at(-1)>mE20.at(-1);mDiff=(mE10.at(-1)-mE20.at(-1))/mE20.at(-1)*100;}
+
+  // S5: Weekly volume
+  const wVolAvg=vlW.slice(-21,-1).reduce((a,b)=>a+b,0)/20,wVrat=vlW.at(-1)/wVolAvg,wVolOk=wVrat>=1.1;
+
+  // S6: OI
+  const oiHist=oiLoad(),oiTr=oiTrend(oiHist),oiOk=oiTr==='rising',oiAvail=oiHist.length>=5;
+
+  const dir=wFlat?'NEUTRAL':wBull?'LONG':'SHORT';
+  weeklyDir=dir;
+
+  const s1=wFlat?'warn':wBull;
+  const s2=above200;
+  const s3=dir==='LONG'?wRSILong:dir==='SHORT'?wRSIShort:false;
+  const s4=mBull!==null?(dir==='LONG'?mBull:!mBull):null;
+  const s5=wVolOk;
+  const s6=oiAvail?oiOk:null;
+
+  const passed=[s1,s2,s3,s4,s5,s6].filter(x=>x===true).length;
+  const total=[s1,s2,s3,s4,s5,s6].filter(x=>x!==null).length||4;
+  scores[3]=passed;totals[3]=total;dirs[3]=dir;
+
+  // Macro banner
+  const banner=$('macroBanner');
+  let col,vt,vs,bc;
+  if(passed>=total&&dir==='LONG'){col='var(--grn)';vt='🟢 MACRO BULLISH';vs=`${passed}/${total} weekly signals green — all lower tabs should prioritise LONG setups`;bc='bull';}
+  else if(passed>=total&&dir==='SHORT'){col='var(--red)';vt='🔴 MACRO BEARISH';vs=`${passed}/${total} weekly signals confirm downtrend — only take SHORT setups on lower tabs`;bc='bear';}
+  else if(passed>=total-2&&dir==='LONG'){col='var(--amb)';vt='⚠️ CAUTIOUS BULLISH';vs=`${passed}/${total} — trend favours longs but not all conditions aligned`;bc='bull';}
+  else if(passed>=total-2&&dir==='SHORT'){col='var(--amb)';vt='⚠️ CAUTIOUS BEARISH';vs=`${passed}/${total} — trend leans bearish, lower confidence`;bc='bear';}
+  else{col='var(--t3)';vt='↔️ MACRO NEUTRAL';vs='No clear weekly trend — trade both sides with caution, reduce size';bc='flat';}
+
+  banner.className=`macro-banner ${bc}`;
+  $('macroTitle').textContent=vt;$('macroTitle').style.color=col;
+  $('macroSub').textContent=vs;
+  $('mWeekTrend').textContent=wFlat?'Flat':wBull?'▲ Up':'▼ Down';$('mWeekTrend').style.color=wFlat?'var(--amb)':wBull?'var(--grn)':'var(--red)';
+  $('mMonthTrend').textContent=mBull===null?'—':mBull?'▲ Up':'▼ Down';if(mBull!==null)$('mMonthTrend').style.color=mBull?'var(--grn)':'var(--red)';
+  $('m200w').textContent=`${above200?'↑ Above':'↓ Below'} (${pctFrom200>0?'+':''}${pctFrom200}%)`;$('m200w').style.color=above200?'var(--grn)':'var(--red)';
+
+  setRing(3,passed,total,col);
+  $('vtitle3').style.color=col;$('vtitle3').textContent=vt;$('vsub3').textContent=vs;
+  $('vdir3').textContent=`Macro bias: ${dir}`;$('vdir3').style.color=dir==='LONG'?'var(--grn)':dir==='SHORT'?'var(--red)':'var(--t2)';
+  $('vtime3').textContent=`Updated ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} · refreshes every 15s`;
+
+  const dec=pdec(price),atrW=atrCalc(cW,14),atrM=cM.length?atrCalc(cM,14):null;
+  $('t3en').textContent=fmt(price,dec);
+  $('t3sl').textContent=fmt(atrW?price-(atrW*2):price*0.95,dec);
+  $('t3tp').textContent=cW.length>=2?fmt(cW.slice(-10).reduce((a,b)=>b.h>a?b.h:a,0),dec):'—';
+  $('s3atr').textContent=atrW?fmt(atrW,0):'—';$('s3matr').textContent=atrM?fmt(atrM,0):'—';
+  if(cW.length>=2){const pw=cW.at(-2);$('s3range').textContent=fmt(pw.h-pw.l,0);$('pwh').textContent=fmt(pw.h,dec);$('pwl').textContent=fmt(pw.l,dec);$('pwhd').textContent=`${(((price-pw.h)/pw.h)*100).toFixed(2)}% from price`;$('pwld').textContent=`${(((price-pw.l)/pw.l)*100).toFixed(2)}% from price`;}
+  $('fo3r').textContent=!isNaN(storedFR)?`${storedFR.toFixed(4)}%`:'—';if(!isNaN(storedFR)){$('fo3r').style.color=Math.abs(storedFR)<=0.05?'var(--grn)':'var(--red)';}
+  $('fo3oi').textContent=isNaN(storedOI)?'—':storedOI.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:1});
+
+  const n=Math.min(cW.length,52);
+  CD.lb3=cW.slice(-n).map(x=>{const d=new Date(x.t);return `W${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;});
+
+  $('sigs3').innerHTML=[
+    {name:'Weekly EMA 10/20',tf:'WEEKLY',val:wFlat?'Flat':wBull?'▲ Bullish cross':'▼ Bearish cross',meta:`EMA10/20 gap ${wDiff.toFixed(2)}%${wFlat?' — too flat':''}`,pass:s1,pct:wFlat?40:wBull?88:12},
+    {name:'Price vs 200W MA',tf:'WEEKLY',val:above200?`▲ Above 200W`:` ▼ Below 200W`,meta:`${pctFrom200>0?'+':''}${pctFrom200}% from 200-week MA ($${fmt(w200,0)})`,pass:s2,pct:above200?80:20},
+    {name:'Weekly RSI',tf:'WEEKLY',val:lRSIw!=null?lRSIw.toFixed(1):'—',meta:lRSIw==null?'Calculating…':lRSIw<35?'↓ Oversold — cycle low zone':lRSIw>65?'↑ Overbought — distribution zone':dir==='LONG'?`Buy zone 30–55 | ${wRSILong?'✓ In range':'✗ Wait'}`:`Sell zone 45–72 | ${wRSIShort?'✓ In range':'✗ Wait'}`,pass:s3,pct:lRSIw!=null?Math.min(100,Math.max(0,((lRSIw-20)/60)*100)):50},
+    {name:'Monthly trend',tf:'MONTHLY',val:mBull===null?'Insufficient data':mBull?'▲ Up':'▼ Down',meta:mBull===null?'Need more monthly candles':mBull?`Monthly EMA aligned bullish (+${mDiff.toFixed(2)}%)`:`Monthly EMA bearish (${mDiff.toFixed(2)}%)`,pass:s4,pct:mBull===null?50:mBull?82:18},
+    {name:'Weekly volume',tf:'WEEKLY',val:`${wVrat.toFixed(2)}×`,meta:wVolOk?'✓ Above avg — institutional activity':'✗ Below avg — weak conviction',pass:s5,pct:Math.min(100,(wVrat/1.5)*100)},
+    {name:'OI direction',tf:'TREND',val:oiAvail?(oiTr==='rising'?'▲ Rising':oiTr==='falling'?'▼ Falling':'→ Flat'):'Building…',meta:oiAvail?oiTr==='rising'?'✓ Capital flowing in — trend has legs':oiTr==='falling'?'✗ Capital leaving — trend weakening':'→ Neutral':'Need 5+ OI readings',pass:s6,pct:oiAvail?oiTr==='rising'?85:oiTr==='falling'?15:45:50},
+  ].map(sigCard).join('');
+
+  renderOIChart(3);renderLiq(3);drawChart(3);fireAlert(3,passed,dir,total);
+}
+
 /* ══ ANALYSE SCALP ════════════════════════════════════════════════ */
 function analyseScalp(){
   const c1=D.c1m,c15=D.c15m;
@@ -898,9 +966,7 @@ function analyseScalp(){
   const rs=rsiCalc(cl1,14);CD.rs0=rs;const lRSI=rs.at(-1),rsiOk=lRSI!=null&&lRSI>=44&&lRSI<=57;
   const avg20=vl1.slice(-21,-1).reduce((a,b)=>a+b,0)/20,vrat=vl1.at(-1)/avg20,volOk=vrat>=1.5;
   const frPct=storedFR,frOk=!isNaN(frPct)&&frPct>=-0.05&&frPct<=0.05,frAvail=!isNaN(frPct);
-  // OI trend as signal
-  const oiHist=oiLoad();const oiTr=oiTrend(oiHist);
-  const oiOk=oiTr==='rising';const oiAvail=oiHist.length>=5;
+  const oiHist=oiLoad(),oiTr=oiTrend(oiHist),oiOk=oiTr==='rising',oiAvail=oiHist.length>=5;
   const s1=flat?'warn':tUp,s2=dir==='LONG'?bull:dir==='SHORT'?!bull:false,s3=rsiOk,s4=volOk,s5=frAvail?frOk:null,s6=oiAvail?oiOk:null;
   const passed=[s1,s2,s3,s4,s5,s6].filter(x=>x===true).length,total=[s1,s2,s3,s4,s5,s6].filter(x=>x!==null).length||4;
   scores[0]=passed;totals[0]=total;dirs[0]=dir;
@@ -909,7 +975,7 @@ function analyseScalp(){
   else if(passed>=total&&dir==='SHORT'){col='var(--red)';vt='🔴 SHORT SETUP';vs='All signals green — wait for 1m candle close then enter';}
   else if(passed>=total-1&&dir!=='NEUTRAL'){col='var(--amb)';vt=`⚠️ ${dir} BUILDING`;vs=`${passed}/${total} — one signal away`;}
   else if(passed>=Math.ceil(total/2)){col='var(--amb)';vt='⚠️ WATCH';vs=`${passed}/${total} — not ready yet`;}
-  else{col='var(--t3)';vt='⛔ NO TRADE';vs=`${passed}/${total} — wait for setup`;}
+  else{col='var(--t3)';vt='⛔ NO TRADE';vs=`${passed}/${total} — wait`;}
   setRing(0,passed,total,col);
   $('vtitle0').style.color=col;$('vtitle0').textContent=vt;$('vsub0').textContent=vs;
   $('vdir0').textContent=`Bias: ${dir}`;$('vdir0').style.color=dir==='LONG'?'var(--grn)':dir==='SHORT'?'var(--red)':'var(--t2)';
@@ -929,7 +995,7 @@ function analyseScalp(){
     {name:'RSI (14)',tf:'1M',val:lRSI!=null?lRSI.toFixed(1):'—',meta:lRSI==null?'Calculating…':lRSI<44?'↓ Oversold':lRSI>57?'↑ Overbought':'✓ In zone 44–57',pass:s3,pct:lRSI!=null?Math.min(100,Math.max(0,((lRSI-20)/60)*100)):50},
     {name:'Volume spike',tf:'1M',val:`${vrat.toFixed(2)}×`,meta:volOk?'✓ ≥1.5× confirmed':'✗ Weak — skip',pass:s4,pct:Math.min(100,(vrat/2.5)*100)},
     {name:'Funding rate',tf:'8H',val:frAvail?`${frPct.toFixed(4)}%`:'…',meta:frAvail?frOk?'✓ Neutral':'✗ Crowded':'Loading',pass:s5,pct:frAvail?100-Math.min(100,(Math.abs(frPct)/0.1)*100):50},
-    {name:'OI direction',tf:'TREND',val:oiAvail?(oiTr==='rising'?'▲ Rising':oiTr==='falling'?'▼ Falling':'→ Flat'):'Building…',meta:oiAvail?oiTr==='rising'?'✓ New money entering — real move':oiTr==='falling'?'✗ Squeeze only — exit risk':'→ Flat — wait for expansion':'Need 5+ readings',pass:s6,pct:oiAvail?oiTr==='rising'?85:oiTr==='falling'?15:45:50},
+    {name:'OI direction',tf:'TREND',val:oiAvail?(oiTr==='rising'?'▲ Rising':oiTr==='falling'?'▼ Falling':'→ Flat'):'Building…',meta:oiAvail?oiTr==='rising'?'✓ Real buyers entering':oiTr==='falling'?'✗ Squeeze only — caution':'→ Flat — wait':'Need 5+ readings',pass:s6,pct:oiAvail?oiTr==='rising'?85:oiTr==='falling'?15:45:50},
   ].map(sigCard).join('');
   renderOIChart(0);renderLiq(0);drawChart(0);fireAlert(0,passed,dir,total);
 }
@@ -947,15 +1013,14 @@ function analyseHourly(){
   const rs=rsiCalc(cl1h,14);CD.rs1=rs;const lRSI=rs.at(-1),rsiOk=lRSI!=null&&lRSI>=40&&lRSI<=60;
   const avg20=vl1h.slice(-21,-1).reduce((a,b)=>a+b,0)/20,vrat=vl1h.at(-1)/avg20,volOk=vrat>=1.3;
   const frPct=storedFR,frOk=!isNaN(frPct)&&frPct>=-0.05&&frPct<=0.05,frAvail=!isNaN(frPct);
-  const oiHist=oiLoad();const oiTr=oiTrend(oiHist);
-  const oiOk=oiTr==='rising';const oiAvail=oiHist.length>=5;
+  const oiHist=oiLoad(),oiTr=oiTrend(oiHist),oiOk=oiTr==='rising',oiAvail=oiHist.length>=5;
   const s1=flat4?'warn':bull4,s2=dir==='LONG'?bull1h:dir==='SHORT'?!bull1h:false,s3=rsiOk,s4=volOk,s5=frAvail?frOk:null,s6=oiAvail?oiOk:null;
   const passed=[s1,s2,s3,s4,s5,s6].filter(x=>x===true).length,total=[s1,s2,s3,s4,s5,s6].filter(x=>x!==null).length||4;
   scores[1]=passed;totals[1]=total;dirs[1]=dir;
   let col,vt,vs;
   if(passed>=total&&dir==='LONG'){col='var(--grn)';vt='🟢 LONG SETUP';vs='Enter near 1H support on next candle close';}
   else if(passed>=total&&dir==='SHORT'){col='var(--red)';vt='🔴 SHORT SETUP';vs='Enter near 1H resistance on rejection';}
-  else if(passed>=total-1&&dir!=='NEUTRAL'){col='var(--amb)';vt=`⚠️ ${dir} BUILDING`;vs=`${passed}/${total} — watch for final signal`;}
+  else if(passed>=total-1&&dir!=='NEUTRAL'){col='var(--amb)';vt=`⚠️ ${dir} BUILDING`;vs=`${passed}/${total} — one signal away`;}
   else{col='var(--t3)';vt='⛔ NO SETUP';vs=`${passed}/${total} — wait`;}
   setRing(1,passed,total,col);
   $('vtitle1').style.color=col;$('vtitle1').textContent=vt;$('vsub1').textContent=vs;
@@ -997,8 +1062,7 @@ function analyseSwing(){
   const avg20=vlD.slice(-21,-1).reduce((a,b)=>a+b,0)/20,vrat=vlD.at(-1)/avg20,volOk=vrat>=1.2;
   const frPct=storedFR,frOk=!isNaN(frPct)&&frPct>=-0.05&&frPct<=0.05,frAvail=!isNaN(frPct);
   const atrD=atrCalc(cDa,14),atr4=atrCalc(c4h,14);
-  const oiHist=oiLoad();const oiTr=oiTrend(oiHist);
-  const oiOk=oiTr==='rising';const oiAvail=oiHist.length>=5;
+  const oiHist=oiLoad(),oiTr=oiTrend(oiHist),oiOk=oiTr==='rising',oiAvail=oiHist.length>=5;
   const s1=dFlat?'warn':dUp,s2=dir==='LONG'?h4Bull:dir==='SHORT'?!h4Bull:false,s3=rsiOk,s4=volOk,s5=frAvail?frOk:null,s6=oiAvail?oiOk:null;
   const passed=[s1,s2,s3,s4,s5,s6].filter(x=>x===true).length,total=[s1,s2,s3,s4,s5,s6].filter(x=>x!==null).length||4;
   scores[2]=passed;totals[2]=total;dirs[2]=dir;
@@ -1028,7 +1092,7 @@ function analyseSwing(){
     {name:'4H RSI zone',tf:'4H',val:lRSI!=null?lRSI.toFixed(1):'—',meta:dir==='LONG'?`Buy 30–52 | ${rsiLong?'✓ In range':'✗ Wait for dip'}`:dir==='SHORT'?`Sell 50–72 | ${rsiShort?'✓ In range':'✗ Wait for push'}`:'Set daily direction first',pass:s3,pct:lRSI!=null?Math.min(100,Math.max(0,((lRSI-20)/60)*100)):50},
     {name:'Daily volume',tf:'DAILY',val:`${vrat.toFixed(2)}×`,meta:volOk?'✓ Elevated ≥1.2×':'✗ Below avg',pass:s4,pct:Math.min(100,(vrat/2)*100)},
     {name:'Funding rate',tf:'8H × DAYS',val:frAvail?`${frPct.toFixed(4)}%`:'…',meta:frAvail?frOk?'✓ Neutral':'✗ Extreme':'Loading',pass:s5,pct:frAvail?100-Math.min(100,(Math.abs(frPct)/0.1)*100):50},
-    {name:'OI direction',tf:'TREND',val:oiAvail?(oiTr==='rising'?'▲ Rising':oiTr==='falling'?'▼ Falling':'→ Flat'):'Building…',meta:oiAvail?oiTr==='rising'?'✓ Institutional positioning confirmed':oiTr==='falling'?'✗ No new money — avoid':'→ Wait for OI expansion':'Need 5+ readings',pass:s6,pct:oiAvail?oiTr==='rising'?85:oiTr==='falling'?15:45:50},
+    {name:'OI direction',tf:'TREND',val:oiAvail?(oiTr==='rising'?'▲ Rising':oiTr==='falling'?'▼ Falling':'→ Flat'):'Building…',meta:oiAvail?oiTr==='rising'?'✓ Institutional positioning confirmed':oiTr==='falling'?'✗ No new money — avoid':'→ Wait for OI expansion':'Need 5+ OI readings',pass:s6,pct:oiAvail?oiTr==='rising'?85:oiTr==='falling'?15:45:50},
   ].map(sigCard).join('');
   renderOIChart(2);renderLiq(2);drawChart(2);fireAlert(2,passed,dir,total);
 }
@@ -1052,37 +1116,71 @@ function drawChart(tab){
     if(CH.p2)CH.p2.destroy();CH.p2=new Chart($('pc2'),{type:'line',data:{labels:CD.lb2,datasets:[{data:cls,borderColor:'#3b82f6',borderWidth:1.5,pointRadius:0,tension:.2,fill:false},{data:CD.e2a.slice(-n),borderColor:'#f59e0b',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[3,2]},{data:CD.e2b.slice(-n),borderColor:'#ef4444',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[5,3]}]},options:base});
     if(CH.r2)CH.r2.destroy();const rss=CD.rs2.slice(-n);CH.r2=new Chart($('rc2'),{type:'line',data:{labels:CD.lb2,datasets:[{data:rss,borderColor:'#8b5cf6',borderWidth:1.5,pointRadius:0,tension:.3,fill:false},{data:rss.map(()=>52),borderColor:'rgba(34,197,94,.35)',borderWidth:1,pointRadius:0,fill:false,borderDash:[4,3]},{data:rss.map(()=>30),borderColor:'rgba(34,197,94,.35)',borderWidth:1,pointRadius:0,fill:'1',borderDash:[4,3]},{data:rss.map(()=>70),borderColor:'rgba(239,68,68,.3)',borderWidth:1,pointRadius:0,fill:false,borderDash:[4,3]}]},options:{...base,scales:{...base.scales,y:{...base.scales.y,min:20,max:80}}}});
   }
+  if(tab===3&&CD.lb3.length){
+    const n=Math.min(D.cW.length,52),cls=D.cW.slice(-n).map(x=>x.c);
+    const wOpts={...base,scales:{...base.scales,x:{...base.scales.x,ticks:{...base.scales.x.ticks,maxTicksLimit:6}}}};
+    if(CH.p3)CH.p3.destroy();CH.p3=new Chart($('pc3'),{type:'line',data:{labels:CD.lb3,datasets:[
+      {data:cls,borderColor:'#3b82f6',borderWidth:1.5,pointRadius:0,tension:.2,fill:false},
+      {data:CD.e3a.slice(-n),borderColor:'#f59e0b',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[3,2]},
+      {data:CD.e3b.slice(-n),borderColor:'#ef4444',borderWidth:1,pointRadius:0,tension:.2,fill:false,borderDash:[5,3]},
+      {data:CD.e3c.slice(-n),borderColor:'#8b5cf6',borderWidth:1.5,pointRadius:0,tension:.2,fill:false,borderDash:[6,2]},
+    ]},options:wOpts});
+    if(CH.r3)CH.r3.destroy();const rss=CD.rs3.slice(-n);CH.r3=new Chart($('rc3'),{type:'line',data:{labels:CD.lb3,datasets:[
+      {data:rss,borderColor:'#8b5cf6',borderWidth:1.5,pointRadius:0,tension:.3,fill:false},
+      {data:rss.map(()=>65),borderColor:'rgba(239,68,68,.35)',borderWidth:1,pointRadius:0,fill:false,borderDash:[4,3]},
+      {data:rss.map(()=>35),borderColor:'rgba(34,197,94,.35)',borderWidth:1,pointRadius:0,fill:false,borderDash:[4,3]},
+      {data:rss.map(()=>50),borderColor:'rgba(255,255,255,.08)',borderWidth:1,pointRadius:0,fill:false},
+    ]},options:{...wOpts,scales:{...wOpts.scales,y:{...wOpts.scales.y,min:10,max:90}}}});
+  }
 }
 
 /* ══ LOAD ═════════════════════════════════════════════════════════ */
 async function loadAll(){
   $('sDot').className='dot';$('sTxt').textContent='Fetching…';
   try{
-    const[c1m,c15m,c1h,c4h,cD,fr,oi]=await Promise.all([fetchK('1m',100),fetchK('15m',50),fetchK('1h',100),fetchK('4h',120),fetchK('1d',60),fetchFR(),fetchOI()]);
-    D.c1m=c1m;D.c15m=c15m;D.c1h=c1h;D.c4h=c4h;D.cD=cD;
+    const[c1m,c15m,c1h,c4h,cD,cW,cM,fr,oi]=await Promise.all([
+      fetchK('1m',100),fetchK('15m',50),fetchK('1h',100),fetchK('4h',120),
+      fetchK('1d',60),fetchK('1w',60),fetchK('1M',24),
+      fetchFR(),fetchOI()
+    ]);
+    D.c1m=c1m;D.c15m=c15m;D.c1h=c1h;D.c4h=c4h;D.cD=cD;D.cW=cW;D.cM=cM;
     if(c1m.length){storedPrice=c1m.at(-1).c;flashPrice(storedPrice);}
     if(fr!==null)storedFR=fr*100;
-    if(oi!==null){storedOI=oi;oiPush(oi);} // Save to localStorage on every fetch
-    analyseScalp();analyseHourly();analyseSwing();
+    if(oi!==null){storedOI=oi;oiPush(oi);}
+    analyseWeekly();analyseScalp();analyseHourly();analyseSwing();
     updateConfluence();
     $('sDot').className='dot live';$('sTxt').textContent='Live';
-  }catch(e){$('sDot').className='dot err';$('sTxt').textContent='Error: '+e.message;}
+  }catch(e){$('sDot').className='dot err';$('sTxt').textContent='Error: '+e.message;console.error(e);}
 }
 
 function hardRefresh(){clearInterval(rfTimer);loadAll();rfTimer=setInterval(loadAll,15000);}
 
 $('pairSel').addEventListener('change',e=>{
-  pair=e.target.value;D={c1m:[],c15m:[],c1h:[],c4h:[],cD:[]};
-  lastP=null;storedFR=NaN;storedOI=NaN;storedPrice=0;
-  lastLevels=[0,0,0];scores[0]=scores[1]=scores[2]=0;
-  // Clear liq data for new pair display (keep history, just reset view)
-  [0,1,2].forEach(t=>{const c=document.getElementById('liqCount'+t);if(c)c.textContent='0 events';});
+  pair=e.target.value;
+  D={c1m:[],c15m:[],c1h:[],c4h:[],cD:[],cW:[],cM:[]};
+  lastP=null;storedFR=NaN;storedOI=NaN;storedPrice=0;weeklyDir='NEUTRAL';
+  lastLevels=[0,0,0,0];scores[0]=scores[1]=scores[2]=scores[3]=0;
   connectPriceWS();hardRefresh();
 });
 
 /* ══ INIT ══════════════════════════════════════════════════════════ */
+// Dynamically set scroll-body padding-top based on sticky header stack
+function setScrollPadding(){
+  const hdr=document.querySelector('.hdr');
+  const banner=document.getElementById('alertBanner');
+  const confbar=document.querySelector('.confbar');
+  const tftabs=document.querySelector('.tftabs');
+  const total=(hdr?hdr.offsetHeight:52)+(banner&&banner.offsetHeight>0?banner.offsetHeight:0)+(confbar?confbar.offsetHeight:36)+(tftabs?tftabs.offsetHeight:48);
+  document.getElementById('scrollBody').style.paddingTop=total+'px';
+}
+// Recalculate on resize and after banner changes
+window.addEventListener('resize',setScrollPadding);
+const bannerObs=new MutationObserver(setScrollPadding);
+bannerObs.observe(document.getElementById('alertBanner'),{attributes:true,childList:true});
+setScrollPadding();
+
 connectPriceWS();
-connectLiqWS();   // Single global WS for all symbols — filters by pair in handler
+connectLiqWS();
 hardRefresh();
 </script>
 </body>
