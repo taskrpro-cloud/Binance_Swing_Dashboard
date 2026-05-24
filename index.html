@@ -24,10 +24,10 @@ body{background:var(--bg);color:var(--text);font-family:Roboto,'Segoe UI',sans-s
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* HEADER — fixed height, no wrapping */
-.hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:0 14px;height:52px;display:flex;align-items:center;gap:8px;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:8px 14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:52px;}
 .logo{font-size:13px;font-weight:800;letter-spacing:.1em;white-space:nowrap;}
 .logo span{color:var(--amb);}
-select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);border-radius:8px;padding:6px 10px;font-size:13px;font-weight:700;cursor:pointer;height:36px;max-width:160px;flex:1;}
+select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);border-radius:8px;padding:4px 8px;font-size:12px;font-weight:700;cursor:pointer;height:34px;max-width:140px;flex:1;}
 .price-row{display:flex;align-items:baseline;gap:6px;flex:1;min-width:0;}
 .price{font-size:20px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;transition:color .15s;white-space:nowrap;}
 .price.fu{color:var(--grn);}.price.fd{color:var(--red);}
@@ -230,10 +230,10 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .prem-prices{display:flex;align-items:center;gap:12px;flex:1;flex-wrap:wrap;}
 .prem-item{font-size:11px;font-weight:600;color:var(--t2);white-space:nowrap;display:flex;align-items:center;gap:4px;}
 .prem-item span{font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;}
-.prem-badge{font-size:11px;font-weight:800;padding:2px 8px;border-radius:12px;white-space:nowrap;}
-.prem-badge.pos{background:rgba(34,197,94,.15);color:var(--grn);}
-.prem-badge.neg{background:rgba(239,68,68,.15);color:var(--red);}
-.prem-badge.neu{background:var(--bg3);color:var(--t3);}
+.prem-badge{font-size:11px;font-weight:800;padding:3px 10px;border-radius:12px;white-space:nowrap;border:1px solid transparent;}
+.prem-badge.pos{background:rgba(34,197,94,.25);color:#fff;border-color:rgba(34,197,94,.5);}
+.prem-badge.neg{background:rgba(239,68,68,.3);color:#fff;border-color:rgba(239,68,68,.5);}
+.prem-badge.neu{background:var(--bg3);color:var(--t2);border-color:var(--bdr2);}
 .prem-insight{font-size:10px;color:var(--t3);margin-left:auto;white-space:nowrap;}
 .foot{font-size:11px;color:var(--t3);line-height:1.8;}
 .foot b{color:var(--t2);}
@@ -736,6 +736,26 @@ function liqBS(p){return p>10000?200:p>1000?20:p>100?2:p>10?0.2:0.02;}
 function liqKey(p,bs){return Math.round(p/bs)*bs;}
 function initLiq(sym){if(!liqData[sym])liqData[sym]={short:{},long:{},count:0};}
 
+
+/* Seed liquidation data from Binance REST (last 100 forced orders) */
+async function seedLiqFromREST(){
+  try{
+    const r=await fetch(`${FAPI}/fapi/v1/forceOrders?symbol=${pair}&limit=100`,{signal:AbortSignal.timeout(8000)});
+    const orders=await r.json();
+    if(!Array.isArray(orders))return;
+    initLiq(pair);
+    orders.forEach(o=>{
+      const p=parseFloat(o.price||o.avgPrice),qty=parseFloat(o.origQty)*p;
+      if(!p||!qty)return;
+      const bs=liqBS(p),bk=liqKey(p,bs);
+      if(o.side==='BUY')liqData[pair].short[bk]=(liqData[pair].short[bk]||0)+qty;
+      else liqData[pair].long[bk]=(liqData[pair].long[bk]||0)+qty;
+      liqData[pair].count++;
+    });
+    console.log('Seeded',liqData[pair].count,'liq events from REST');
+    [0,1,2,3].forEach(t=>renderLiq(t));
+  }catch(e){console.log('Liq REST seed failed:',e.message);}
+}
 function connectLiqWS(){
   if(liqWS){try{liqWS.close();}catch(e){}}
   liqWS=null;
@@ -767,6 +787,8 @@ setInterval(()=>{
 
 // Render every 3s
 setInterval(()=>[0,1,2,3].forEach(t=>renderLiq(t)),3000);
+// Reseed REST every 5 min
+setInterval(seedLiqFromREST,5*60*1000);
 
 function renderLiq(tab){
   const sym=pair;initLiq(sym);const ld=liqData[sym];
@@ -825,17 +847,19 @@ function updatePremium(){
   document.getElementById('bnPrice').textContent=fmt(storedPrice,dec);
   const badge=document.getElementById('premBadge');
   const insight=document.getElementById('premInsight');
-  const sign=pct>=0?'+':'';
-  badge.textContent=`${sign}$${Math.abs(diff).toFixed(1)} (${sign}${pct.toFixed(3)}%)`;
+  const sign=pct>=0?'+':'−';
+  const absDiff=Math.abs(diff).toFixed(1);
+  const absPct=Math.abs(pct).toFixed(3);
+  badge.textContent=`${sign}$${absDiff} (${sign}${absPct}%)`;
   if(pct>0.1){
     badge.className='prem-badge pos';
-    insight.textContent=pct>0.5?'Strong US premium — bullish signal':'CB premium — US buying';
+    insight.textContent=pct>0.5?'🟢 Strong US premium — bullish':'🟢 CB premium — US buying';
   } else if(pct<-0.1){
     badge.className='prem-badge neg';
-    insight.textContent=pct<-0.5?'Binance premium — bearish lean':'BN premium — Asian demand';
+    insight.textContent=pct<-0.5?'🔴 BN premium — bearish lean':'🔴 BN premium — Asian demand';
   } else {
     badge.className='prem-badge neu';
-    insight.textContent='Parity — no clear premium';
+    insight.textContent='Parity — no clear signal';
   }
   fixLayout(); // recompute scroll top since bar now visible
 }
@@ -1140,11 +1164,12 @@ $('pairSel').addEventListener('change',e=>{
   lastP=null;storedFR=NaN;storedOI=NaN;storedPrice=0;weeklyDir='NEUTRAL';
   lastLevels=[0,0,0,0];scores[0]=scores[1]=scores[2]=scores[3]=0;
   [0,1,2,3].forEach(i=>updateTabBias(i));
-  connectPriceWS();hardRefresh();startCBFetch();
+  connectPriceWS();hardRefresh();startCBFetch();seedLiqFromREST();
 });
 
 connectPriceWS();
 connectLiqWS();
+seedLiqFromREST();
 hardRefresh();
 startCBFetch();
 </script>
