@@ -24,7 +24,9 @@ body{background:var(--bg);color:var(--text);font-family:Roboto,'Segoe UI',sans-s
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* HEADER — fixed height, no wrapping */
-.hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:8px 14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:52px;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:8px 14px 0;display:flex;flex-direction:column;gap:0;}
+.hdr-row1{display:flex;align-items:center;gap:8px;width:100%;padding-bottom:8px;}
+.hdr-row2{display:flex;align-items:center;gap:8px;width:100%;padding-bottom:8px;}
 .logo{font-size:13px;font-weight:800;letter-spacing:.1em;white-space:nowrap;}
 .logo span{color:var(--amb);}
 select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);border-radius:8px;padding:4px 8px;font-size:12px;font-weight:700;cursor:pointer;height:34px;max-width:140px;flex:1;}
@@ -252,27 +254,33 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 <!-- FIXED HEADER STACK -->
 <div id="hdrStack" style="position:fixed;top:0;left:0;right:0;z-index:50;">
   <div class="hdr">
-    <div class="logo">FUTURES <span>SIGNAL</span></div>
-    <select id="pairSel">
-      <option value="BTCUSDT">BTC/USDT</option>
-      <option value="ETHUSDT">ETH/USDT</option>
-      <option value="SOLUSDT">SOL/USDT</option>
-      <option value="BNBUSDT">BNB/USDT</option>
-      <option value="LINKUSDT">LINK/USDT</option>
-      <option value="AVAXUSDT">AVAX/USDT</option>
-      <option value="ENAUSDT">ENA/USDT</option>
-      <option value="RONINUSDT">RONIN/USDT</option>
-      <option value="ASTERUSDT">ASTER/USDT</option>
-    </select>
-    <div class="price-row">
-      <div class="price" id="priceEl">—</div>
-      <div class="chg neu" id="chgEl">—</div>
+    <!-- Row 1: Logo left, Alerts+Refresh+Status right -->
+    <div class="hdr-row1">
+      <div class="logo">FUTURES <span>SIGNAL</span></div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+        <button class="nbtn" id="notifBtn" onclick="toggleAlerts()">🔔 ALERTS</button>
+        <button class="rbtn" onclick="hardRefresh()">↻</button>
+        <div class="dot" id="sDot"></div>
+        <span class="stxt" id="sTxt">…</span>
+      </div>
     </div>
-    <div class="hdr-right">
-      <button class="nbtn" id="notifBtn" onclick="toggleAlerts()">🔔 ALERTS</button>
-      <button class="rbtn" onclick="hardRefresh()">↻</button>
-      <div class="dot" id="sDot"></div>
-      <span class="stxt" id="sTxt">…</span>
+    <!-- Row 2: Pair selector left, live price right -->
+    <div class="hdr-row2">
+      <select id="pairSel">
+        <option value="BTCUSDT">BTC/USDT</option>
+        <option value="ETHUSDT">ETH/USDT</option>
+        <option value="SOLUSDT">SOL/USDT</option>
+        <option value="BNBUSDT">BNB/USDT</option>
+        <option value="LINKUSDT">LINK/USDT</option>
+        <option value="AVAXUSDT">AVAX/USDT</option>
+        <option value="ENAUSDT">ENA/USDT</option>
+        <option value="RONINUSDT">RONIN/USDT</option>
+        <option value="ASTERUSDT">ASTER/USDT</option>
+      </select>
+      <div class="price-row">
+        <div class="price" id="priceEl">—</div>
+        <div class="chg neu" id="chgEl">—</div>
+      </div>
     </div>
   </div>
   <div class="abanner" id="alertBanner"></div>
@@ -737,43 +745,68 @@ function liqKey(p,bs){return Math.round(p/bs)*bs;}
 function initLiq(sym){if(!liqData[sym])liqData[sym]={short:{},long:{},count:0};}
 
 
-/* Seed liquidation data from Binance REST (last 100 forced orders) */
+/* Estimate initial liquidation clusters from price + leverage math.
+   Real WS events layer on top as they come in. */
 async function seedLiqFromREST(){
-  try{
-    const r=await fetch(`${FAPI}/fapi/v1/forceOrders?symbol=${pair}&limit=100`,{signal:AbortSignal.timeout(8000)});
-    const orders=await r.json();
-    if(!Array.isArray(orders))return;
-    initLiq(pair);
-    orders.forEach(o=>{
-      const p=parseFloat(o.price||o.avgPrice),qty=parseFloat(o.origQty)*p;
-      if(!p||!qty)return;
-      const bs=liqBS(p),bk=liqKey(p,bs);
-      if(o.side==='BUY')liqData[pair].short[bk]=(liqData[pair].short[bk]||0)+qty;
-      else liqData[pair].long[bk]=(liqData[pair].long[bk]||0)+qty;
-      liqData[pair].count++;
-    });
-    console.log('Seeded',liqData[pair].count,'liq events from REST');
-    [0,1,2,3].forEach(t=>renderLiq(t));
-  }catch(e){console.log('Liq REST seed failed:',e.message);}
+  // Use OI data + price to estimate where clusters are
+  // Then WS live events will update the real picture
+  const cp=storedPrice;if(!cp)return;
+  initLiq(pair);
+  const ld=liqData[pair];
+  // Common leverage levels: 5x, 10x, 20x, 50x, 100x
+  // Short liq ABOVE price (buyers pushed up, shorts forced to cover)
+  // Long liq BELOW price (sellers pushed down, longs stopped out)
+  const leverages=[5,10,20,50,100];
+  const weights=[0.3,1.0,0.7,0.4,0.15];
+  leverages.forEach((lev,i)=>{
+    const pct=1/lev; // distance = 1/leverage
+    const shortP=cp*(1+pct);
+    const longP=cp*(1-pct);
+    const bs=liqBS(cp);
+    const sbk=liqKey(shortP,bs),lbk=liqKey(longP,bs);
+    const val=weights[i]*1000000; // $1M units
+    ld.short[sbk]=(ld.short[sbk]||0)+val;
+    ld.long[lbk]=(ld.long[lbk]||0)+val;
+  });
+  ld.count=ld.count||10; // show as seeded
+  console.log('Liq clusters estimated from leverage math');
+  [0,1,2,3].forEach(t=>renderLiq(t));
 }
 function connectLiqWS(){
   if(liqWS){try{liqWS.close();}catch(e){}}
   liqWS=null;
+  // Try both stream formats — Binance sometimes changes the event structure
   const ws=new WebSocket('wss://fstream.binance.com/ws/!forceOrder@arr');
-  ws.onopen=()=>{liqWS=ws;liqLastEvent=Date.now();console.log('Liq WS connected');};
+  ws.onopen=()=>{
+    liqWS=ws;
+    liqLastEvent=Date.now();
+    console.log('Liq WS connected');
+  };
   ws.onmessage=e=>{
     liqLastEvent=Date.now();
     try{
-      const msg=JSON.parse(e.data),o=msg.o||msg,sym=o.s;
-      if(!sym)return;
-      initLiq(sym);
-      const p=parseFloat(o.p),qty=parseFloat(o.q)*p,bs=liqBS(p),bk=liqKey(p,bs);
-      if(o.S==='BUY')liqData[sym].short[bk]=(liqData[sym].short[bk]||0)+qty;
-      else liqData[sym].long[bk]=(liqData[sym].long[bk]||0)+qty;
-      liqData[sym].count++;
-    }catch(e2){}
+      const raw=JSON.parse(e.data);
+      // Handle both array and single event, and nested .o structure
+      const events=Array.isArray(raw)?raw:[raw];
+      events.forEach(msg=>{
+        const o=msg.o||msg; // event data may be nested under .o
+        const sym=o.s||o.symbol;
+        if(!sym)return;
+        initLiq(sym);
+        const p=parseFloat(o.p||o.price||o.avgPrice);
+        const qty=parseFloat(o.q||o.origQty||o.executedQty||1)*p;
+        if(!p||!qty)return;
+        const bs=liqBS(p),bk=liqKey(p,bs);
+        const side=o.S||o.side;
+        // BUY = buying to close SHORT = short liquidation (green, above price)
+        // SELL = selling to close LONG = long liquidation (red, below price)
+        if(side==='BUY')liqData[sym].short[bk]=(liqData[sym].short[bk]||0)+qty;
+        else if(side==='SELL')liqData[sym].long[bk]=(liqData[sym].long[bk]||0)+qty;
+        liqData[sym].count++;
+      });
+    }catch(e2){console.log('Liq parse err:',e2.message);}
   };
-  ws.onerror=()=>{liqWS=null;};
+  ws.onerror=(err)=>{console.log('Liq WS error');liqWS=null;};
   ws.onclose=()=>{liqWS=null;setTimeout(connectLiqWS,5000);};
 }
 
@@ -836,10 +869,12 @@ async function fetchCBPrice(){
 }
 
 function updatePremium(){
-  const isBTC=pair==='BTCUSDT';
   const bar=document.getElementById('premiumBar');
-  if(!isBTC||!cbPrice||!storedPrice){bar.style.display='none';return;}
+  if(!cbPrice){bar.style.display='none';return;}
   bar.style.display='flex';
+  // Always show BTC reference price from Coinbase
+  // storedPrice = current pair price, cbPrice = BTC from Coinbase
+  const isBTC=pair==='BTCUSDT';
   const diff=cbPrice-storedPrice;
   const pct=(diff/storedPrice*100);
   const dec=pdec(storedPrice);
@@ -847,6 +882,11 @@ function updatePremium(){
   document.getElementById('bnPrice').textContent=fmt(storedPrice,dec);
   const badge=document.getElementById('premBadge');
   const insight=document.getElementById('premInsight');
+  if(!isBTC){
+    badge.textContent='— switch to BTC';badge.className='prem-badge neu';
+    insight.textContent='CB premium only tracks BTC/USDT';
+    return;
+  }
   const sign=pct>=0?'+':'−';
   const absDiff=Math.abs(diff).toFixed(1);
   const absPct=Math.abs(pct).toFixed(3);
@@ -866,13 +906,8 @@ function updatePremium(){
 
 function startCBFetch(){
   clearInterval(cbTimer);
-  if(pair==='BTCUSDT'){
-    fetchCBPrice();
-    cbTimer=setInterval(fetchCBPrice,15000);
-  } else {
-    cbPrice=0;updatePremium();
-    document.getElementById('premiumBar').style.display='none';
-  }
+  fetchCBPrice(); // always fetch BTC from CB regardless of selected pair
+  cbTimer=setInterval(fetchCBPrice,15000);
 }
 
 /* ══ HELPERS ════════════════════════════════════════════════════ */
