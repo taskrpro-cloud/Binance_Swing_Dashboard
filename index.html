@@ -227,8 +227,7 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
 .gico{flex-shrink:0;width:18px;}
 
 /* COINBASE PREMIUM BAR */
-.premium-bar{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:5px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:28px;}
-.prem-label{font-size:10px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;font-weight:700;white-space:nowrap;}
+.premium-bar{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:5px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:28px;}
 .prem-prices{display:flex;align-items:center;gap:12px;flex:1;flex-wrap:wrap;}
 .prem-item{font-size:11px;font-weight:600;color:var(--t2);white-space:nowrap;display:flex;align-items:center;gap:4px;}
 .prem-item span{font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;}
@@ -284,14 +283,17 @@ select{background:var(--bg3);color:var(--text);border:1px solid var(--bdr2);bord
     </div>
   </div>
   <div class="abanner" id="alertBanner"></div>
-  <div class="premium-bar" id="premiumBar" style="display:none;">
-    <div class="prem-label">CB Premium</div>
+  <div class="premium-bar" id="premiumBar">
     <div class="prem-prices">
-      <div class="prem-item">Coinbase <span id="cbPrice">—</span></div>
-      <div class="prem-item">Binance <span id="bnPrice">—</span></div>
+      <div class="prem-item">🔵 CB <span id="cbPrice">—</span></div>
+      <div class="prem-item">🟡 BN <span id="bnBtcPrice">—</span></div>
       <div class="prem-badge neu" id="premBadge">—</div>
     </div>
     <div class="prem-insight" id="premInsight">—</div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:5px;white-space:nowrap;">
+      <span style="font-size:10px;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;font-weight:700;">F&G</span>
+      <span id="fgDisplay" style="font-size:11px;color:var(--t2);">…</span>
+    </div>
   </div>
   <!-- TABS — Weekly→Swing→Hourly→Scalp, color-coded by bias -->
   <div class="tftabs">
@@ -776,7 +778,7 @@ function connectLiqWS(){
   if(liqWS){try{liqWS.close();}catch(e){}}
   liqWS=null;
   // Try both stream formats — Binance sometimes changes the event structure
-  const ws=new WebSocket('wss://fstream.binance.com/ws/!forceOrder@arr');
+  const ws=new WebSocket('wss://fstream.binance.com/stream?streams=!forceOrder@arr');
   ws.onopen=()=>{
     liqWS=ws;
     liqLastEvent=Date.now();
@@ -786,10 +788,11 @@ function connectLiqWS(){
     liqLastEvent=Date.now();
     try{
       const raw=JSON.parse(e.data);
-      // Handle both array and single event, and nested .o structure
-      const events=Array.isArray(raw)?raw:[raw];
+      // Combined stream wraps in {stream, data}, single stream is raw
+      const unwrapped=raw.data||raw;
+      const events=Array.isArray(unwrapped)?unwrapped:[unwrapped];
       events.forEach(msg=>{
-        const o=msg.o||msg; // event data may be nested under .o
+        const o=msg.o||msg; // forceOrder event nests order under .o
         const sym=o.s||o.symbol;
         if(!sym)return;
         initLiq(sym);
@@ -870,23 +873,20 @@ async function fetchCBPrice(){
 
 function updatePremium(){
   const bar=document.getElementById('premiumBar');
-  if(!cbPrice){bar.style.display='none';return;}
+  // Always visible — shows BTC CB vs BN prices regardless of active pair
   bar.style.display='flex';
-  // Always show BTC reference price from Coinbase
-  // storedPrice = current pair price, cbPrice = BTC from Coinbase
+  if(!cbPrice){document.getElementById('cbPrice').textContent='…';return;}
   const isBTC=pair==='BTCUSDT';
-  const diff=cbPrice-storedPrice;
-  const pct=(diff/storedPrice*100);
-  const dec=pdec(storedPrice);
+  // btcBinancePrice is always kept updated from BTC WS even on other pairs
+  const btcBNPrice=btcBinancePrice||storedPrice;
+  const diff=cbPrice-btcBNPrice;
+  const pct=btcBNPrice?(diff/btcBNPrice*100):0;
+  const dec=1;
   document.getElementById('cbPrice').textContent=fmt(cbPrice,dec);
   document.getElementById('bnPrice').textContent=fmt(storedPrice,dec);
   const badge=document.getElementById('premBadge');
   const insight=document.getElementById('premInsight');
-  if(!isBTC){
-    badge.textContent='— switch to BTC';badge.className='prem-badge neu';
-    insight.textContent='CB premium only tracks BTC/USDT';
-    return;
-  }
+
   const sign=pct>=0?'+':'−';
   const absDiff=Math.abs(diff).toFixed(1);
   const absPct=Math.abs(pct).toFixed(3);
@@ -910,6 +910,39 @@ function startCBFetch(){
   cbTimer=setInterval(fetchCBPrice,15000);
 }
 
+
+/* ══ FEAR & GREED INDEX ══════════════════════════════════════════
+   alternative.me public API — no auth, CORS-open.
+   Updates once daily. Shows market sentiment 0-100.
+   0-25 = Extreme Fear, 26-45 = Fear, 46-55 = Neutral,
+   56-75 = Greed, 76-100 = Extreme Greed
+════════════════════════════════════════════════════════════════ */
+let fearGreedValue=null,fearGreedLabel='';
+
+async function fetchFearGreed(){
+  try{
+    const r=await fetch('https://api.alternative.me/fng/?limit=1',{signal:AbortSignal.timeout(6000)});
+    const d=await r.json();
+    if(d.data&&d.data[0]){
+      fearGreedValue=parseInt(d.data[0].value);
+      fearGreedLabel=d.data[0].value_classification;
+      updateFearGreedUI();
+    }
+  }catch(e){console.log('F&G fetch failed');}
+}
+
+function updateFearGreedUI(){
+  if(fearGreedValue===null)return;
+  const el=document.getElementById('fgDisplay');
+  if(!el)return;
+  let color='var(--t2)';
+  if(fearGreedValue<=25)color='#ef4444';
+  else if(fearGreedValue<=45)color='#f97316';
+  else if(fearGreedValue<=55)color='var(--t2)';
+  else if(fearGreedValue<=75)color='#84cc16';
+  else color='#22c55e';
+  el.innerHTML=`<span style="font-weight:800;color:${color};font-size:13px;">${fearGreedValue}</span> <span style="color:var(--t2);font-size:11px;">${fearGreedLabel}</span>`;
+}
 /* ══ HELPERS ════════════════════════════════════════════════════ */
 const $=id=>document.getElementById(id);
 const fmt=(n,d)=>n==null||isNaN(n)?'—':n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -923,6 +956,7 @@ function sigCard(s){const dc=s.pass===true?'sdot sp':s.pass===false?'sdot sf':s.
 /* ══ DATA ═══════════════════════════════════════════════════════ */
 const FAPI='https://fapi.binance.com',WSB='wss://fstream.binance.com/ws';
 let pair='BTCUSDT',lastP=null,storedFR=NaN,storedOI=NaN,storedPrice=0;
+let btcBinancePrice=0,btcWS=null; // always-on BTC price feed independent of selected pair
 let ws=null,rfTimer=null;
 let D={c1m:[],c15m:[],c1h:[],c4h:[],cD:[],cW:[],cM:[]};
 let CD={e0a:[],e0b:[],rs0:[],lb0:[],e1a:[],e1b:[],rs1:[],lb1:[],e2a:[],e2b:[],rs2:[],lb2:[],e3a:[],e3b:[],e3c:[],rs3:[],lb3:[]};
@@ -940,6 +974,18 @@ function connectPriceWS(){
   ws.onclose=()=>setTimeout(connectPriceWS,4000);
   ws.onmessage=e=>{const p=+JSON.parse(e.data).p;flashPrice(p);};
 }
+/* Always-on BTC price feed — keeps btcBinancePrice updated regardless of active pair */
+function connectBtcWS(){
+  if(btcWS){try{btcWS.close();}catch(e){}}
+  btcWS=new WebSocket('wss://fstream.binance.com/ws/btcusdt@aggTrade');
+  btcWS.onmessage=e=>{
+    const p=+JSON.parse(e.data).p;
+    btcBinancePrice=p;
+    updatePremium(); // refresh premium on every BTC tick
+  };
+  btcWS.onclose=()=>setTimeout(connectBtcWS,4000);
+}
+
 function flashPrice(p){
   storedPrice=p;updatePremium();const el=$('priceEl');el.textContent=fmt(p,pdec(p));
   if(lastP!==null){el.classList.remove('fu','fd');void el.offsetWidth;el.classList.add(p>=lastP?'fu':'fd');setTimeout(()=>el.classList.remove('fu','fd'),500);const pct=((p-lastP)/lastP*100).toFixed(3);$('chgEl').textContent=(+pct>=0?'+':'')+pct+'%';$('chgEl').className='chg '+(+pct>=0?'up':'dn');}
@@ -1203,10 +1249,13 @@ $('pairSel').addEventListener('change',e=>{
 });
 
 connectPriceWS();
+connectBtcWS();
 connectLiqWS();
 seedLiqFromREST();
 hardRefresh();
 startCBFetch();
+fetchFearGreed();
+setInterval(fetchFearGreed,60*60*1000); // refresh F&G every hour
 </script>
 </body>
 </html>
