@@ -934,14 +934,24 @@ async function fetchCBPrice(){
 
 function updatePremium(){
   const bar=document.getElementById('premiumBar');
-  // Always visible — shows BTC CB vs BN prices regardless of active pair
   bar.style.display='flex';
-  if(!cbPrice){document.getElementById('cbPrice').textContent='…';return;}
   const isBTC=pair==='BTCUSDT';
-  // btcBinancePrice is always kept updated from BTC WS even on other pairs
-  const btcBNPrice=btcBinancePrice||storedPrice;
+  // Use btcBinancePrice (dedicated always-on WS) or fall back to storedPrice if on BTC
+  const btcBNPrice=btcBinancePrice||(isBTC?storedPrice:0);
+  // Show BN price immediately when available
+  const bnEl=document.getElementById('bnBtcPrice');
+  if(bnEl) bnEl.textContent=btcBNPrice?fmt(btcBNPrice,1):'connecting…';
+  const cbEl=document.getElementById('cbPrice');
+  if(cbEl) cbEl.textContent=cbPrice?fmt(cbPrice,1):'connecting…';
+  if(!cbPrice||!btcBNPrice){
+    const badge=document.getElementById('premBadge');
+    if(badge){badge.textContent='—';badge.className='prem-badge neu';}
+    const ins=document.getElementById('premInsight');
+    if(ins) ins.textContent='Loading BTC prices…';
+    return;
+  }
   const diff=cbPrice-btcBNPrice;
-  const pct=btcBNPrice?(diff/btcBNPrice*100):0;
+  const pct=(diff/btcBNPrice*100);
   const dec=1;
   document.getElementById('cbPrice').textContent=fmt(cbPrice,dec);
   document.getElementById('bnPrice').textContent=fmt(storedPrice,dec);
@@ -1039,16 +1049,22 @@ function connectPriceWS(){
 function connectBtcWS(){
   if(btcWS){try{btcWS.close();}catch(e){}}
   btcWS=new WebSocket('wss://fstream.binance.com/ws/btcusdt@aggTrade');
+  btcWS.onopen=()=>console.log('BTC price WS connected');
   btcWS.onmessage=e=>{
-    const p=+JSON.parse(e.data).p;
-    btcBinancePrice=p;
-    updatePremium(); // refresh premium on every BTC tick
+    try{
+      const p=+JSON.parse(e.data).p;
+      if(p>0){btcBinancePrice=p;updatePremium();}
+    }catch(ex){}
   };
+  btcWS.onerror=()=>console.log('BTC WS error');
   btcWS.onclose=()=>setTimeout(connectBtcWS,4000);
 }
 
 function flashPrice(p){
-  storedPrice=p;updatePremium();const el=$('priceEl');el.textContent=fmt(p,pdec(p));
+  storedPrice=p;
+  if(pair==='BTCUSDT') btcBinancePrice=p; // keep in sync
+  updatePremium();
+  const el=$('priceEl');el.textContent=fmt(p,pdec(p));
   if(lastP!==null){el.classList.remove('fu','fd');void el.offsetWidth;el.classList.add(p>=lastP?'fu':'fd');setTimeout(()=>el.classList.remove('fu','fd'),500);const pct=((p-lastP)/lastP*100).toFixed(3);$('chgEl').textContent=(+pct>=0?'+':'')+pct+'%';$('chgEl').className='chg '+(+pct>=0?'up':'dn');}
   lastP=p;
 }
